@@ -598,9 +598,7 @@ public class ErrorHandler {
 
     public ErrorResult validateInput(String input, String validationRule, String fieldName) {
         if (input == null || input.trim().isEmpty()) {
-            return handleError("ValidationError", 
-                fieldName + " cannot be empty", 
-                "InputValidation");
+            return ErrorResult.failed(fieldName + " cannot be empty");
         }
         
         if (validationRule != null) {

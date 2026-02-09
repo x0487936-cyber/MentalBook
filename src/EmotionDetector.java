@@ -260,8 +260,8 @@ public class EmotionDetector {
         emotionResponses.put(Emotion.SAD, Arrays.asList(
             "I'm sorry you're feeling sad. Would you like to talk about it?",
             "Sadness can be tough. I'm here to listen if you want to share.",
-            "I hear you. Sometimes it helps to talk about what's making you feel down.",
-            "I'm here for you. What's on your mind?"
+            "I'm here to listen and support you. Sometimes it helps to talk about what's making you feel down.",
+            "I hear you and I'm here for you. What's on your mind?"
         ));
         
         emotionResponses.put(Emotion.STRESSED, Arrays.asList(

@@ -175,52 +175,64 @@ public class CreativeWritingHandler {
     }
     
     private void initializeGenreKeywords() {
-        // Genre keywords
-        genreKeywords.put("fiction", WritingGenre.FICTION);
-        genreKeywords.put("short story", WritingGenre.SHORT_STORY);
-        genreKeywords.put("novel", WritingGenre.FICTION);
+        // Genre keywords - prioritized by specificity (more specific first)
         
+        // Science Fiction (specific phrases first)
         genreKeywords.put("science fiction", WritingGenre.SCIFI);
         genreKeywords.put("sci-fi", WritingGenre.SCIFI);
         genreKeywords.put("scifi", WritingGenre.SCIFI);
         
+        // Fantasy
         genreKeywords.put("fantasy", WritingGenre.FANTASY);
-        genreKeywords.put("magic", WritingGenre.FANTASY);
         genreKeywords.put("dragons", WritingGenre.FANTASY);
         
+        // Mystery
         genreKeywords.put("mystery", WritingGenre.MYSTERY);
         genreKeywords.put("detective", WritingGenre.MYSTERY);
         genreKeywords.put("whodunit", WritingGenre.MYSTERY);
         
+        // Romance
         genreKeywords.put("romance", WritingGenre.ROMANCE);
-        genreKeywords.put("love", WritingGenre.ROMANCE);
         genreKeywords.put("love story", WritingGenre.ROMANCE);
         
+        // Horror
         genreKeywords.put("horror", WritingGenre.HORROR);
         genreKeywords.put("scary", WritingGenre.HORROR);
         genreKeywords.put("spooky", WritingGenre.HORROR);
         
+        // Thriller
         genreKeywords.put("thriller", WritingGenre.THRILLER);
         genreKeywords.put("suspense", WritingGenre.THRILLER);
         
+        // Historical
+        genreKeywords.put("historical fiction", WritingGenre.HISTORICAL);
+        genreKeywords.put("historical", WritingGenre.HISTORICAL);
+        
+        // Poetry
         genreKeywords.put("poetry", WritingGenre.POETRY);
         genreKeywords.put("poem", WritingGenre.POETRY);
         genreKeywords.put("sonnet", WritingGenre.POETRY);
         
+        // Adventure
         genreKeywords.put("adventure", WritingGenre.ADVENTURE);
-        genreKeywords.put("action", WritingGenre.ADVENTURE);
         
-        genreKeywords.put("historical", WritingGenre.HISTORICAL);
-        genreKeywords.put("history", WritingGenre.HISTORICAL);
-        
+        // Blog
+        genreKeywords.put("blog post", WritingGenre.BLOG);
         genreKeywords.put("blog", WritingGenre.BLOG);
-        genreKeywords.put("article", WritingGenre.BLOG);
         
-        genreKeywords.put("script", WritingGenre.SCRIPT);
+        // Script/Screenplay
         genreKeywords.put("screenplay", WritingGenre.SCRIPT);
+        genreKeywords.put("script", WritingGenre.SCRIPT);
         genreKeywords.put("dialogue", WritingGenre.SCRIPT);
         
-        // Writing process keywords
+        // Fiction variants
+        genreKeywords.put("short story", WritingGenre.SHORT_STORY);
+        genreKeywords.put("novel", WritingGenre.FICTION);
+        genreKeywords.put("fiction", WritingGenre.FICTION);
+        
+        // Writing process keywords (general - checked last)
+        genreKeywords.put("creative writing", WritingGenre.GENERAL);
+        genreKeywords.put("creative", WritingGenre.GENERAL);
         genreKeywords.put("writer", WritingGenre.GENERAL);
         genreKeywords.put("writing", WritingGenre.GENERAL);
         genreKeywords.put("story", WritingGenre.GENERAL);
@@ -230,12 +242,30 @@ public class CreativeWritingHandler {
     
     /**
      * Detects writing genre from input
+     * Prioritizes multi-word phrases over single words
      */
     public WritingGenre detectGenre(String input) {
         String lowerInput = input.toLowerCase();
         
+        // First pass: Check for multi-word phrases (more specific)
+        String[] multiWordPhrases = {
+            "science fiction", "sci-fi", "scifi",
+            "historical fiction", "love story", 
+            "short story", "creative writing",
+            "blog post", "screenplay"
+        };
+        
+        for (String phrase : multiWordPhrases) {
+            if (lowerInput.contains(phrase)) {
+                return genreKeywords.get(phrase);
+            }
+        }
+        
+        // Second pass: Check for single-word keywords
         for (Map.Entry<String, WritingGenre> entry : genreKeywords.entrySet()) {
-            if (lowerInput.contains(entry.getKey())) {
+            String keyword = entry.getKey();
+            // Skip multi-word phrases (already checked)
+            if (!keyword.contains(" ") && lowerInput.contains(keyword)) {
                 return entry.getValue();
             }
         }

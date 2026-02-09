@@ -1,0 +1,24 @@
+[2026-02-09T08:24:22.125997921] [ERROR] [TestSource] Test error message
+[2026-02-09T08:24:22.155332863] [ERROR] [InputValidation] Input cannot be empty
+[2026-02-09T08:24:22.177868415] [INFO] [Test] Test message
+[2026-02-09T08:24:22.178387576] [WARN] [Test] Warning message
+[2026-02-09T08:24:22.179741485] [ERROR] [Test] Error message
+[2026-02-09T08:24:38.716622548] [ERROR] [TestSource] Test error message
+[2026-02-09T08:24:38.740950452] [ERROR] [InputValidation] Input cannot be empty
+[2026-02-09T08:24:38.75574803] [INFO] [Test] Test message
+[2026-02-09T08:24:38.757048282] [WARN] [Test] Warning message
+[2026-02-09T08:24:38.761355926] [ERROR] [Test] Error message
+[2026-02-09T08:24:56.828401689] [ERROR] [TestSource] Test error message
+[2026-02-09T08:24:56.844053378] [ERROR] [InputValidation] Input cannot be empty
+[2026-02-09T08:24:56.862589022] [INFO] [Test] Test message
+[2026-02-09T08:24:56.864418953] [WARN] [Test] Warning message
+[2026-02-09T08:24:56.870435173] [ERROR] [Test] Error message
+[2026-02-09T08:25:24.08210202] [ERROR] [TestSource] Test error message
+[2026-02-09T08:25:24.10754912] [ERROR] [InputValidation] Input cannot be empty
+[2026-02-09T08:25:24.131800746] [INFO] [Test] Test message
+[2026-02-09T08:25:24.133042015] [WARN] [Test] Warning message
+[2026-02-09T08:25:24.133622256] [ERROR] [Test] Error message
+[2026-02-09T08:38:36.771313997] [ERROR] [TestSource] Test error message
+[2026-02-09T08:38:36.824304087] [INFO] [Test] Test message
+[2026-02-09T08:38:36.829362649] [WARN] [Test] Warning message
+[2026-02-09T08:38:36.829851284] [ERROR] [Test] Error message
