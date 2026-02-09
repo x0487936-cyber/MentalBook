@@ -1,3 +1,5 @@
+// Created in Version 0.1.0.0
+// Last Updated in Version 0.1.0.3
 import java.util.*;
 import java.util.regex.*;
 
@@ -38,6 +40,14 @@ public class ResponseGenerator {
             new ResponseTemplate("That's wonderful to hear! What's making your day so great?", ResponseType.ENTHUSIASTIC),
             new ResponseTemplate("Awesome! I'd love to hear more about what's making you feel fantastic!", ResponseType.INTERESTED),
             new ResponseTemplate("That's great! Positive vibes are contagious. Anything specific putting you in a good mood?", ResponseType.FRIENDLY)
+        );
+        
+        // Wellbeing response with "how about you" (hbu) templates
+        addTemplate("wellbeing_hbu",
+            new ResponseTemplate("That's great to hear! I'm doing well too, thanks for asking!", ResponseType.WARM),
+            new ResponseTemplate("Awesome! I'm doing wonderfully and ready to chat!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Good to know you're doing well! I'm here and ready to help with whatever you need.", ResponseType.FRIENDLY),
+            new ResponseTemplate("I'm doing fantastic too! Thanks for checking in. What would you like to talk about?", ResponseType.INTERESTED)
         );
         
         // Wellbeing negative templates
@@ -179,6 +189,21 @@ public class ResponseGenerator {
             String contextualResponse = generateContextualResponse(intent, userInput, context);
             if (contextualResponse != null) {
                 return contextualResponse;
+            }
+        }
+        
+        // Special handling for "good hbu" (good, how about you) patterns
+        String lowerInput = userInput.toLowerCase().trim();
+        if (intent.equals("wellbeing_response") && 
+            (lowerInput.contains("hbu") || lowerInput.contains("how about you"))) {
+            List<ResponseTemplate> hbuTemplates = responseTemplates.get("wellbeing_hbu");
+            if (hbuTemplates != null && !hbuTemplates.isEmpty()) {
+                ResponseTemplate selected = hbuTemplates.get(random.nextInt(hbuTemplates.size()));
+                String response = selected.getText();
+                if (context != null) {
+                    context.addTurn(userInput, intent, response, intent);
+                }
+                return response;
             }
         }
         

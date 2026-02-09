@@ -1,3 +1,5 @@
+// Created in Version 0.1.0.0
+// Last Updated in Version 0.1.0.3
 import java.util.*;
 import java.util.regex.*;
 
@@ -28,6 +30,7 @@ public class IntentRecognizer {
         // Wellbeing intents
         addIntentPattern("wellbeing_how", "how are you|how r u|hru|how'?s it going|how do you do");
         addIntentPattern("wellbeing_response", "i'?m (good|great|fine|well|okay|ok|alright)");
+        addIntentPattern("wellbeing_response", "(good|great|fine|well|okay|ok|alright).*hbu|how about you");
         addIntentPattern("wellbeing_negative", "(not (so )?good|bad|meh|terrible|awful|sad|depressed)");
         addIntentPattern("wellbeing_positive", "(great|excellent|fantastic|awesome|amazing|wonderful)");
         

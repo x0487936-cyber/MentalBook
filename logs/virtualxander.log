@@ -26,3 +26,11 @@
 [2026-02-09T11:43:31.775276955] [INFO] [Test] Test message
 [2026-02-09T11:43:31.776354536] [WARN] [Test] Warning message
 [2026-02-09T11:43:31.777315703] [ERROR] [Test] Error message
+[2026-02-09T11:52:36.721204284] [ERROR] [TestSource] Test error message
+[2026-02-09T11:52:36.801228782] [INFO] [Test] Test message
+[2026-02-09T11:52:36.804178568] [WARN] [Test] Warning message
+[2026-02-09T11:52:36.812158482] [ERROR] [Test] Error message
+[2026-02-09T11:53:48.887962592] [ERROR] [TestSource] Test error message
+[2026-02-09T11:53:48.905537049] [INFO] [Test] Test message
+[2026-02-09T11:53:48.906326118] [WARN] [Test] Warning message
+[2026-02-09T11:53:48.907148751] [ERROR] [Test] Error message
