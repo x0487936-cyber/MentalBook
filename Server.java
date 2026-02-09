@@ -3,7 +3,7 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class ChatServer {
+class ChatServer {
     private static final int PORT = 12345;
     private static Set<PrintWriter> clientWriters = new HashSet<>();
     private static ExecutorService pool = Executors.newFixedThreadPool(100);

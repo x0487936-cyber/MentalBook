@@ -24,7 +24,6 @@ public class MentalBook
             break;
         }
 
-        String userInput = scanner.nextLine();
         System.out.println("Xander: Thank you for sharing. I will keep this in mind as we continue our conversation. Is there anything else you'd like to share with me?");
         scanner.nextLine();
       }
