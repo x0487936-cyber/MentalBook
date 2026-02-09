@@ -1,3 +1,5 @@
+// Updated in Version 0.1.0.4
+// Created in Version 0.1.0.0
 import java.util.*;
 import java.util.regex.*;
 
@@ -235,11 +237,25 @@ public class GreetingHandler {
         }
         
         if (lowerInput.contains("sorry") || lowerInput.contains("apologize")) {
-            return "No worries at all!";
+            String[] sorryResponses = {
+                "No worries at all!",
+                "It's absolutely okay!",
+                "No problem at all!",
+                "Don't worry about it!",
+                "That's completely fine!",
+                "There's nothing to apologize for!",
+                "It's all good!"
+            };
+            return sorryResponses[random.nextInt(sorryResponses.length)];
         }
         
         if (lowerInput.contains("please")) {
             return "Of course! I'm here to help.";
+        }
+        
+        if (lowerInput.contains("sure") || lowerInput.contains("yep") || 
+            lowerInput.contains("yeah") || lowerInput.contains("yup")) {
+            return "Sounds good to me!";
         }
         
         if (lowerInput.contains("cool") || lowerInput.contains("awesome") || 
@@ -265,7 +281,7 @@ public class GreetingHandler {
         }
         
         if (lowerInput.contains("lol") || lowerInput.contains("haha") || 
-            lowerInput.contains("hehe") || lowerInput.contains("ahaha")) {
+            lowerInput.contains("hehe") || lowerInput.contains("ahaha") || lowerInput.contains("lmao") || lowerInput.contains("rofl")) {
             return "Glad I could make you laugh! 😊";
         }
         

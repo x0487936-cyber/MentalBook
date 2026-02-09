@@ -31,8 +31,9 @@ public class IntentRecognizer {
         addIntentPattern("wellbeing_how", "how are you|how r u|hru|how'?s it going|how do you do");
         addIntentPattern("wellbeing_response", "i'?m (good|great|fine|well|okay|ok|alright)");
         addIntentPattern("wellbeing_response", "(good|great|fine|well|okay|ok|alright).*hbu|how about you");
+        addIntentPattern("wellbeing_response", "a lot|very much|lots|pretty good|pretty well");
         addIntentPattern("wellbeing_negative", "(not (so )?good|bad|meh|terrible|awful|sad|depressed)");
-        addIntentPattern("wellbeing_positive", "(great|excellent|fantastic|awesome|amazing|wonderful)");
+        addIntentPattern("wellbeing_positive", "(great|excellent|fantastic|awesome|amazing|wonderful|a lot)");
         
         // Activities intents
         addIntentPattern("activity", "what are you doing|wyd|what'?s up|what doing|up to");
@@ -46,6 +47,7 @@ public class IntentRecognizer {
         // Mental health intents
         addIntentPattern("mental_health_support", "(stressed|anxious|depressed|sad|lonely|angry|overwhelmed|tired|not feeling good)");
         addIntentPattern("mental_health_support", "(need to talk|feeling (down|bad|low)|having a hard time)");
+        addIntentPattern("mental_health_support", "(dark thoughts|intrusive thoughts|negative thoughts)");
         addIntentPattern("mental_health_positive", "(happy|excited|motivated|inspired|relaxed|calm|peaceful|grateful|confident)");
         
         // Gaming intents

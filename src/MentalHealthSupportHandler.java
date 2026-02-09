@@ -1,4 +1,5 @@
-// Updated in Version 0.1.0.2
+// Updated in Version 0.1.0.4
+// Created in Version 0.1.0.2
 import java.util.*;
 import java.util.regex.*;
 
@@ -33,6 +34,8 @@ public class MentalHealthSupportHandler {
         SELF_ESTEEM("Self-Esteem Support"),
         MOTIVATION("Motivation Support"),
         SLEEP("Sleep Support"),
+        DARK_THOUGHTS("Dark Thoughts Support"),
+        MENTAL_HEALTH("Mental Health Discussion"),
         GENERAL("General Emotional Support");
         
         private final String displayName;
@@ -47,12 +50,12 @@ public class MentalHealthSupportHandler {
     }
     
     /**
-     * Support response class
+     * Support response class - made public for external access
      */
-    private static class SupportResponse {
-        String response;
-        String followUp;
-        int severityLevel; // 1-5, higher = more serious
+    public static class SupportResponse {
+        public String response;
+        public String followUp;
+        public int severityLevel; // 1-5, higher = more serious
         
         public SupportResponse(String response, String followUp, int severityLevel) {
             this.response = response;
@@ -257,6 +260,61 @@ public class MentalHealthSupportHandler {
         );
         supportResponses.put(SupportCategory.SLEEP, sleepResponses);
         
+        // Dark thoughts support
+        List<SupportResponse> darkThoughtsResponses = Arrays.asList(
+            new SupportResponse(
+                "I'm sorry you're experiencing dark thoughts. It's brave of you to acknowledge them.",
+                "Would you like to share more about what's been on your mind?",
+                3
+            ),
+            new SupportResponse(
+                "Dark thoughts can be really distressing. Remember, having them doesn't make you a bad person.",
+                "I'm here to listen without judgment. What's been troubling you?",
+                3
+            ),
+            new SupportResponse(
+                "It's okay to have difficult thoughts. You're not alone in this experience.",
+                "Would it help to talk about what's triggering these thoughts?",
+                3
+            ),
+            new SupportResponse(
+                "I hear you. Dark thoughts can feel overwhelming, but they don't define you.",
+                "Sometimes sharing them can help lighten the burden. What's on your mind?",
+                4
+            )
+        );
+        supportResponses.put(SupportCategory.DARK_THOUGHTS, darkThoughtsResponses);
+
+        // Mental health discussion support
+        List<SupportResponse> mentalHealthResponses = Arrays.asList(
+            new SupportResponse(
+                "Mental health is so important. I'm glad you want to talk about it.",
+                "What aspect of mental health is on your mind? It could be stress, anxiety, or anything else.",
+                1
+            ),
+            new SupportResponse(
+                "Taking care of your mental health is a sign of strength. What would you like to explore?",
+                "I'm here to listen without judgment. What's been on your mind?",
+                1
+            ),
+            new SupportResponse(
+                "Mental wellness is just as important as physical health. How are you feeling today?",
+                "Is there something specific you'd like to discuss about your mental health?",
+                1
+            ),
+            new SupportResponse(
+                "It's great that you're thinking about mental health. What's going on?",
+                "Remember, there's no judgment here. I'm here to support you.",
+                1
+            ),
+            new SupportResponse(
+                "Mental health affects us all in different ways. How can I best support you today?",
+                "Would you like to talk about what's been affecting your emotional well-being?",
+                1
+            )
+        );
+        supportResponses.put(SupportCategory.MENTAL_HEALTH, mentalHealthResponses);
+
         // General emotional support
         List<SupportResponse> generalResponses = Arrays.asList(
             new SupportResponse(
@@ -344,6 +402,18 @@ public class MentalHealthSupportHandler {
         keywordMapping.put("insomnia", SupportCategory.SLEEP);
         keywordMapping.put("tired", SupportCategory.SLEEP);
         keywordMapping.put("exhausted", SupportCategory.SLEEP);
+
+        // Dark thoughts keywords
+        keywordMapping.put("dark thoughts", SupportCategory.DARK_THOUGHTS);
+        keywordMapping.put("intrusive thoughts", SupportCategory.DARK_THOUGHTS);
+        keywordMapping.put("negative thoughts", SupportCategory.DARK_THOUGHTS);
+        
+        // Mental health discussion keywords
+        keywordMapping.put("mental health", SupportCategory.MENTAL_HEALTH);
+        keywordMapping.put("mental wellness", SupportCategory.MENTAL_HEALTH);
+        keywordMapping.put("emotional wellness", SupportCategory.MENTAL_HEALTH);
+        keywordMapping.put("emotional health", SupportCategory.MENTAL_HEALTH);
+        keywordMapping.put("psychological", SupportCategory.MENTAL_HEALTH);
     }
     
     /**
@@ -422,7 +492,7 @@ public class MentalHealthSupportHandler {
         String[] crisisKeywords = {
             "want to die", "hurt myself", "end it all", "kill myself",
             "no reason to live", "better off dead", "self harm",
-            "suicidal", "suicide", "dark thoughts"
+            "suicidal", "suicide"
         };
         
         for (String keyword : crisisKeywords) {
@@ -478,6 +548,10 @@ public class MentalHealthSupportHandler {
                 return "Small steps still move you forward. Be patient with yourself.";
             case SLEEP:
                 return "Rest is essential. Take care of yourself.";
+            case DARK_THOUGHTS:
+                return "Dark thoughts can be managed. You're taking positive steps by acknowledging them.";
+            case MENTAL_HEALTH:
+                return "Taking care of your mental health is always worth it. Every small step counts.";
             default:
                 return "You're doing the best you can, and that's enough.";
         }
@@ -488,7 +562,7 @@ public class MentalHealthSupportHandler {
      */
     public List<String> getCopingSuggestions(SupportCategory category) {
         List<String> suggestions = new ArrayList<>();
-        
+
         switch (category) {
             case STRESS:
                 suggestions.add("Take slow, deep breaths");
@@ -518,12 +592,26 @@ public class MentalHealthSupportHandler {
                 suggestions.add("Volunteer to help others");
                 suggestions.add("Consider professional support");
                 break;
+            case DARK_THOUGHTS:
+                suggestions.add("Practice mindfulness or meditation");
+                suggestions.add("Write down your thoughts to externalize them");
+                suggestions.add("Talk to a trusted friend or therapist");
+                suggestions.add("Engage in grounding activities");
+                suggestions.add("Consider professional mental health support");
+                break;
+            case MENTAL_HEALTH:
+                suggestions.add("Practice self-care activities you enjoy");
+                suggestions.add("Talk to someone you trust about how you feel");
+                suggestions.add("Maintain a regular routine");
+                suggestions.add("Get regular exercise and sleep");
+                suggestions.add("Consider speaking with a mental health professional");
+                break;
             default:
                 suggestions.add("Talk to someone you trust");
                 suggestions.add("Take care of your basic needs");
                 suggestions.add("Be patient with yourself");
         }
-        
+
         return suggestions;
     }
 }

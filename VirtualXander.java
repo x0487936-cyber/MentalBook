@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * VirtualXander - Your Friendly Virtual Companion
  * 
@@ -77,7 +79,7 @@ public class VirtualXander {
         };
         
         System.out.println("╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║              VirtualXander Test Mode                       ║");
+        System.out.println("║              VirtualXander Test Mode                      ║");
         System.out.println("╚═══════════════════════════════════════════════════════════╝");
         System.out.println();
         
@@ -102,10 +104,10 @@ public class VirtualXander {
         System.out.println("╔═══════════════════════════════════════════════════════════╗");
         System.out.println("║              VirtualXander Help                           ║");
         System.out.println("╠═══════════════════════════════════════════════════════════╣");
-        System.out.println("║ Usage: java VirtualXander [OPTIONS] [MESSAGE]              ║");
+        System.out.println("║ Usage: java VirtualXander [OPTIONS] [MESSAGE]             ║");
         System.out.println("╠═══════════════════════════════════════════════════════════╣");
         System.out.println("║ Options:                                                  ║");
-        System.out.println("║   -h, --help       Show this help message                ║");
+        System.out.println("║   -h, --help       Show this help message                 ║");
         System.out.println("║   -t, --test       Run test mode with sample conversation ║");
         System.out.println("║   -a, --api        Process single message and exit        ║");
         System.out.println("╠═══════════════════════════════════════════════════════════╣");
@@ -113,8 +115,8 @@ public class VirtualXander {
         System.out.println("║   exit, bye        End conversation                       ║");
         System.out.println("║   reset            Start new conversation                 ║");
         System.out.println("║   status           Show current status                    ║");
-        System.out.println("║   help             Show help message                     ║");
-        System.out.println("║   history          Show conversation history             ║");
+        System.out.println("║   help             Show help message                      ║");
+        System.out.println("║   history          Show conversation history              ║");
         System.out.println("╚═══════════════════════════════════════════════════════════╝");
     }
 }

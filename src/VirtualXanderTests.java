@@ -400,6 +400,63 @@ public class VirtualXanderTests {
             handler.isCrisisLevel("I want to die"));
     }
     
+    public void testMentalHealthHandlerDarkThoughts() {
+        MentalHealthSupportHandler handler = new MentalHealthSupportHandler();
+        
+        // Test dark thoughts detection
+        test.assertTrue("Should detect dark thoughts category", 
+            handler.detectSupportCategory("I have dark thoughts") == 
+            MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        
+        test.assertTrue("Should detect intrusive thoughts", 
+            handler.detectSupportCategory("I'm having intrusive thoughts") == 
+            MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        
+        test.assertTrue("Should detect negative thoughts", 
+            handler.detectSupportCategory("My mind is filled with negative thoughts") == 
+            MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        
+        // Test that dark thoughts is not crisis level
+        test.assertFalse("Dark thoughts should not be crisis level", 
+            handler.isCrisisLevel("I have dark thoughts"));
+        
+        // Test that dark thoughts requires mental health support
+        test.assertTrue("Dark thoughts should need mental health support", 
+            handler.isMentalHealthSupportNeeded("I have dark thoughts"));
+        
+        // Test that responses are generated
+        MentalHealthSupportHandler.SupportResponse response = 
+            handler.getSupportResponse(MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        test.assertNotNull("Should return a response for dark thoughts", response);
+        test.assertNotNull("Response should have text", response.response);
+        test.assertNotNull("Response should have followUp", response.followUp);
+        
+        // Test encouragement
+        String encouragement = handler.getEncouragement(MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        test.assertNotNull("Should return encouragement for dark thoughts", encouragement);
+        test.assertTrue("Encouragement should mention managing thoughts", 
+            encouragement.toLowerCase().contains("manage") || 
+            encouragement.toLowerCase().contains("acknowledge"));
+        
+        // Test coping suggestions
+        List<String> suggestions = handler.getCopingSuggestions(MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS);
+        test.assertNotNull("Should return coping suggestions", suggestions);
+        test.assertTrue("Should have multiple suggestions", suggestions.size() >= 3);
+    }
+    
+    public void testIntentRecognizerDarkThoughts() {
+        IntentRecognizer recognizer = new IntentRecognizer();
+        
+        test.assertTrue("Should recognize 'dark thoughts' as mental_health_support", 
+            recognizer.recognizeIntent("I have dark thoughts").equals("mental_health_support"));
+        
+        test.assertTrue("Should recognize 'intrusive thoughts' as mental_health_support", 
+            recognizer.recognizeIntent("I'm having intrusive thoughts").equals("mental_health_support"));
+        
+        test.assertTrue("Should recognize 'negative thoughts' as mental_health_support", 
+            recognizer.recognizeIntent("I have negative thoughts").equals("mental_health_support"));
+    }
+    
     public void testHomeworkHandler() {
         HomeworkAcademicHandler handler = new HomeworkAcademicHandler();
         
@@ -481,6 +538,8 @@ public class VirtualXanderTests {
         
         testFramework.runTest("GreetingHandler", () -> tests.testGreetingHandler());
         testFramework.runTest("MentalHealthHandler", () -> tests.testMentalHealthHandler());
+        testFramework.runTest("MentalHealthHandler - Dark Thoughts", () -> tests.testMentalHealthHandlerDarkThoughts());
+        testFramework.runTest("IntentRecognizer - Dark Thoughts", () -> tests.testIntentRecognizerDarkThoughts());
         testFramework.runTest("HomeworkHandler", () -> tests.testHomeworkHandler());
         testFramework.runTest("EntertainmentHandler", () -> tests.testEntertainmentHandler());
         testFramework.runTest("CreativeWritingHandler", () -> tests.testCreativeWritingHandler());

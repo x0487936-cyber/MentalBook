@@ -23,6 +23,9 @@ public class VirtualXanderCore {
     private TopicClusteringSystem topicClusteringSystem;
     private PluginSystem pluginSystem;
     
+    // Phase 3: Mental Health Support Handler
+    private MentalHealthSupportHandler mentalHealthSupportHandler;
+    
     private boolean isRunning;
     private Scanner scanner;
     
@@ -39,6 +42,9 @@ public class VirtualXanderCore {
         this.contextAwareLogic.setEmotionDetector(emotionDetector);
         this.topicClusteringSystem = new TopicClusteringSystem();
         this.pluginSystem = new PluginSystem();
+        
+        // Initialize Phase 3: Mental Health Support Handler
+        this.mentalHealthSupportHandler = new MentalHealthSupportHandler();
         
         this.isRunning = false;
         this.scanner = new Scanner(System.in);
@@ -115,32 +121,79 @@ public class VirtualXanderCore {
             topicClusteringSystem.activateCluster(dominantTopic);
         }
         
-        // Recognize intent
-        String intent = intentRecognizer.recognizeIntent(userInput);
-        
-        // Check for farewell command
-        if (intent.equals("farewell") || userInput.toLowerCase().contains("exit")) {
-            farewell();
-            return;
+        // Phase 3: Check for mental health support needs
+        String response;
+        if (mentalHealthSupportHandler.isMentalHealthSupportNeeded(userInput)) {
+            // Handle mental health support
+            response = handleMentalHealthSupport(userInput);
+        } else {
+            // Normal conversation flow
+            // Recognize intent
+            String intent = intentRecognizer.recognizeIntent(userInput);
+            
+            // Check for farewell command
+            if (intent.equals("farewell") || userInput.toLowerCase().contains("exit")) {
+                farewell();
+                return;
+            }
+            
+            // Process through state machine
+            ConversationStateMachine.ConversationState newState = stateMachine.processIntent(intent);
+            
+            // Generate base response
+            response = responseGenerator.generateResponse(intent, userInput, conversationContext);
+            
+            // Apply context-aware enhancements (pass base response to avoid duplication)
+            response = contextAwareLogic.generateContextualResponse(
+                response, intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
+            );
         }
-        
-        // Process through state machine
-        ConversationStateMachine.ConversationState newState = stateMachine.processIntent(intent);
-        
-        // Generate base response
-        String response = responseGenerator.generateResponse(intent, userInput, conversationContext);
-        
-        // Apply context-aware enhancements (pass base response to avoid duplication)
-        response = contextAwareLogic.generateContextualResponse(
-            response, intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
-        );
         
         // Print response
         System.out.println("Xander: " + response);
         System.out.println();
         
         // Log state and emotion info (for debugging)
-        logStateInfo(intent, newState, emotionResult);
+        logStateInfo("mental_health_support", ConversationStateMachine.ConversationState.GENERAL_CHAT, emotionResult);
+    }
+    
+    /**
+     * Handles mental health support including dark thoughts
+     */
+    private String handleMentalHealthSupport(String userInput) {
+        // First check if it's a crisis level
+        if (mentalHealthSupportHandler.isCrisisLevel(userInput)) {
+            return mentalHealthSupportHandler.getCrisisResponse();
+        }
+        
+        // Detect the specific support category
+        MentalHealthSupportHandler.SupportCategory category = 
+            mentalHealthSupportHandler.detectSupportCategory(userInput);
+        
+        // Get appropriate response
+        MentalHealthSupportHandler.SupportResponse supportResponse = 
+            mentalHealthSupportHandler.getSupportResponse(category);
+        
+        StringBuilder response = new StringBuilder();
+        response.append(supportResponse.response);
+        
+        // Add coping suggestions for dark thoughts specifically
+        if (category == MentalHealthSupportHandler.SupportCategory.DARK_THOUGHTS) {
+            List<String> suggestions = mentalHealthSupportHandler.getCopingSuggestions(category);
+            if (suggestions != null && !suggestions.isEmpty()) {
+                response.append("\n\nSome suggestions that might help:\n");
+                for (int i = 0; i < Math.min(3, suggestions.size()); i++) {
+                    response.append("• ").append(suggestions.get(i)).append("\n");
+                }
+            }
+            // Add encouragement
+            response.append("\n").append(mentalHealthSupportHandler.getEncouragement(category));
+        }
+        
+        // Add follow-up question
+        response.append("\n").append(supportResponse.followUp);
+        
+        return response.toString();
     }
     
     private boolean handleSpecialCommands(String input) {
@@ -357,6 +410,11 @@ public class VirtualXanderCore {
             return "Goodbye! It was great chatting with you.";
         }
         
+        // Phase 3: Check for mental health support needs
+        if (mentalHealthSupportHandler.isMentalHealthSupportNeeded(userInput)) {
+            return handleMentalHealthSupport(userInput);
+        }
+        
         // Phase 2: Detect emotions
         EmotionDetector.EmotionResult emotionResult = emotionDetector.detectEmotion(userInput);
         
@@ -439,6 +497,13 @@ public class VirtualXanderCore {
      */
     public ResponseGenerator getResponseGenerator() {
         return responseGenerator;
+    }
+    
+    /**
+     * Gets the mental health support handler
+     */
+    public MentalHealthSupportHandler getMentalHealthSupportHandler() {
+        return mentalHealthSupportHandler;
     }
     
     /**

@@ -142,7 +142,7 @@ public class ContextAwareResponseLogic {
         }
         
         // Add contextual suffix (follow-up question)
-        String contextualSuffix = getContextualSuffixOnly(emotion, context);
+        String contextualSuffix = getContextualSuffixOnly(baseResponse, emotion, context);
         if (!contextualSuffix.isEmpty() && !enhancedResponse.toString().contains(contextualSuffix.trim())) {
             enhancedResponse.append(contextualSuffix);
         }
@@ -224,8 +224,13 @@ public class ContextAwareResponseLogic {
     /**
      * Gets contextual suffix only (follow-up question)
      */
-    private String getContextualSuffixOnly(EmotionDetector.Emotion emotion, ConversationContext context) {
+    private String getContextualSuffixOnly(String baseResponse, EmotionDetector.Emotion emotion, ConversationContext context) {
         StringBuilder suffix = new StringBuilder();
+        
+        // Don't add follow-up if base response already contains a question
+        if (baseResponse != null && baseResponse.contains("?")) {
+            return "";
+        }
         
         // Add emotion-based suffix
         if (emotion != null) {
