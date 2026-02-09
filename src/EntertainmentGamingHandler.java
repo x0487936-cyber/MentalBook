@@ -146,6 +146,26 @@ public class EntertainmentGamingHandler {
                 "Counter-Strike requires so much skill! What's your main weapon?",
                 "Do you prefer CT or T side?",
                 Arrays.asList("AK-47", "M4A4", "AWP", "Deagle")
+            ),
+            new GamingResponse(
+                "CS:GO is a timeless classic! How's your aim been lately?",
+                "Do you play matchmaking or prefer faceit?",
+                Arrays.asList("Headshot practice", "Smoke spreads", "Economy management")
+            ),
+            new GamingResponse(
+                "Counter-Strike is all about game sense and teamwork!",
+                "Are you playing with friends or solo queue?",
+                Arrays.asList("Clutch moments", "Eco rounds", "Buy strategies")
+            ),
+            new GamingResponse(
+                "I love hearing about Counter-Strike! How long have you been playing?",
+                "What's your best rank ever achieved?",
+                Arrays.asList("Wingman", "Danger Zone", "Premier mode")
+            ),
+            new GamingResponse(
+                "Nothing beats a good CS:GO session! What's your favorite crosshair setup?",
+                "Do you use any specific aim training routines?",
+                Arrays.asList("Deathmatch", "Aim botz", "Reflex training")
             )
         );
         gamingResponses.put(GamingCategory.FPS, csResponses);
@@ -260,6 +280,7 @@ public class EntertainmentGamingHandler {
         gamingKeywords.put("cs2", GamingCategory.FPS);
         gamingKeywords.put("counter strike", GamingCategory.FPS);
         gamingKeywords.put("cs:go", GamingCategory.FPS);
+        gamingKeywords.put("csgo", GamingCategory.FPS);
         gamingKeywords.put("valorant", GamingCategory.FPS);
         gamingKeywords.put("call of duty", GamingCategory.FPS);
         gamingKeywords.put("apex", GamingCategory.FPS);
@@ -338,7 +359,7 @@ public class EntertainmentGamingHandler {
         
         String[] gamingTriggers = {
             "game", "gaming", "play", "player", "gamer", "rank",
-            "fortnite", "cs2", "valorant", "minecraft", "apex"
+            "fortnite", "cs2", "csgo", "valorant", "minecraft", "apex"
         };
         
         for (String trigger : gamingTriggers) {

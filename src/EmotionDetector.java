@@ -45,6 +45,7 @@ public class EmotionDetector {
         BORED("bored", "Feeling uninterested"),
         CONFUSED("confused", "Feeling uncertain"),
         FRUSTRATED("frustrated", "Feeling stuck or annoyed"),
+        SYMPATHY("sympathy", "Feeling compassion and understanding for others"),
         
         NEUTRAL("neutral", "Feeling balanced"),
         UNKNOWN("unknown", "Unable to determine emotion");
@@ -202,6 +203,11 @@ public class EmotionDetector {
         // Frustrated patterns
         addEmotionPattern(Emotion.FRUSTRATED, "\\b(frustrated|frustrating|stuck|can't)\\b");
         addEmotionPattern(Emotion.FRUSTRATED, "\\b(not working|won't|doesn't|why won't)\\b");
+        
+        // Sympathy patterns
+        addEmotionPattern(Emotion.SYMPATHY, "\\b(sorry|feel sorry|feel bad for|pity|poor thing)\\b");
+        addEmotionPattern(Emotion.SYMPATHY, "\\b(that's sad|that's terrible|that's awful|how sad)\\b");
+        addEmotionPattern(Emotion.SYMPATHY, "\\b(i feel for|i sympathize|my heart goes out|thinking of)\\b");
     }
     
     private void initializeKeywordMappings() {
@@ -224,6 +230,9 @@ public class EmotionDetector {
         keywordEmotions.put("creative", Emotion.CREATIVE);
         keywordEmotions.put("confused", Emotion.CONFUSED);
         keywordEmotions.put("frustrated", Emotion.FRUSTRATED);
+        keywordEmotions.put("sympathy", Emotion.SYMPATHY);
+        keywordEmotions.put("sorry", Emotion.SYMPATHY);
+        keywordEmotions.put("pity", Emotion.SYMPATHY);
     }
     
     private void initializeEmotionResponses() {
@@ -290,6 +299,13 @@ public class EmotionDetector {
             "I hear you're frustrated. What's making you feel this way?",
             "It's okay to feel angry. Sometimes it helps to talk about it.",
             "I understand you're upset. I'm here to listen."
+        ));
+        
+        emotionResponses.put(Emotion.SYMPATHY, Arrays.asList(
+            "I can see you really care about what happened. That's very compassionate of you.",
+            "It's kind of you to feel that way. Shows you have a big heart.",
+            "Having sympathy for others is a beautiful quality. It's okay to feel affected by others' struggles.",
+            "Your empathy towards others is really meaningful. It's okay to share those feelings."
         ));
     }
     
