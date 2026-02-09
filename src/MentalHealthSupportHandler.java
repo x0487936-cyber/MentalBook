@@ -1,3 +1,4 @@
+// Updated in Version 0.1.0.2
 import java.util.*;
 import java.util.regex.*;
 
@@ -393,7 +394,7 @@ public class MentalHealthSupportHandler {
         // High-priority keywords
         String[] priorityKeywords = {
             "want to die", "hurt myself", "end it all", "kill myself",
-            "no reason to live", "better off dead", "self harm"
+            "no reason to live", "better off dead", "self harm", "dark thoughts"
         };
         
         for (String keyword : priorityKeywords) {
@@ -421,7 +422,7 @@ public class MentalHealthSupportHandler {
         String[] crisisKeywords = {
             "want to die", "hurt myself", "end it all", "kill myself",
             "no reason to live", "better off dead", "self harm",
-            "suicidal", "suicide"
+            "suicidal", "suicide", "dark thoughts"
         };
         
         for (String keyword : crisisKeywords) {

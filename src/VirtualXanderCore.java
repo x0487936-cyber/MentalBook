@@ -127,16 +127,13 @@ public class VirtualXanderCore {
         // Process through state machine
         ConversationStateMachine.ConversationState newState = stateMachine.processIntent(intent);
         
-        // Generate response with Phase 2 enhancements
+        // Generate base response
         String response = responseGenerator.generateResponse(intent, userInput, conversationContext);
         
-        // Apply context-aware enhancements
+        // Apply context-aware enhancements (pass base response to avoid duplication)
         response = contextAwareLogic.generateContextualResponse(
-            intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
+            response, intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
         );
-        
-        // Add contextual follow-up for certain states
-        response = addContextualFollowUp(intent, response, conversationContext);
         
         // Print response
         System.out.println("Xander: " + response);
@@ -332,30 +329,6 @@ public class VirtualXanderCore {
         System.out.println("╚═══════════════════════════════════════════════════════════╝\n");
     }
     
-    private String addContextualFollowUp(String intent, String response, ConversationContext context) {
-        // Add follow-up questions for certain intents to keep conversation flowing
-        switch (intent) {
-            case "greeting":
-                if (!context.getCurrentTopic().equals("greeting")) {
-                    return response + " Is there anything specific you'd like to talk about?";
-                }
-                break;
-                
-            case "homework_help":
-                return response + " Just tell me what subject and topic you're working on!";
-                
-            case "mental_health_support":
-                return response + " Remember, I'm here to listen without judgment.";
-                
-            case "creative_writing":
-                return response + " I'd love to hear more about your creative ideas!";
-                
-            case "gaming":
-                return response + " What games have you been enjoying lately?";
-        }
-        return response;
-    }
-    
     private void logStateInfo(String intent, ConversationStateMachine.ConversationState state, 
                               EmotionDetector.EmotionResult emotion) {
         // Uncomment for debugging
@@ -399,12 +372,12 @@ public class VirtualXanderCore {
         // Process through state machine
         ConversationStateMachine.ConversationState state = stateMachine.processIntent(intent);
         
-        // Generate response with Phase 2 enhancements
+        // Generate base response
         String response = responseGenerator.generateResponse(intent, userInput, conversationContext);
         
-        // Apply context-aware enhancements
+        // Apply context-aware enhancements (pass base response to avoid duplication)
         response = contextAwareLogic.generateContextualResponse(
-            intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
+            response, intent, userInput, emotionResult.getPrimaryEmotion(), conversationContext
         );
         
         return response;
@@ -485,4 +458,3 @@ public class VirtualXanderCore {
         }
     }
 }
-

@@ -124,18 +124,42 @@ public class ContextAwareResponseLogic {
     
     /**
      * Generates a contextually enhanced response
+     * ENHANCEMENT MODE: Takes a base response and adds contextual elements without duplicating
      */
+    public String generateContextualResponse(String baseResponse, String intent, String userInput, 
+                                           EmotionDetector.Emotion emotion, 
+                                           ConversationContext context) {
+        if (baseResponse == null || baseResponse.isEmpty()) {
+            return generateDefaultContextualResponse(intent, userInput, context);
+        }
+        
+        StringBuilder enhancedResponse = new StringBuilder(baseResponse);
+        
+        // Add contextual prefix ONLY if emotion is strongly detected and context is new
+        String contextualPrefix = getContextualPrefixOnly(emotion, context);
+        if (!contextualPrefix.isEmpty() && !baseResponse.toLowerCase().contains(contextualPrefix.toLowerCase().trim())) {
+            enhancedResponse.insert(0, contextualPrefix);
+        }
+        
+        // Add contextual suffix (follow-up question)
+        String contextualSuffix = getContextualSuffixOnly(emotion, context);
+        if (!contextualSuffix.isEmpty() && !enhancedResponse.toString().contains(contextualSuffix.trim())) {
+            enhancedResponse.append(contextualSuffix);
+        }
+        
+        return enhancedResponse.toString().trim();
+    }
+    
+    /**
+     * Generates a contextually enhanced response (legacy mode - generates full response)
+     * @deprecated Use generateContextualResponse(String baseResponse, ...) instead
+     */
+    @Deprecated
     public String generateContextualResponse(String intent, String userInput, 
                                            EmotionDetector.Emotion emotion, 
                                            ConversationContext context) {
-        StringBuilder enhancedResponse = new StringBuilder();
-        
-        // Add contextual awareness
-        enhancedResponse.append(getContextualPrefix(emotion, context));
-        enhancedResponse.append(getContextualMain(intent, userInput, context));
-        enhancedContextualSuffix(enhancedResponse, emotion, context);
-        
-        return enhancedResponse.toString().trim();
+        String baseResponse = generateDefaultContextualResponse(intent, userInput, context);
+        return generateContextualResponse(baseResponse, intent, userInput, emotion, context);
     }
     
     /**
@@ -167,7 +191,74 @@ public class ContextAwareResponseLogic {
             return "Continuing from our conversation, ";
         }
         
+        return "I understand. ";
+    }
+    
+    /**
+     * Gets contextual prefix only for enhancement (shorter, less intrusive)
+     */
+    private String getContextualPrefixOnly(EmotionDetector.Emotion emotion, ConversationContext context) {
+        if (emotion != null) {
+            switch (emotion) {
+                case STRESSED:
+                case ANXIOUS:
+                case OVERWHELMED:
+                    return "I hear you. ";
+                case SAD:
+                case LONELY:
+                    return "I'm here for you. ";
+                case ANGRY:
+                    return "I understand. ";
+                case TIRED:
+                    return "Take it easy. ";
+                case EXCITED:
+                case HAPPY:
+                    return "That's great! ";
+                default:
+                    return "";
+            }
+        }
         return "";
+    }
+    
+    /**
+     * Gets contextual suffix only (follow-up question)
+     */
+    private String getContextualSuffixOnly(EmotionDetector.Emotion emotion, ConversationContext context) {
+        StringBuilder suffix = new StringBuilder();
+        
+        // Add emotion-based suffix
+        if (emotion != null) {
+            switch (emotion) {
+                case STRESSED:
+                case ANXIOUS:
+                case OVERWHELMED:
+                    suffix.append(" Remember to take deep breaths.");
+                    break;
+                case SAD:
+                case LONELY:
+                    suffix.append(" You're not alone in this.");
+                    break;
+                case TIRED:
+                    suffix.append(" Make sure to get some rest.");
+                    break;
+                case CONFUSED:
+                    suffix.append(" It's okay to ask for clarification.");
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        // Add follow-up based on conversation stage (every 3 turns)
+        if (context != null && context.getTurnCount() > 0) {
+            int turnCount = context.getTurnCount();
+            if (turnCount % 3 == 0 && !suffix.toString().contains("?")) {
+                suffix.append(" Is there anything else you'd like to talk about?");
+            }
+        }
+        
+        return suffix.toString();
     }
     
     /**
@@ -324,7 +415,7 @@ public class ContextAwareResponseLogic {
             case "farewell":
                 return "Goodbye! It was great chatting! ";
             default:
-                return "";
+                return "I'm here to help. Tell me more about what you'd like to talk about. ";
         }
     }
     

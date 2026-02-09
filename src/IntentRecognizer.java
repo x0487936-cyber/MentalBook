@@ -257,4 +257,3 @@ public class IntentRecognizer {
         return Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find();
     }
 }
-

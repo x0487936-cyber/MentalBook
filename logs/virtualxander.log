@@ -22,3 +22,7 @@
 [2026-02-09T08:38:36.824304087] [INFO] [Test] Test message
 [2026-02-09T08:38:36.829362649] [WARN] [Test] Warning message
 [2026-02-09T08:38:36.829851284] [ERROR] [Test] Error message
+[2026-02-09T11:43:31.707620288] [ERROR] [TestSource] Test error message
+[2026-02-09T11:43:31.775276955] [INFO] [Test] Test message
+[2026-02-09T11:43:31.776354536] [WARN] [Test] Warning message
+[2026-02-09T11:43:31.777315703] [ERROR] [Test] Error message
