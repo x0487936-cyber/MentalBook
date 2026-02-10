@@ -95,6 +95,18 @@ public class ContextAwareResponseLogic {
             Arrays.asList("no", "nope", "disagree", "not"),
             "I understand. Different perspectives are always valuable!"
         );
+        
+        // Continue conversation patterns (user explicitly wants to continue)
+        addContextPattern(
+            Arrays.asList("want to talk", "talk about it", "tell me more", "i want to"),
+            "I'm here to listen. Please share what's on your mind."
+        );
+        
+        // Breakup/relationship continuation patterns
+        addContextPattern(
+            Arrays.asList("my ex", "broke up", "breakup", "heartbroken"),
+            "I'm really sorry you're going through this. Would you like to share more about what happened?"
+        );
     }
     
     private void initializeTopicHandlers() {

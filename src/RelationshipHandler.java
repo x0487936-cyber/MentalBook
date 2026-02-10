@@ -49,11 +49,20 @@ public class RelationshipHandler {
         public String response;
         public String followUp;
         public int category; // 1 = positive, 2 = challenging, 3 = neutral
+        public EmotionDetector.Emotion emotion; // Associated emotion for this response
         
         public RelationshipResponse(String response, String followUp, int category) {
             this.response = response;
             this.followUp = followUp;
             this.category = category;
+            this.emotion = EmotionDetector.Emotion.CARING;
+        }
+        
+        public RelationshipResponse(String response, String followUp, int category, EmotionDetector.Emotion emotion) {
+            this.response = response;
+            this.followUp = followUp;
+            this.category = category;
+            this.emotion = emotion;
         }
     }
     
@@ -63,22 +72,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Dating can be exciting! What's on your mind about it?",
                 "Are you seeing someone special or just thinking about dating in general?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Romantic relationships are a big part of life! What's your experience been like?",
                 "Do you have any dating stories or questions you'd like to share?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "I love hearing about people's dating experiences! What's going on?",
                 "Is there something specific you'd like to talk about?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Dating is full of ups and downs! How has your dating life been lately?",
                 "Any exciting news or challenges you're facing?",
-                3
+                3, EmotionDetector.Emotion.SOOTHING
             )
         );
         relationshipResponses.put(RelationshipCategory.DATING, datingResponses);
@@ -88,62 +97,62 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "I'm really sorry you're going through a breakup. Those can be so painful.",
                 "Would you like to talk about what happened? Sometimes it helps to share.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Breakups are never easy. It's okay to feel hurt and sad right now.",
                 "Take all the time you need to heal. What's on your mind?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Heartbreak is one of the hardest experiences. Remember, this pain won't last forever.",
                 "Would it help to talk about your feelings?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Going through a breakup is tough. Be gentle with yourself during this time.",
                 "Is there anything specific you want to get off your chest?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "I know it doesn't feel like it right now, but you'll get through this.",
                 "Sometimes the hardest goodbyes lead to the best new beginnings.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "When someone leaves, it can feel like your world is falling apart. But you will heal.",
                 "Remember, their choice to leave says more about them than about you.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "I'm so sorry they're gone. The pain of losing someone you loved is incredibly hard.",
                 "It's okay to grieve and cry. Your feelings are completely valid.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Being left behind hurts so much. You didn't deserve to be treated that way.",
                 "You deserve someone who chooses you every single day.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Dealing with a broken heart is one of life's hardest lessons. I'm here for you.",
                 "Would you like to share what happened? Sometimes talking helps ease the pain.",
-                2
+                2, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "I can't imagine how much pain you're in right now. Time does heal all wounds.",
                 "Lean on your friends and family during this difficult time.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Thinking about an ex can bring up so many emotions. It's completely normal.",
                 "What memories or thoughts are on your mind?",
-                2
+                2, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "The silence after someone leaves can be so loud. You don't have to face this alone.",
                 "I'm here to listen whenever you need to talk.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             )
         );
         relationshipResponses.put(RelationshipCategory.BREAKUP, breakupResponses);
@@ -153,22 +162,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Marriage is such an important journey! What aspect of married life is on your mind?",
                 "Are you newlywed, celebrating an anniversary, or navigating married life?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Relationships take work, especially in marriage. How are things going for you?",
                 "Is there something specific you'd like to discuss about your marriage?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Marriage can bring so much joy and also challenges. What's been your experience?",
                 "Would you like to share what's on your mind?",
-                3
+                3, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Congratulations on your marriage! That's wonderful! What are you looking forward to?",
                 "Any wedding stories or marriage advice you'd like to share?",
-                1
+                1, EmotionDetector.Emotion.CARING
             )
         );
         relationshipResponses.put(RelationshipCategory.MARRIAGE, marriageResponses);
@@ -178,22 +187,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Family relationships can be so complex. What's going on with your family?",
                 "Would you like to talk about a specific family situation?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Family is such an important part of our lives. How is your relationship with your family?",
                 "Is there something on your mind about family matters?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "I understand family situations can be challenging. I'm here to listen.",
                 "Would it help to talk about what's bothering you?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Family bonds are special! What do you enjoy most about your family?",
                 "Are there any family moments you're looking forward to?",
-                1
+                1, EmotionDetector.Emotion.CARING
             )
         );
         relationshipResponses.put(RelationshipCategory.FAMILY, familyResponses);
@@ -203,22 +212,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Friendships are so important! How are your friends doing?",
                 "Is there something about your friendships you'd like to talk about?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Good friends are like family! What's going on with your friend circle?",
                 "Are you looking to make new friends or strengthen existing bonds?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "I love hearing about friendships! Any fun stories or adventures to share?",
                 "What's been happening with your friends lately?",
-                1
+                1, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Sometimes friendships have their challenges. What's on your mind?",
                 "Is there something specific about a friendship you'd like to discuss?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             )
         );
         relationshipResponses.put(RelationshipCategory.FRIENDSHIP, friendshipResponses);
@@ -228,22 +237,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Conflict in relationships is tough. Would you like to talk about what's happening?",
                 "Sometimes sharing what's bothering us can help clarify our feelings.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Disagreements happen in every relationship. What's causing the conflict?",
                 "Would you like to talk through the situation?",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "I hear you. Relationship conflicts can be really stressful.",
                 "Remember, it's possible to work through most disagreements with communication.",
-                2
+                2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Conflict can be an opportunity for growth. What's the situation?",
                 "Sometimes taking a step back helps gain perspective.",
-                2
+                2, EmotionDetector.Emotion.CARING
             )
         );
         relationshipResponses.put(RelationshipCategory.CONFLICT, conflictResponses);
@@ -253,22 +262,22 @@ public class RelationshipHandler {
             new RelationshipResponse(
                 "Relationships are such an important part of life! What would you like to discuss?",
                 "I'm here to listen without any judgment.",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "Human connections are what make life meaningful. What's on your mind?",
                 "Is there something specific about relationships you're thinking about?",
-                3
+                3, EmotionDetector.Emotion.CARING
             ),
             new RelationshipResponse(
                 "I'd love to hear about your relationship experiences! What's going on?",
                 "Feel free to share anything you'd like to talk about.",
-                3
+                3, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Relationships can be complicated sometimes. What would you like to explore?",
                 "I'm here to support you in whatever you're going through.",
-                3
+                3, EmotionDetector.Emotion.CARING
             )
         );
         relationshipResponses.put(RelationshipCategory.GENERAL, generalResponses);
@@ -285,6 +294,7 @@ public class RelationshipHandler {
         keywordMapping.put("crush", RelationshipCategory.DATING);
         keywordMapping.put("dating someone", RelationshipCategory.DATING);
         keywordMapping.put("in a relationship", RelationshipCategory.DATING);
+        keywordMapping.put("my relationship", RelationshipCategory.DATING);
         keywordMapping.put("girlfriend", RelationshipCategory.DATING);
         keywordMapping.put("boyfriend", RelationshipCategory.DATING);
         keywordMapping.put("partner", RelationshipCategory.DATING);

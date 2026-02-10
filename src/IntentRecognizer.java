@@ -29,9 +29,12 @@ public class IntentRecognizer {
         
         // Wellbeing intents
         addIntentPattern("wellbeing_how", "how are you|how r u|hru|how'?s it going|how do you do");
+        addIntentPattern("wellbeing_response", "i am (good|great|fine|well|okay|ok|alright)");
         addIntentPattern("wellbeing_response", "i'?m (good|great|fine|well|okay|ok|alright)");
         addIntentPattern("wellbeing_response", "(good|great|fine|well|okay|ok|alright).*hbu|how about you");
         addIntentPattern("wellbeing_response", "a lot|very much|lots|pretty good|pretty well");
+        addIntentPattern("wellbeing_response", "\\b(good|great|fine|well|okay|ok|alright|fine\\.|doing well)\\b");
+        addIntentPattern("wellbeing_day", "how was your day|how was your day\\?|how did your day go|how has your day been");
         addIntentPattern("wellbeing_negative", "(not (so )?good|bad|meh|terrible|awful|sad|depressed)");
         addIntentPattern("wellbeing_positive", "(great|excellent|fantastic|awesome|amazing|wonderful|a lot)");
         
@@ -83,8 +86,20 @@ public class IntentRecognizer {
         // Creative/AI project intents
         addIntentPattern("creative_project", "(building (a )?(robot|ai|app|website|game)|creating|designing|developing)");
         
+        // Relationship intents
+        addIntentPattern("relationship", "(my relationship|relationship|relationships|dating|boyfriend|girlfriend|husband|wife|married)");
+        addIntentPattern("relationship", "\\b(relationship|dating|married)\\b");
+        
+        // Breakup intents (higher priority)
+        addIntentPattern("breakup", "(my ex|ex boyfriend|ex girlfriend|broke up|break up|breakup|heartbroken|heartbreak|dumped|separated)");
+        addIntentPattern("breakup", "\\b(broke up|breakup|break up|heartbroken|dumped)\\b");
+        
         // Philosophical intents
         addIntentPattern("philosophical", "(purpose|meaning of life|life|mind|consciousness|existence)");
+        
+        // Confusion/Clarification intent for single words like "what", "huh"
+        addIntentPattern("confusion", "^(what|huh|what\\?|why\\?|who\\?|where\\?|when\\?|how\\?)$");
+        addIntentPattern("confusion", "\\b(what|huh)\\b");
         
         // Initialize confidence scores
         for (String intent : intentPatterns.keySet()) {

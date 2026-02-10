@@ -46,6 +46,8 @@ public class EmotionDetector {
         CONFUSED("confused", "Feeling uncertain"),
         FRUSTRATED("frustrated", "Feeling stuck or annoyed"),
         SYMPATHY("sympathy", "Feeling compassion and understanding for others"),
+        SOOTHING("soothing", "Feeling calm and comforting"),
+        CARING("caring", "Feeling warmth and concern for others"),
         
         NEUTRAL("neutral", "Feeling balanced"),
         UNKNOWN("unknown", "Unable to determine emotion");
@@ -208,6 +210,16 @@ public class EmotionDetector {
         addEmotionPattern(Emotion.SYMPATHY, "\\b(sorry|feel sorry|feel bad for|pity|poor thing)\\b");
         addEmotionPattern(Emotion.SYMPATHY, "\\b(that's sad|that's terrible|that's awful|how sad)\\b");
         addEmotionPattern(Emotion.SYMPATHY, "\\b(i feel for|i sympathize|my heart goes out|thinking of)\\b");
+        
+        // Soothing patterns
+        addEmotionPattern(Emotion.SOOTHING, "\\b(calm|relax|peaceful|serene|tranquil)\\b");
+        addEmotionPattern(Emotion.SOOTHING, "\\b(it's okay|it's alright|everything will be fine)\\b");
+        addEmotionPattern(Emotion.SOOTHING, "\\b(take a deep breath|breathe|settle down)\\b");
+        
+        // Caring patterns
+        addEmotionPattern(Emotion.CARING, "\\b(care|caring|compassion|kindness|gentle)\\b");
+        addEmotionPattern(Emotion.CARING, "\\b(be there for|support|helping|hug)\\b");
+        addEmotionPattern(Emotion.CARING, "\\b(i'm here|here for you|got your back)\\b");
     }
     
     private void initializeKeywordMappings() {
@@ -233,6 +245,12 @@ public class EmotionDetector {
         keywordEmotions.put("sympathy", Emotion.SYMPATHY);
         keywordEmotions.put("sorry", Emotion.SYMPATHY);
         keywordEmotions.put("pity", Emotion.SYMPATHY);
+        keywordEmotions.put("soothing", Emotion.SOOTHING);
+        keywordEmotions.put("calm", Emotion.SOOTHING);
+        keywordEmotions.put("relax", Emotion.SOOTHING);
+        keywordEmotions.put("caring", Emotion.CARING);
+        keywordEmotions.put("care", Emotion.CARING);
+        keywordEmotions.put("kind", Emotion.CARING);
     }
     
     private void initializeEmotionResponses() {
@@ -306,6 +324,22 @@ public class EmotionDetector {
             "It's kind of you to feel that way. Shows you have a big heart.",
             "Having sympathy for others is a beautiful quality. It's okay to feel affected by others' struggles.",
             "Your empathy towards others is really meaningful. It's okay to share those feelings."
+        ));
+        
+        emotionResponses.put(Emotion.SOOTHING, Arrays.asList(
+            "Take a deep breath. Everything will be okay.",
+            "I'm here with you. Just breathe.",
+            "You don't have to face this alone. I'm right here.",
+            "Let yourself feel whatever comes up. I'll stay with you.",
+            "Close your eyes for a moment. I'm here, and everything is going to be alright."
+        ));
+        
+        emotionResponses.put(Emotion.CARING, Arrays.asList(
+            "I really care about what you're going through.",
+            "You mean a lot to me, and I'm here for you no matter what.",
+            "Your feelings matter to me, and I want to support you.",
+            "I'm here, and I've got you. You're not alone in this.",
+            "You deserve all the kindness in the world. I'm sending you a virtual hug."
         ));
     }
     
