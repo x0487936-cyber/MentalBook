@@ -91,14 +91,14 @@ public class IntentRecognizer {
         addIntentPattern("relationship", "\\b(relationship|dating|married)\\b");
         
         // Breakup intents (higher priority)
-        addIntentPattern("breakup", "(my ex|ex boyfriend|ex girlfriend|broke up|break up|breakup|heartbroken|heartbreak|dumped|separated)");
+        addIntentPattern("breakup", "(my ex|ex boyfriend|ex girlfriend|broke up|break up|breakup|heartbroken|heartbreak|dumped|separated|I'm heartbroken|I broke up)");
         addIntentPattern("breakup", "\\b(broke up|breakup|break up|heartbroken|dumped)\\b");
         
         // Philosophical intents
         addIntentPattern("philosophical", "(purpose|meaning of life|life|mind|consciousness|existence)");
         
         // Confusion/Clarification intent for single words like "what", "huh"
-        addIntentPattern("confusion", "^(what|huh|what\\?|why\\?|who\\?|where\\?|when\\?|how\\?)$");
+        addIntentPattern("confusion", "^(what|huh|what\\?|why\\?|who\\?|where\\?|when\\?|how\\?|uh\\|excuse me\\?)$");
         addIntentPattern("confusion", "\\b(what|huh)\\b");
         
         // Initialize confidence scores
