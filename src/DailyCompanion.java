@@ -148,7 +148,7 @@ public class DailyCompanion {
                 "What's one thing you want to accomplish this week?",
                 "Any plans you're looking forward to?",
                 "What's something you'd like to learn or try?",
-                "How can I help you with your goals today?"
+                "How can I help you suceed in completing your goals today?"
             ),
             Arrays.asList(
                 "That sounds like a great goal to work towards!",

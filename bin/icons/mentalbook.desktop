@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=0.2.0.2
+Type=Application
+Name=VirtualXander
+Comment=Your Companion App - Mental health support and conversation
+Exec=/usr/bin/mentalbook
+Icon=mentalbook
+Terminal=false
+Categories=Utility;Education;Health;
+Keywords=mental;health;companion;chat;support;
+StartupNotify=true
+StartupWMClass=MentalBook
+
