@@ -1,4 +1,5 @@
 import java.util.*;
+import javax.swing.JFrame;
 
 /**
  * VirtualXanderCore - Main orchestrator for the VirtualXander chatbot
@@ -27,6 +28,40 @@ public class VirtualXanderCore {
     private ContextEngine contextEngine;
     private ContextEngine.ImplicitTopicTracker topicTracker;
     private ContextEngine.PersistenceManager persistenceManager;
+    
+    // Added in Version 0.2.0.0 - New Engine Imports
+    private InsightEngine insightEngine;
+    private GrowthPartner growthPartner;
+    private DailyCompanion dailyCompanion;
+    private SocialDynamics socialDynamics;
+    private DesktopEnhancements desktopEnhancements;
+    private UserProfileDashboard userProfileDashboard;
+    private AdaptiveLearner adaptiveLearner;
+    private RelationshipMemory relationshipMemory;
+    private PersonalMemory personalMemory;
+
+    // Added in Version 0.2.0.1
+    private WisdomEngine wisdomEngine;
+    private ComfortEngine comfortEngine;
+    private Configuration configuration;
+    private CreativeWritingHandler creativeWritingHandler;
+    private DynamicResponseGenerator dynamicResponseGenerator;
+    private EntertainmentGamingHandler entertainmentGamingHandler;
+    private ErrorHandler errorHandler;
+    private FlowManager flowManager;
+    private GreetingHandler greetingHandler;
+    private HomeworkAcademicHandler homeworkAcademicHandler;
+    private HumanFeatures humanFeatures;
+    private HumorEngine humorEngine;
+    private KnowledgeNetwork knowledgeNetwork;
+    private NaturalProcessor naturalProcessor;
+    private PersonalityEngine personalityEngine;
+    private Perspectives perspectives;
+    private RelationshipHandler relationshipHandler;
+    private ResponseRouter responseRouter;
+    private StoryEngine storyEngine;
+    private TestFramework testFramework;
+    // private WellnessEngine wellnessEngine; // WellnessEngine class doesn't exist
 
     // Added in Version 0.1.0.0
     private boolean isRunning;
@@ -53,6 +88,39 @@ public class VirtualXanderCore {
         this.contextEngine = new ContextEngine();
         this.topicTracker = new ContextEngine.ImplicitTopicTracker();
         this.persistenceManager = new ContextEngine.PersistenceManager();
+        
+        // Added in Version 0.2.0.1 - Initialize new engines
+        this.insightEngine = new InsightEngine();
+        this.growthPartner = new GrowthPartner();
+        this.dailyCompanion = new DailyCompanion();
+        this.socialDynamics = new SocialDynamics();
+        this.desktopEnhancements = new DesktopEnhancements(null); // Pass null for CLI mode
+        this.userProfileDashboard = new UserProfileDashboard();
+        this.adaptiveLearner = new AdaptiveLearner();
+        this.relationshipMemory = new RelationshipMemory();
+        this.personalMemory = new PersonalMemory();
+        this.wisdomEngine = new WisdomEngine();
+        this.comfortEngine = new ComfortEngine();
+        this.configuration = Configuration.getInstance();
+        this.creativeWritingHandler = new CreativeWritingHandler();
+        this.dynamicResponseGenerator = new DynamicResponseGenerator();
+        this.entertainmentGamingHandler = new EntertainmentGamingHandler();
+        this.errorHandler = ErrorHandler.getInstance();
+        this.flowManager = new FlowManager();
+        this.greetingHandler = new GreetingHandler();
+        this.homeworkAcademicHandler = new HomeworkAcademicHandler();
+        this.humanFeatures = new HumanFeatures();
+        this.humorEngine = new HumorEngine();
+        this.knowledgeNetwork = new KnowledgeNetwork();
+        this.naturalProcessor = new NaturalProcessor();
+        this.personalityEngine = new PersonalityEngine();
+        this.perspectives = new Perspectives();
+        this.relationshipHandler = new RelationshipHandler();
+        this.responseRouter = new ResponseRouter();
+        this.storyEngine = new StoryEngine();
+        this.testFramework = null; // TestFramework - singleton pattern, not directly instantiated
+        // this.wellnessEngine = new WellnessEngine(); // WellnessEngine class doesn't exist
+        
         this.isRunning = false;
         this.scanner = new Scanner(System.in);
     }
@@ -365,6 +433,61 @@ public class VirtualXanderCore {
             return true;
         }
         
+        // New Engine Commands - Version 0.2.0.0
+        // Insight Engine commands
+        if (lowerInput.equals("insight") || lowerInput.equals("insights")) {
+            printInsightStatus();
+            return true;
+        }
+        
+        // Growth Partner commands
+        if (lowerInput.equals("growth") || lowerInput.equals("growthpartner")) {
+            printGrowthStatus();
+            return true;
+        }
+        
+        // Daily Companion commands
+        if (lowerInput.equals("companion") || lowerInput.equals("daily") || lowerInput.equals("checkin")) {
+            printCompanionStatus();
+            return true;
+        }
+        
+        // Social Dynamics commands
+        if (lowerInput.equals("social") || lowerInput.equals("socialdynamics")) {
+            printSocialStatus();
+            return true;
+        }
+        
+        // User Profile Dashboard commands
+        if (lowerInput.equals("profile") || lowerInput.equals("dashboard") || lowerInput.equals("userprofile")) {
+            printProfileStatus();
+            return true;
+        }
+        
+        // Adaptive Learner commands
+        if (lowerInput.equals("adaptive") || lowerInput.equals("learn") || lowerInput.equals("learning")) {
+            printAdaptiveStatus();
+            return true;
+        }
+        
+        // Relationship Memory commands
+        if (lowerInput.equals("relationship") || lowerInput.equals("relations") || lowerInput.equals("relationships")) {
+            printRelationshipStatus();
+            return true;
+        }
+        
+        // Personal Memory commands
+        if (lowerInput.equals("personal") || lowerInput.equals("pmemory") || lowerInput.equals("mymemory")) {
+            printPersonalMemoryStatus();
+            return true;
+        }
+        
+        // Desktop Enhancements commands
+        if (lowerInput.equals("desktop") || lowerInput.equals("desktopenhance")) {
+            printDesktopStatus();
+            return true;
+        }
+        
         return false;
     }
     
@@ -653,6 +776,17 @@ public class VirtualXanderCore {
         System.out.println("║  • threads - Show conversation threads                    ║");
         System.out.println("║  • save - Save context to memory                          ║");
         System.out.println("║  • load - List saved memories                             ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║  New Engine Commands (v0.2.0.0):                         ║");
+        System.out.println("║  • insight/insights - Show insight analysis              ║");
+        System.out.println("║  • growth - Show growth partner status                   ║");
+        System.out.println("║  • companion/daily - Show daily companion status          ║");
+        System.out.println("║  • social - Show social dynamics status                  ║");
+        System.out.println("║  • profile - Show user profile dashboard                 ║");
+        System.out.println("║  • adaptive - Show adaptive learner status                ║");
+        System.out.println("║  • relationship - Show relationship memory status         ║");
+        System.out.println("║  • personal - Show personal memory status                ║");
+        System.out.println("║  • desktop - Show desktop enhancements status            ║");
         System.out.println("╚═══════════════════════════════════════════════════════════╝");
         System.out.println();
     }
@@ -822,6 +956,76 @@ public class VirtualXanderCore {
     }
     
     /**
+     * Gets the Insight Engine for pattern and behavior analysis
+     */
+    public InsightEngine getInsightEngine() {
+        return insightEngine;
+    }
+    
+    /**
+     * Gets the Growth Partner for personal growth tracking
+     */
+    public GrowthPartner getGrowthPartner() {
+        return growthPartner;
+    }
+    
+    /**
+     * Gets the Daily Companion for daily check-ins
+     */
+    public DailyCompanion getDailyCompanion() {
+        return dailyCompanion;
+    }
+    
+    /**
+     * Gets the Social Dynamics engine
+     */
+    public SocialDynamics getSocialDynamics() {
+        return socialDynamics;
+    }
+    
+    /**
+     * Gets the Desktop Enhancements
+     */
+    public DesktopEnhancements getDesktopEnhancements() {
+        return desktopEnhancements;
+    }
+    
+    /**
+     * Gets the User Profile Dashboard
+     */
+    public UserProfileDashboard getUserProfileDashboard() {
+        return userProfileDashboard;
+    }
+    
+    /**
+     * Gets the Adaptive Learner
+     */
+    public AdaptiveLearner getAdaptiveLearner() {
+        return adaptiveLearner;
+    }
+    
+    /**
+     * Gets the Relationship Memory
+     */
+    public RelationshipMemory getRelationshipMemory() {
+        return relationshipMemory;
+    }
+    
+    /**
+     * Gets the Personal Memory
+     */
+    public PersonalMemory getPersonalMemory() {
+        return personalMemory;
+    }
+    
+    /**
+     * Gets the Wisdom Engine for life wisdom and guidance
+     */
+    public WisdomEngine getWisdomEngine() {
+        return wisdomEngine;
+    }
+    
+    /**
      * Checks if the conversation is running
      */
     public boolean isRunning() {
@@ -949,6 +1153,223 @@ public class VirtualXanderCore {
                 System.out.println("  - " + mem);
             }
         }
+        System.out.println();
+    }
+    
+    // ==================== NEW ENGINE STATUS METHODS ====================
+    
+    /**
+     * Print Insight Engine status
+     */
+    private void printInsightStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet to analyze with Insight Engine.");
+            return;
+        }
+        
+        // Generate insight based on conversation
+        String userId = "default_user";
+        insightEngine.recordBehavior(userId, "conversation");
+        insightEngine.recordEmotion(userId, emotionDetector.detectEmotion(lastInput).getPrimaryEmotion().getName(), 5);
+        
+        String insight = insightEngine.generateInsight(userId);
+        String patterns = insightEngine.analyzePatterns(userId);
+        String recommendations = insightEngine.getRecommendation(userId);
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Insight Engine Analysis                     ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println(insight);
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println(patterns);
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println(recommendations);
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Growth Partner status
+     */
+    private void printGrowthStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet with Growth Partner.");
+            return;
+        }
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Growth Partner Status                       ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Growth Partner is active and ready to help!               ║");
+        System.out.println("║ - Personal growth tracking                                ║");
+        System.out.println("║ - Goal setting and accountability                         ║");
+        System.out.println("║ - Learning paths and skill development                    ║");
+        System.out.println("║ - Progress tracking and reflections                       ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Daily Companion status
+     */
+    private void printCompanionStatus() {
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Daily Companion Status                      ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        
+        // Check if check-in is due
+        boolean checkInDue = dailyCompanion.isCheckInDue();
+        System.out.println("║ Check-in Due: " + String.format("%-35s", checkInDue ? "Yes" : "No") + "║");
+        
+        // Get mood summary if available
+        String moodSummary = dailyCompanion.getMoodSummary();
+        System.out.println("║ Mood: " + String.format("%-41s", moodSummary) + "║");
+        
+        // Get energy trends if available
+        String energyTrends = dailyCompanion.getEnergyTrends();
+        System.out.println("║ Energy: " + String.format("%-40s", energyTrends) + "║");
+        
+        // Get goal status
+        String goalStatus = dailyCompanion.getGoalStatus();
+        System.out.println("║ Goals: " + String.format("%-40s", goalStatus) + "║");
+        
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Social Dynamics status
+     */
+    private void printSocialStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet with Social Dynamics.");
+            return;
+        }
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Social Dynamics Status                      ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Social Dynamics is active and ready!                      ║");
+        System.out.println("║ - Relationship insights                                   ║");
+        System.out.println("║ - Social interaction patterns                             ║");
+        System.out.println("║ - Communication style analysis                            ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print User Profile Dashboard status
+     */
+    private void printProfileStatus() {
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               User Profile Dashboard                      ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ User Profile Dashboard is active!                         ║");
+        System.out.println("║ - User preferences and settings                           ║");
+        System.out.println("║ - Interaction history                                     ║");
+        System.out.println("║ - Personalized experience                                 ║");
+        System.out.println("║ - Usage analytics                                         ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Adaptive Learner status
+     */
+    private void printAdaptiveStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet with Adaptive Learner.");
+            return;
+        }
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Adaptive Learner Status                     ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Adaptive Learner is active!                               ║");
+        System.out.println("║ - Learning from interactions                              ║");
+        System.out.println("║ - Adapting to user preferences                            ║");
+        System.out.println("║ - Personalized recommendations                            ║");
+        System.out.println("║ - Knowledge expansion                                     ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Relationship Memory status
+     */
+    private void printRelationshipStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet with Relationship Memory.");
+            return;
+        }
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Relationship Memory Status                  ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Relationship Memory is active!                            ║");
+        System.out.println("║ - Remembering important people                            ║");
+        System.out.println("║ - Tracking relationship dynamics                          ║");
+        System.out.println("║ - Interaction history with contacts                       ║");
+        System.out.println("║ - Relationship insights                                   ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Personal Memory status
+     */
+    private void printPersonalMemoryStatus() {
+        String lastInput = conversationContext.getLastUserInput();
+        if (lastInput == null) {
+            System.out.println("Xander: No conversation yet with Personal Memory.");
+            return;
+        }
+        
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Personal Memory Status                      ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Personal Memory is active!                                ║");
+        System.out.println("║ - Remembering user preferences                            ║");
+        System.out.println("║ - Storing conversation context                            ║");
+        System.out.println("║ - Personal facts and interests                            ║");
+        System.out.println("║ - Long-term memory storage                                ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+    
+    /**
+     * Print Desktop Enhancements status
+     */
+    private void printDesktopStatus() {
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Desktop Enhancements Status                 ║");
+        System.out.println("╠═══════════════════════════════════════════════════════════╣");
+        System.out.println("║ Desktop Enhancements are available!                       ║");
+        System.out.println("║ - System notifications                                    ║");
+        System.out.println("║ - Quick actions and shortcuts                             ║");
+        System.out.println("║ - Desktop integration features                            ║");
+        System.out.println("║ - System tray capabilities                                ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
+
+    /**
+     * Print Social Dynamics status
+     */
+    private void printSocialDynamicsStatus() {
+        System.out.println("╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║               Social Dynamics Status                      ║");
+        System.out.println("╠═══════════════════════════════════╤╤╤╤╤╤╤╤╤╤╤╤╤╤╤╤═╣");
+        System.out.println("║ Social Dynamics are active!                       ║");
+        System.out.println("║ - Tracking social interactions                  ║");
+        System.out.println("║ - Analyzing social patterns                     ║");
+        System.out.println("║ - Managing social relationships                 ║");
+        System.out.println("╚═╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╧╩═╝");
         System.out.println();
     }
 }

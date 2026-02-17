@@ -1,5 +1,0 @@
-<parameter name="content">#!/bin/bash
-cd /home/x0487936/MentalBook
-echo "Testing VirtualXander..."
-java -cp bin:. VirtualXander -a "Hello"
-</parameter>

@@ -66,6 +66,23 @@ public class EmotionDetector {
         SYMPATHETIC("sympathetic", "Feeling empathy and understanding for others"),
         UNDERSTANDING("understanding", "Feeling comprehension and acceptance"),
         
+        // Complex Emotions
+        JEALOUS("jealous", "Feeling envious of others' success or possessions"),
+        GUILTY("guilty", "Feeling remorse or responsibility for something wrong"),
+        ASHAMED("ashamed", "Deep embarrassment or humiliation"),
+        WORRIED("worried", "Concern about future events"),
+        EXHAUSTED("exhausted", "Extreme physical or mental fatigue"),
+        PANICKED("panicked", "Sudden overwhelming fear"),
+        CONTENT("content", "Peaceful satisfaction"),
+        LOVED("loved", "Feeling cared for and cherished"),
+        TRUSTING("trusting", "Feeling safe and confident in others"),
+        ANTICIPATING("anticipating", "Looking forward with excitement"),
+        MELANCHOLY("melancholy", "Pensive, reflective sadness"),
+        RESENTFUL("resentful", "Bitter indignation at unfair treatment"),
+        VULNERABLE("vulnerable", "Feeling exposed or susceptible"),
+        DETERMINED("determined", "Firm resolve to achieve something"),
+        EXHILARATED("exhilarated", "Extreme excitement and happiness"),
+        
         // Neutral
         NEUTRAL("neutral", "Feeling balanced"),
         CHALLENGED("challenged", "Feeling tested but capable"),
@@ -113,7 +130,12 @@ public class EmotionDetector {
                    emotion == Emotion.TIRED || emotion == Emotion.BORED ||
                    emotion == Emotion.HURT ||
                    emotion == Emotion.CONFUSED || emotion == Emotion.FRUSTRATED ||
-                   emotion == Emotion.DISAPPOINTED || emotion == Emotion.EMBARRASSED;
+                   emotion == Emotion.DISAPPOINTED || emotion == Emotion.EMBARRASSED ||
+                   emotion == Emotion.JEALOUS || emotion == Emotion.GUILTY ||
+                   emotion == Emotion.ASHAMED || emotion == Emotion.WORRIED ||
+                   emotion == Emotion.EXHAUSTED || emotion == Emotion.PANICKED ||
+                   emotion == Emotion.MELANCHOLY || emotion == Emotion.RESENTFUL ||
+                   emotion == Emotion.VULNERABLE;
         }
         
         private static boolean isPositiveEmotion(Emotion emotion) {
@@ -124,7 +146,10 @@ public class EmotionDetector {
                    emotion == Emotion.HOPEFUL || emotion == Emotion.PROUD ||
                    emotion == Emotion.AMUSED || emotion == Emotion.INSPIRED ||
                    emotion == Emotion.NOSTALGIC || emotion == Emotion.SURPRISED ||
-                   emotion == Emotion.RELIEVED || emotion == Emotion.PEACEFUL;
+                   emotion == Emotion.RELIEVED || emotion == Emotion.PEACEFUL ||
+                   emotion == Emotion.CONTENT || emotion == Emotion.LOVED ||
+                   emotion == Emotion.TRUSTING || emotion == Emotion.ANTICIPATING ||
+                   emotion == Emotion.DETERMINED || emotion == Emotion.EXHILARATED;
         }
         
         public Emotion getPrimaryEmotion() {
@@ -299,6 +324,67 @@ public class EmotionDetector {
         addEmotionPattern(Emotion.PEACEFUL, "\\b(peaceful|serene|tranquil|at peace|harmony)\\b");
         addEmotionPattern(Emotion.PEACEFUL, "\\b(at one|inner peace|zen|balanced)\\b");
         addEmotionPattern(Emotion.PEACEFUL, "\\b(contentment|fulfilled|wholeness)\\b");
+        
+        // New emotion patterns
+        // Jealous patterns
+        addEmotionPattern(Emotion.JEALOUS, "\\b(jealous|envious|envy|resentful of|wish i had)\\b");
+        addEmotionPattern(Emotion.JEALOUS, "\\b(why them|not fair|they have everything|i want that)\\b");
+        
+        // Guilty patterns
+        addEmotionPattern(Emotion.GUILTY, "\\b(guilty|remorse|regret|ashamed of what i did|i shouldn't have)\\b");
+        addEmotionPattern(Emotion.GUILTY, "\\b(feel bad about|can't forgive myself|i messed up|my fault)\\b");
+        
+        // Ashamed patterns
+        addEmotionPattern(Emotion.ASHAMED, "\\b(ashamed|humiliated|mortified|deeply embarrassed|i can't show my face)\\b");
+        addEmotionPattern(Emotion.ASHAMED, "\\b(so ashamed|disgraced|loss of dignity|i'm a failure)\\b");
+        
+        // Worried patterns
+        addEmotionPattern(Emotion.WORRIED, "\\b(worried|concerned|apprehensive|uneasy about|nervous about)\\b");
+        addEmotionPattern(Emotion.WORRIED, "\\b(what if something|i'm afraid that|concerned about)\\b");
+        
+        // Exhausted patterns
+        addEmotionPattern(Emotion.EXHAUSTED, "\\b(exhausted|completely drained|wiped out|burnt out|no energy left)\\b");
+        addEmotionPattern(Emotion.EXHAUSTED, "\\b(can't keep going|at my limit|totally spent|depleted)\\b");
+        
+        // Panicked patterns
+        addEmotionPattern(Emotion.PANICKED, "\\b(panicked|panic|freaking out|can't breathe|heart racing)\\b");
+        addEmotionPattern(Emotion.PANICKED, "\\b(having a panic attack|overwhelming fear|terrified suddenly)\\b");
+        
+        // Content patterns
+        addEmotionPattern(Emotion.CONTENT, "\\b(content|satisfied|at peace with|okay with things|peacefully happy)\\b");
+        addEmotionPattern(Emotion.CONTENT, "\\b(enough for me|grateful for what i have|life is good)\\b");
+        
+        // Loved patterns
+        addEmotionPattern(Emotion.LOVED, "\\b(loved|cherished|adored|cared for|someone loves me)\\b");
+        addEmotionPattern(Emotion.LOVED, "\\b(feeling loved|so much love|surrounded by love|blessed with love)\\b");
+        
+        // Trusting patterns
+        addEmotionPattern(Emotion.TRUSTING, "\\b(trusting|trust|i believe in|have faith in|rely on)\\b");
+        addEmotionPattern(Emotion.TRUSTING, "\\b(can count on|trustworthy|safe with|confident in)\\b");
+        
+        // Anticipating patterns
+        addEmotionPattern(Emotion.ANTICIPATING, "\\b(anticipating|looking forward to|eagerly awaiting|can't wait for|excited for)\\b");
+        addEmotionPattern(Emotion.ANTICIPATING, "\\b(counting down|excited about upcoming|awaiting)\\b");
+        
+        // Melancholy patterns
+        addEmotionPattern(Emotion.MELANCHOLY, "\\b(melancholy|wistful|pensive|reflective sadness|bittersweet)\\b");
+        addEmotionPattern(Emotion.MELANCHOLY, "\\b(beautiful sadness|longing for|nostalgic sadness|gentle sorrow)\\b");
+        
+        // Resentful patterns
+        addEmotionPattern(Emotion.RESENTFUL, "\\b(resentful|bitter|indignant|unfair treatment|holding a grudge)\\b");
+        addEmotionPattern(Emotion.RESENTFUL, "\\b(why me|always happens to me|never get a break|so unfair)\\b");
+        
+        // Vulnerable patterns
+        addEmotionPattern(Emotion.VULNERABLE, "\\b(vulnerable|exposed|raw|defenseless|open to hurt)\\b");
+        addEmotionPattern(Emotion.VULNERABLE, "\\b(feeling exposed|laid bare|easily hurt|sensitive right now)\\b");
+        
+        // Determined patterns
+        addEmotionPattern(Emotion.DETERMINED, "\\b(determined|resolute|unwavering|firm resolve|nothing will stop me)\\b");
+        addEmotionPattern(Emotion.DETERMINED, "\\b(i will succeed|committed to|dedicated|single-minded focus)\\b");
+        
+        // Exhilarated patterns
+        addEmotionPattern(Emotion.EXHILARATED, "\\b(exhilarated|thrilled|ecstatic|on top of the world|unbelievably happy)\\b");
+        addEmotionPattern(Emotion.EXHILARATED, "\\b(best day ever|so amazing|beyond excited|pure joy)\\b");
     }
     
     private void initializeKeywordMappings() {
@@ -360,6 +446,47 @@ public class EmotionDetector {
         keywordEmotions.put("peaceful", Emotion.PEACEFUL);
         keywordEmotions.put("serene", Emotion.PEACEFUL);
         keywordEmotions.put("calm", Emotion.PEACEFUL);
+        
+        // New emotion keywords
+        keywordEmotions.put("jealous", Emotion.JEALOUS);
+        keywordEmotions.put("envious", Emotion.JEALOUS);
+        keywordEmotions.put("envy", Emotion.JEALOUS);
+        keywordEmotions.put("guilty", Emotion.GUILTY);
+        keywordEmotions.put("remorse", Emotion.GUILTY);
+        keywordEmotions.put("regret", Emotion.GUILTY);
+        keywordEmotions.put("ashamed", Emotion.ASHAMED);
+        keywordEmotions.put("humiliated", Emotion.ASHAMED);
+        keywordEmotions.put("mortified", Emotion.ASHAMED);
+        keywordEmotions.put("worried", Emotion.WORRIED);
+        keywordEmotions.put("concerned", Emotion.WORRIED);
+        keywordEmotions.put("apprehensive", Emotion.WORRIED);
+        keywordEmotions.put("exhausted", Emotion.EXHAUSTED);
+        keywordEmotions.put("drained", Emotion.EXHAUSTED);
+        keywordEmotions.put("burnt out", Emotion.EXHAUSTED);
+        keywordEmotions.put("panicked", Emotion.PANICKED);
+        keywordEmotions.put("panic", Emotion.PANICKED);
+        keywordEmotions.put("freaking out", Emotion.PANICKED);
+        keywordEmotions.put("content", Emotion.CONTENT);
+        keywordEmotions.put("satisfied", Emotion.CONTENT);
+        keywordEmotions.put("loved", Emotion.LOVED);
+        keywordEmotions.put("cherished", Emotion.LOVED);
+        keywordEmotions.put("adored", Emotion.LOVED);
+        keywordEmotions.put("trusting", Emotion.TRUSTING);
+        keywordEmotions.put("trust", Emotion.TRUSTING);
+        keywordEmotions.put("anticipating", Emotion.ANTICIPATING);
+        keywordEmotions.put("awaiting", Emotion.ANTICIPATING);
+        keywordEmotions.put("melancholy", Emotion.MELANCHOLY);
+        keywordEmotions.put("wistful", Emotion.MELANCHOLY);
+        keywordEmotions.put("pensive", Emotion.MELANCHOLY);
+        keywordEmotions.put("resentful", Emotion.RESENTFUL);
+        keywordEmotions.put("bitter", Emotion.RESENTFUL);
+        keywordEmotions.put("indignant", Emotion.RESENTFUL);
+        keywordEmotions.put("vulnerable", Emotion.VULNERABLE);
+        keywordEmotions.put("exposed", Emotion.VULNERABLE);
+        keywordEmotions.put("determined", Emotion.DETERMINED);
+        keywordEmotions.put("resolute", Emotion.DETERMINED);
+        keywordEmotions.put("exhilarated", Emotion.EXHILARATED);
+        keywordEmotions.put("ecstatic", Emotion.EXHILARATED);
     }
     
     private void initializeEmotionResponses() {
@@ -555,6 +682,127 @@ public class EmotionDetector {
             "I'm so glad you're feeling peaceful! These moments are precious.",
             "Your peacefulness is inspiring. What practices or thoughts bring you this harmony?"
         ));
+        
+        // New emotion responses
+        emotionResponses.put(Emotion.JEALOUS, Arrays.asList(
+            "Jealousy is a natural emotion. What specifically is triggering these feelings?",
+            "It's okay to feel envious sometimes. What do you wish you had?",
+            "I hear you. Comparing ourselves to others is common. What would help you feel more content?",
+            "Those feelings are valid. What would make you feel more secure?",
+            "It's hard when we want what others have. What are you grateful for in your own life?"
+        ));
+        
+        emotionResponses.put(Emotion.GUILTY, Arrays.asList(
+            "Guilt can be heavy to carry. Would you like to talk about what happened?",
+            "I'm here to listen without judgment. What are you feeling guilty about?",
+            "Sometimes we hold ourselves to impossible standards. What would help you forgive yourself?",
+            "Your remorse shows you have a conscience. What can you learn from this?",
+            "It's okay to make mistakes - they're part of being human. What would make amends feel possible?"
+        ));
+        
+        emotionResponses.put(Emotion.ASHAMED, Arrays.asList(
+            "Shame is one of the hardest emotions to carry. I'm here to listen.",
+            "You are more than your mistakes. What happened?",
+            "Everyone has moments they're not proud of. You deserve compassion too.",
+            "It's brave to acknowledge these feelings. What would help you feel worthy again?",
+            "You are still deserving of love and respect. What do you need right now?"
+        ));
+        
+        emotionResponses.put(Emotion.WORRIED, Arrays.asList(
+            "Worry can feel all-consuming. What's on your mind?",
+            "It's natural to be concerned about the future. What specifically worries you?",
+            "Sometimes talking through worries helps. What's the worst-case scenario you're imagining?",
+            "Your concerns are valid. What would help you feel more at ease?",
+            "Worry often comes from caring deeply. What outcome are you hoping for?"
+        ));
+        
+        emotionResponses.put(Emotion.EXHAUSTED, Arrays.asList(
+            "Exhaustion is your body asking for rest. What do you need right now?",
+            "You sound completely depleted. When did you last take a real break?",
+            "Burnout is real and serious. What can you let go of temporarily?",
+            "Rest is not laziness - it's necessary. What would true rest look like for you?",
+            "You've been pushing hard. What would help you recharge?"
+        ));
+        
+        emotionResponses.put(Emotion.PANICKED, Arrays.asList(
+            "Take a slow, deep breath with me. You're safe right now.",
+            "Panic attacks are terrifying but they pass. Focus on your breathing.",
+            "Ground yourself - name 5 things you can see, 4 you can touch, 3 you can hear.",
+            "This feeling is temporary. You will get through this moment.",
+            "I'm right here with you. Let's ride this wave together."
+        ));
+        
+        emotionResponses.put(Emotion.CONTENT, Arrays.asList(
+            "Contentment is a beautiful state! What brings you this peaceful satisfaction?",
+            "There's wisdom in being content with what you have. What's contributing to this feeling?",
+            "I love that you're feeling satisfied. What does contentment mean to you?",
+            "This is a gift - not needing more, being okay with now. What's creating this peace?",
+            "Contentment often comes from gratitude. What are you appreciating right now?"
+        ));
+        
+        emotionResponses.put(Emotion.LOVED, Arrays.asList(
+            "Feeling loved is one of life's greatest gifts! Who's showing you this love?",
+            "You deserve all the love you're receiving! What's making you feel so cherished?",
+            "I'm so happy you're feeling loved! How does it feel to be cared for?",
+            "Love surrounds you! What specifically is making your heart feel full?",
+            "Being loved is beautiful. What does this love mean to you?"
+        ));
+        
+        emotionResponses.put(Emotion.TRUSTING, Arrays.asList(
+            "Trust is the foundation of meaningful connection. Who do you feel safe with?",
+            "It's wonderful to have people you can rely on. What builds this trust for you?",
+            "Trusting others takes courage. What makes you feel confident in them?",
+            "I'm glad you have trustworthy people in your life. How does this trust feel?",
+            "Safe relationships are precious. What does this trust allow you to do?"
+        ));
+        
+        emotionResponses.put(Emotion.ANTICIPATING, Arrays.asList(
+            "Anticipation can be so exciting! What are you looking forward to?",
+            "The build-up is often half the fun! What's coming up that has you eager?",
+            "I love that positive expectation! What are you hoping will happen?",
+            "Looking forward to things gives us energy. What's on the horizon for you?",
+            "That eager energy is contagious! Tell me more about what awaits!"
+        ));
+        
+        emotionResponses.put(Emotion.MELANCHOLY, Arrays.asList(
+            "Melancholy has its own beauty - a reflective, gentle sadness. What's on your mind?",
+            "There's something poetic about wistful feelings. What are you reflecting on?",
+            "This pensive mood can bring insights. What thoughts are you sitting with?",
+            "Bittersweet moments are part of life. What makes this feeling both sad and beautiful?",
+            "Sometimes we need to sit with gentle sorrow. What are you processing?"
+        ));
+        
+        emotionResponses.put(Emotion.RESENTFUL, Arrays.asList(
+            "Resentment often signals unmet needs or unfair treatment. What's bothering you?",
+            "It's hard when things feel unjust. What specifically feels unfair?",
+            "Holding onto bitterness can weigh us down. What would help you release some of this?",
+            "Your feelings are valid - something wronged you. What do you need to feel heard?",
+            "Indignation comes from knowing you deserve better. What would justice look like?"
+        ));
+        
+        emotionResponses.put(Emotion.VULNERABLE, Arrays.asList(
+            "Vulnerability takes incredible courage. What makes you feel exposed right now?",
+            "Being open can feel scary but also freeing. What's making you feel raw?",
+            "I honor your willingness to be vulnerable. What do you need to feel safe?",
+            "Exposing our true selves is brave. What are you risking by being open?",
+            "Vulnerability is where connection happens. What are you hoping will come from this?"
+        ));
+        
+        emotionResponses.put(Emotion.DETERMINED, Arrays.asList(
+            "Determination is powerful! What are you committed to achieving?",
+            "I love that unwavering resolve! What's driving this commitment?",
+            "Nothing will stop you! What goal are you laser-focused on?",
+            "Your dedication is inspiring. What makes this so important to you?",
+            "That firm resolve will carry you far. What obstacles are you ready to overcome?"
+        ));
+        
+        emotionResponses.put(Emotion.EXHILARATED, Arrays.asList(
+            "Exhilaration is pure joy! What's making you feel on top of the world?",
+            "I can feel that amazing energy through your words! What's happening?",
+            "This level of happiness is incredible! What's creating this euphoria?",
+            "You deserve this pure bliss! Tell me everything about this amazing moment!",
+            "What an incredible feeling! How are you celebrating this joy?"
+        ));
     }
     
     private void addEmotionPattern(Emotion emotion, String regex) {
@@ -688,4 +936,3 @@ public class EmotionDetector {
         return "slightly";
     }
 }
-
