@@ -4,6 +4,12 @@ import java.time.LocalDateTime;
 /**
  * Conversation Context Manager for VirtualXander
  * Manages conversation state, history, and context
+ * 
+ * Integration with ContextEngine:
+ * - Optionally syncs with ContextEngine for advanced entity tracking
+ * - Synchronizes conversation turns with ContextEngine threads
+ * - Tracks open questions in ContextEngine for follow-up
+ * - Maintains backward compatibility with existing API
  */
 public class ConversationContext {
     
@@ -19,6 +25,13 @@ public class ConversationContext {
     private LocalDateTime conversationStartTime;
     private int conversationTurnCount;
     
+    // Topic clusters tracking
+    private boolean topicClustersJustListed;
+    
+    // ContextEngine integration (optional)
+    private ContextEngine contextEngine;
+    private boolean syncWithContextEngine;
+    
     public ConversationContext() {
         this.conversationHistory = new ArrayList<>();
         this.sessionData = new HashMap<>();
@@ -28,6 +41,8 @@ public class ConversationContext {
         this.lastInteractionTime = LocalDateTime.now();
         this.conversationStartTime = LocalDateTime.now();
         this.conversationTurnCount = 0;
+        this.contextEngine = null;
+        this.syncWithContextEngine = false;
     }
     
     /**
@@ -35,27 +50,295 @@ public class ConversationContext {
      */
     private static class ConversationTurn {
         String userInput;
-        String recognizedIntent;
         String botResponse;
         String topic;
         LocalDateTime timestamp;
         Map<String, Object> metadata;
         
-        public ConversationTurn(String userInput, String recognizedIntent, String botResponse, String topic) {
+        public ConversationTurn(String userInput, String botResponse, String topic) {
             this.userInput = userInput;
-            this.recognizedIntent = recognizedIntent;
             this.botResponse = botResponse;
             this.topic = topic;
             this.timestamp = LocalDateTime.now();
             this.metadata = new HashMap<>();
         }
+        
+        public Map<String, Object> getMetadata() {
+            return metadata;
+        }
+        
+        public void setMetadata(String key, Object value) {
+            this.metadata.put(key, value);
+        }
+        
+        public String getTopic() {
+            return topic;
+        }
+        
+        public LocalDateTime getTimestamp() {
+            return timestamp;
+        }
+    }
+    
+    // ==================== CONTEXTENGINE INTEGRATION ====================
+    
+    /**
+     * Set the ContextEngine instance for integration
+     * When set, conversation turns, entities, and questions will be synced
+     * @param contextEngine The ContextEngine to integrate with
+     */
+    public void setContextEngine(ContextEngine contextEngine) {
+        this.contextEngine = contextEngine;
+        this.syncWithContextEngine = (contextEngine != null);
+    }
+    
+    /**
+     * Get the current ContextEngine instance
+     * @return The ContextEngine, or null if not set
+     */
+    public ContextEngine getContextEngine() {
+        return contextEngine;
+    }
+    
+    /**
+     * Enable or disable syncing with ContextEngine
+     * @param sync True to enable syncing, false to disable
+     */
+    public void setSyncWithContextEngine(boolean sync) {
+        this.syncWithContextEngine = sync && contextEngine != null;
+    }
+    
+    /**
+     * Check if syncing with ContextEngine is enabled
+     * @return True if syncing is enabled
+     */
+    public boolean isSyncWithContextEngine() {
+        return syncWithContextEngine && contextEngine != null;
+    }
+    
+    /**
+     * Register an entity in both ConversationContext and ContextEngine
+     * @param name Entity name
+     * @param type Entity type (person, place, thing, etc.)
+     * @param memoryTier Memory tier for ContextEngine
+     * @return The registered entity from ContextEngine, or null if not integrated
+     */
+    public ContextEngine.ReferenceEntity registerEntity(String name, String type, ContextEngine.MemoryTier memoryTier) {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.addEntity(name, type, memoryTier);
+        }
+        return null;
+    }
+    
+    /**
+     * Find an entity by name in ContextEngine
+     * @param name Entity name to search for
+     * @return The entity if found, null otherwise
+     */
+    public ContextEngine.ReferenceEntity findEntity(String name) {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.findEntityByName(name);
+        }
+        return null;
+    }
+    
+    /**
+     * Get all tracked entities from ContextEngine
+     * @return List of all entities, or empty list if not integrated
+     */
+    public List<ContextEngine.ReferenceEntity> getAllEntities() {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.getAllEntities();
+        }
+        return new ArrayList<>();
+    }
+    
+    /**
+     * Create an open question in ContextEngine for follow-up
+     * @param questionText The question to track
+     * @param askedBy Who asked the question
+     * @param context Context around the question
+     * @return The created question, or null if not integrated
+     */
+    public ContextEngine.OpenQuestion trackQuestion(String questionText, String askedBy, String context) {
+        return trackQuestion(questionText, askedBy, context, ContextEngine.QuestionPriority.MEDIUM);
+    }
+    
+    /**
+     * Create an open question with priority in ContextEngine
+     * @param questionText The question to track
+     * @param askedBy Who asked the question
+     * @param context Context around the question
+     * @param priority Priority level for the question
+     * @return The created question, or null if not integrated
+     */
+    public ContextEngine.OpenQuestion trackQuestion(String questionText, String askedBy, String context, 
+                                                     ContextEngine.QuestionPriority priority) {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.createOpenQuestion(questionText, askedBy, context, priority);
+        }
+        return null;
+    }
+    
+    /**
+     * Get all open questions from ContextEngine
+     * @return List of open questions sorted by priority, or empty list if not integrated
+     */
+    public List<ContextEngine.OpenQuestion> getOpenQuestions() {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.getOpenQuestions();
+        }
+        return new ArrayList<>();
+    }
+    
+    /**
+     * Mark a question as answered
+     * @param questionId The ID of the question to mark as answered
+     * @param answer The answer text
+     */
+    public void markQuestionAnswered(String questionId, String answer) {
+        if (contextEngine != null && syncWithContextEngine) {
+            contextEngine.markQuestionAnswered(questionId, answer);
+        }
+    }
+    
+    /**
+     * Register a pronoun reference in ContextEngine
+     * @param pronoun The pronoun (he, she, it, etc.)
+     * @param entity The entity the pronoun refers to
+     */
+    public void registerReference(String pronoun, ContextEngine.ReferenceEntity entity) {
+        if (contextEngine != null && syncWithContextEngine) {
+            contextEngine.registerReference(pronoun, entity);
+        }
+    }
+    
+    /**
+     * Resolve a pronoun reference in ContextEngine
+     * @param pronoun The pronoun to resolve
+     * @return The referenced entity, or null if not found or not integrated
+     */
+    public ContextEngine.ReferenceEntity resolveReference(String pronoun) {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.resolveReference(pronoun);
+        }
+        return null;
+    }
+    
+    /**
+     * Get the current conversation thread from ContextEngine
+     * @return The current thread, or null if not integrated
+     */
+    public ContextEngine.ConversationThread getCurrentThread() {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.getCurrentThread();
+        }
+        return null;
+    }
+    
+    /**
+     * Create a new conversation thread in ContextEngine
+     * @param topic The topic for the new thread
+     * @return The created thread, or null if not integrated
+     */
+    public ContextEngine.ConversationThread createThread(String topic) {
+        if (contextEngine != null && syncWithContextEngine) {
+            return contextEngine.createThread(topic);
+        }
+        return null;
+    }
+    
+    /**
+     * Get context summary from both ConversationContext and ContextEngine
+     * @return Enhanced context summary including ContextEngine data
+     */
+    public EnhancedContextSummary getEnhancedContextSummary() {
+        Map<String, Object> engineSummary = null;
+        if (contextEngine != null && syncWithContextEngine) {
+            engineSummary = contextEngine.getContextSummary();
+        }
+        
+        return new EnhancedContextSummary(
+            currentTopic,
+            currentState,
+            conversationTurnCount,
+            getConversationDurationMinutes(),
+            getLastUserInput(),
+            getRecentHistory(3),
+            engineSummary
+        );
+    }
+    
+    /**
+     * Enhanced context summary that includes ContextEngine data
+     */
+    public static class EnhancedContextSummary extends ContextSummary {
+        public final Map<String, Object> contextEngineData;
+        public final int entityCount;
+        public final int openQuestionCount;
+        public final double threadCoherence;
+        
+        public EnhancedContextSummary(String currentTopic, String currentState, int turnCount,
+                                     long durationMinutes, String lastInput, List<String> recentHistory,
+                                     Map<String, Object> contextEngineData) {
+            super(currentTopic, currentState, turnCount, durationMinutes, lastInput, recentHistory);
+            this.contextEngineData = contextEngineData;
+            this.entityCount = contextEngineData != null ? 
+                (Integer) contextEngineData.getOrDefault("totalEntities", 0) : 0;
+            this.openQuestionCount = contextEngineData != null ? 
+                (Integer) contextEngineData.getOrDefault("openQuestions", 0) : 0;
+            this.threadCoherence = contextEngineData != null ? 
+                (Double) contextEngineData.getOrDefault("currentCoherence", 0.0) : 0.0;
+        }
+    }
+    
+    // ==================== EXISTING METHODS (UNCHANGED) ====================
+    
+    /**
+     * Gets metadata from the last conversation turn
+     */
+    public Map<String, Object> getLastTurnMetadata() {
+        if (conversationHistory.isEmpty()) {
+            return null;
+        }
+        return conversationHistory.get(conversationHistory.size() - 1).getMetadata();
+    }
+    
+    /**
+     * Sets metadata on the last conversation turn
+     */
+    public void setLastTurnMetadata(String key, Object value) {
+        if (!conversationHistory.isEmpty()) {
+            conversationHistory.get(conversationHistory.size() - 1).setMetadata(key, value);
+        }
+    }
+    
+    /**
+     * Gets the topic of the last conversation turn
+     */
+    public String getLastTurnTopic() {
+        if (conversationHistory.isEmpty()) {
+            return null;
+        }
+        return conversationHistory.get(conversationHistory.size() - 1).getTopic();
+    }
+    
+    /**
+     * Gets the timestamp of the last conversation turn
+     */
+    public LocalDateTime getLastTurnTimestamp() {
+        if (conversationHistory.isEmpty()) {
+            return null;
+        }
+        return conversationHistory.get(conversationHistory.size() - 1).getTimestamp();
     }
     
     /**
      * Adds a conversation turn to the history
+     * Also syncs with ContextEngine if integration is enabled
      */
-    public void addTurn(String userInput, String recognizedIntent, String botResponse, String topic) {
-        ConversationTurn turn = new ConversationTurn(userInput, recognizedIntent, botResponse, topic);
+    public void addTurn(String userInput, String botResponse, String topic) {
+        ConversationTurn turn = new ConversationTurn(userInput, botResponse, topic);
         conversationHistory.add(turn);
         
         // Update current topic
@@ -73,6 +356,12 @@ public class ConversationContext {
         // Maintain maximum history size
         if (conversationHistory.size() > MAX_HISTORY_SIZE) {
             conversationHistory.remove(0);
+        }
+        
+        // Sync with ContextEngine if enabled
+        if (contextEngine != null && syncWithContextEngine) {
+            contextEngine.addMessageToCurrentThread("User", userInput);
+            contextEngine.addMessageToCurrentThread("Xander", botResponse);
         }
     }
     
@@ -159,6 +448,7 @@ public class ConversationContext {
     
     /**
      * Resets the conversation context
+     * Also resets ContextEngine if integrated
      */
     public void reset() {
         conversationHistory.clear();
@@ -167,6 +457,12 @@ public class ConversationContext {
         currentState = "idle";
         conversationStartTime = LocalDateTime.now();
         conversationTurnCount = 0;
+        topicClustersJustListed = false;
+        
+        // Also reset ContextEngine if integrated
+        if (contextEngine != null && syncWithContextEngine) {
+            contextEngine.clearAll();
+        }
     }
     
     /**
@@ -262,6 +558,20 @@ public class ConversationContext {
     }
     
     /**
+     * Sets flag indicating Topic Clusters were just listed
+     */
+    public void setTopicClustersJustListed(boolean value) {
+        this.topicClustersJustListed = value;
+    }
+    
+    /**
+     * Gets flag indicating Topic Clusters were just listed
+     */
+    public boolean isTopicClustersJustListed() {
+        return topicClustersJustListed;
+    }
+    
+    /**
      * Context summary data class
      */
     public static class ContextSummary {
@@ -283,4 +593,3 @@ public class ConversationContext {
         }
     }
 }
-

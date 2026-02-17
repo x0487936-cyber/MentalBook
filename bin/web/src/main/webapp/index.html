@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentalBook - Your Companion</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #F5F5FA; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .toolbar { 
+            background: linear-gradient(135deg, #4682B4 0%, #5A9FD4 100%); 
+            color: white; 
+            padding: 15px 20px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            box-shadow: 0 2px 10px rgba(70,130,180,0.3);
+            animation: slideInLeft 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        .toolbar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+        .container { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { 
+            width: 220px; 
+            background: white; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            border-right: 1px solid #ddd;
+            animation: slideInLeft 0.6s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .sidebar:hover {
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .sidebar-section { margin-bottom: 15px; }
+        .sidebar-title { font-size: 14px; font-weight: bold; color: #4682B4; margin-bottom: 10px; }
+        .stat-item { font-size: 12px; color: #666; margin-bottom: 5px; }
+        .topic-item { font-size: 12px; color: #333; padding: 5px; border-bottom: 1px solid #eee; }
+        .sidebar-buttons { display: flex; gap: 5px; margin-top: auto; }
+        .sidebar-btn { 
+            flex: 1; 
+            padding: 8px; 
+            background: #f0f0f0; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .sidebar-btn:hover { 
+            background: #4682B4; 
+            color: white; 
+            border-color: #4682B4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(70,130,180,0.3);
+        }
+        .sidebar-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(70,130,180,0.3);
+        }
+        .chat-container { flex: 1; display: flex; flex-direction: column; padding: 15px; }
+        .messages { 
+            flex: 1; 
+            background: white; 
+            border-radius: 8px; 
+            padding: 15px; 
+            overflow-y: auto; 
+            margin-bottom: 15px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s ease-out;
+            scroll-behavior: smooth;
+        }
+        .message { 
+            margin-bottom: 15px; 
+            max-width: 80%; 
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .message-user { margin-left: auto; }
+        .message-content { 
+            padding: 10px 15px; 
+            border-radius: 15px; 
+            font-size: 14px; 
+            line-height: 1.4; 
+            white-space: pre-wrap; 
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .message-content:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .message-user .message-content { 
+            background: linear-gradient(135deg, #4682B4 0%, #5A9FD4 100%); 
+            color: white; 
+            border-bottom-right-radius: 3px;
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .message-bot .message-content { 
+            background: linear-gradient(135deg, #f0f0f0 0%, #f8f8f8 100%); 
+            color: #333; 
+            border-bottom-left-radius: 3px;
+            animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .message-time { font-size: 10px; color: #999; margin-top: 3px; }
+        .input-area { display: flex; gap: 10px; }
+        .input-field { 
+            flex: 1; 
+            padding: 12px 15px; 
+            border: 2px solid #ddd; 
+            border-radius: 25px; 
+            font-size: 14px; 
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+        .input-field:focus { 
+            border-color: #4682B4; 
+            box-shadow: 0 0 0 4px rgba(70,130,180,0.15);
+            transform: scale(1.01);
+        }
+        .input-field:hover {
+            border-color: #aaa;
+        }
+        .send-btn { 
+            padding: 12px 25px; 
+            background: linear-gradient(135deg, #4682B4 0%, #5A9FD4 100%); 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(70,130,180,0.3);
+        }
+        .send-btn:hover { 
+            background: linear-gradient(135deg, #3A6A8F 0%, #4682B4 100%);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(70,130,180,0.4);
+        }
+        .send-btn:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 10px rgba(70,130,180,0.3);
+        }
+        .send-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .send-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        .status-bar { background: #f0f0f0; padding: 5px 15px; font-size: 11px; color: #666; border-top: 1px solid #ddd; display: flex; justify-content: space-between; }
+        .typing { 
+            font-size: 12px; 
+            color: #999; 
+            font-style: italic; 
+            padding: 10px;
+            animation: fadeIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .typing::after {
+            content: '';
+            display: inline-flex;
+            gap: 4px;
+        }
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #4682B4;
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(3) { animation-delay: 0s; }
+        .code-block { 
+            background: #2d2d2d; 
+            color: #f8f8f2; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 12px; 
+            overflow-x: auto; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            white-space: pre;
+            animation: scaleIn 0.3s ease-out;
+            border: 1px solid #444;
+        }
+        .stat-item, .topic-item {
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .stat-item:hover, .topic-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+        .sidebar-title {
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .sidebar-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: #4682B4;
+            transition: width 0.3s ease;
+        }
+        .sidebar-section:hover .sidebar-title::after {
+            width: 100%;
+        }
+        @media (max-width: 768px) { 
+            .sidebar { 
+                display: none; 
+            } 
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <span style="flex:1">VirtulXander</span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌓</button>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Session Stats</div>
+                <div class="stat-item" id="turns">Turns: 0</div>
+                <div class="stat-item" id="mood">Mood: Neutral</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Active Topics</div>
+                <div id="topics"><div class="topic-item">No topics yet</div></div>
+            </div>
+            <div class="sidebar-buttons">
+                <button class="sidebar-btn" onclick="newChat()">New Chat</button>
+                <button class="sidebar-btn" onclick="clearChat()">Clear</button>
+            </div>
+            <div class="sidebar-buttons" style="margin-top: 10px;">
+                <button class="sidebar-btn" onclick="showVersions()">Versions</button>
+                <button class="sidebar-btn" onclick="showHelp()">Help</button>
+                <button class="sidebar-btn" onclick="showServerCode()">Server Code</button>
+            </div>
+            <div class="sidebar-buttons" style="margin-top: 10px;">
+                <button class="sidebar-btn" onclick="exportChat()">Export</button>
+                <button class="sidebar-btn" onclick="showShortcuts()">Shortcuts</button>
+            </div>
+        </div>
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div class="message message-bot">
+                    <div class="message-content">Hello! Meet VirtualXander - your friendly companion.<br><br>I'm here to chat, support you, and help with various tasks. Feel free to share anything on your mind!</div>
+                    <div class="message-time" id="welcome-time"></div>
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" class="input-field" id="messageInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    <div class="status-bar">
+        <span id="status">Ready</span>
+        <span id="theme-status">Press Ctrl+K to search | Ctrl+/ for shortcuts</span>
+        <span>VirtualXander v0.2.0.0</span>
+    </div>
+    
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay" onclick="closeSearch()"></div>
+    <div class="search-box" id="searchBox">
+        <h3 style="margin-bottom: 15px; color: #4682B4;">Search Messages</h3>
+        <input type="text" class="search-input" id="searchInput" placeholder="Type to search..." oninput="performSearch()" onkeydown="handleSearchKey(event)">
+        <div class="search-results" id="searchResults"></div>
+        <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+            Press ESC to close | Enter to jump to result
+        </div>
+    </div>
+    
+    <!-- Shortcuts Help -->
+    <div class="search-overlay" id="shortcutsOverlay" onclick="closeShortcuts()"></div>
+    <div class="shortcuts-help" id="shortcutsHelp">
+        <h3 style="margin-bottom: 15px; color: #4682B4;">Keyboard Shortcuts</h3>
+        <div class="shortcut-item"><span>New Chat</span><span class="shortcut-key">Ctrl+N</span></div>
+        <div class="shortcut-item"><span>Clear Chat</span><span class="shortcut-key">Ctrl+L</span></div>
+        <div class="shortcut-item"><span>Search Messages</span><span class="shortcut-key">Ctrl+K</span></div>
+        <div class="shortcut-item"><span>Export Chat</span><span class="shortcut-key">Ctrl+E</span></div>
+        <div class="shortcut-item"><span>Toggle Theme</span><span class="shortcut-key">Ctrl+T</span></div>
+        <div class="shortcut-item"><span>Focus Input</span><span class="shortcut-key">Ctrl+/</span></div>
+        <div class="shortcut-item"><span>Close/Cancel</span><span class="shortcut-key">ESC</span></div>
+        <div style="text-align: center; margin-top: 15px; font-size: 12px; color: #666;">
+            Press ESC or click outside to close
+        </div>
+    </div>
+    <script>
+        let turnCount = 0;
+        document.getElementById('welcome-time').textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        
+        function handleKeyPress(event) { 
+            if (event.key === 'Enter') sendMessage(); 
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'n':
+                        e.preventDefault();
+                        newChat();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        clearChat();
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        openSearch();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportChat();
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        toggleTheme();
+                        break;
+                    case '/':
+                        e.preventDefault();
+                        showShortcuts();
+                        break;
+                }
+            }
+            if (e.key === 'Escape') {
+                closeSearch();
+                closeShortcuts();
+            }
+        });
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            input.value = '';
+            addMessage(message, 'user');
+            showTyping();
+            document.getElementById('status').textContent = 'Thinking...';
+            
+            fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: message }) })
+                .then(r => r.text())
+                .then(response => { hideTyping(); addMessage(response, 'bot'); updateStats(); })
+                .catch(error => { hideTyping(); addMessage('I encountered an error. Please try again.', 'bot'); document.getElementById('status').textContent = 'Error'; });
+        }
+        
+        function addMessage(text, sender) {
+            const messages = document.getElementById('messages');
+            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const div = document.createElement('div');
+            div.className = 'message message-' + sender;
+            div.innerHTML = '<div class="message-content">' + text.replace(/\\n/g, '<br>') + '</div><div class="message-time">' + time + '</div>';
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function addCodeMessage(code, sender) {
+            const messages = document.getElementById('messages');
+            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const div = document.createElement('div');
+            div.className = 'message message-' + sender;
+            div.innerHTML = '<div class="message-content"><div class="code-block">' + escapeHtml(code) + '</div></div><div class="message-time">' + time + '</div>';
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '<',
+                '>': '>',
+                '"': '"',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+        
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typing';
+            div.className = 'typing';
+            div.innerHTML = 'Xander is typing<div class="typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+            document.getElementById('messages').appendChild(div);
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+        }
+        
+        function hideTyping() { const el = document.getElementById('typing'); if (el) el.remove(); }
+        function updateStats() { turnCount++; document.getElementById('turns').textContent = 'Turns: ' + turnCount; document.getElementById('status').textContent = 'Ready'; }
+        
+        function newChat() {
+            if (confirm('Start a new chat?')) {
+                document.getElementById('messages').innerHTML = '<div class="message message-bot"><div class="message-content">Let\'s start fresh! Hi there!<br><br>What would you like to talk about?</div><div class="message-time">' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + '</div></div>';
+                turnCount = 0; updateStats();
+            }
+        }
+        
+        function clearChat() {
+            if (confirm('Clear all messages?')) {
+                document.getElementById('messages').innerHTML = '<div class="message message-bot"><div class="message-content">Chat cleared!<br><br>What would you like to talk about?</div><div class="message-time">' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + '</div></div>';
+            }
+        }
+        
+        document.getElementById('messageInput').focus();
+        
+        function showVersions() {
+            addMessage('VirtualXander v0.2.0.0\n\nRelease Notes:\n- Enhanced conversation memory\n- Improved emotional intelligence\n- New growth partner features\n- Better context awareness', 'bot');
+        }
+        
+        function showHelp() {
+            addMessage('VirtualXander Help:\n\n• Type messages and press Enter or click Send\n• Use "New Chat" to start fresh\n• Use "Clear" to reset current chat\n• I can help with emotional support, creative writing, gaming discussions, and more!', 'bot');
+        }
+        
+        function showServerCode() {
+            fetch('/api/code')
+                .then(r => r.text())
+                .then(code => { addCodeMessage(code, 'bot'); })
+                .catch(error => { addMessage('Server Code: Unable to fetch code at this time.', 'bot'); });
+        }
+        
+        // Theme Toggle
+        let isDarkTheme = false;
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme', isDarkTheme);
+            localStorage.setItem('mentalbook-theme', isDarkTheme ? 'dark' : 'light');
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('mentalbook-theme');
+        if (savedTheme === 'dark') {
+            isDarkTheme = true;
+            document.body.classList.add('dark-theme');
+        }
+        
+        // Search functionality
+        function openSearch() {
+            document.getElementById('searchOverlay').style.display = 'block';
+            document.getElementById('searchBox').style.display = 'block';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').focus();
+            document.getElementById('searchResults').innerHTML = '';
+        }
+        
+        function closeSearch() {
+            document.getElementById('searchOverlay').style.display = 'none';
+            document.getElementById('searchBox').style.display = 'none';
+        }
+        
+        function handleSearchKey(event) {
+            if (event.key === 'Escape') {
+                closeSearch();
+            }
+        }
+        
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+            
+            if (!query) return;
+            
+            const messages = document.querySelectorAll('.message');
+            let found = 0;
+            
+            messages.forEach((msg, index) => {
+                const content = msg.textContent.toLowerCase();
+                if (content.includes(query)) {
+                    found++;
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'search-result';
+                    const sender = msg.classList.contains('message-user') ? 'You' : 'Xander';
+                    const text = msg.querySelector('.message-content').textContent.substring(0, 100) + '...';
+                    resultDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+                    resultDiv.onclick = () => {
+                        msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        msg.style.background = 'rgba(70,130,180,0.2)';
+                        setTimeout(() => msg.style.background = '', 2000);
+                        closeSearch();
+                    };
+                    resultsDiv.appendChild(resultDiv);
+                }
+            });
+            
+            if (found === 0) {
+                resultsDiv.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No messages found</div>';
+            } else {
+                resultsDiv.insertAdjacentHTML('afterbegin', `<div style="padding: 10px; color: #4682B4; font-weight: bold;">${found} result${found > 1 ? 's' : ''} found</div>`);
+            }
+        }
+        
+        // Export chat functionality
+        function exportChat() {
+            const messages = document.querySelectorAll('.message');
+            let exportText = 'VirtualXander Chat Export\n';
+            exportText += '========================\n\n';
+            exportText += 'Date: ' + new Date().toLocaleString() + '\n\n';
+            
+            messages.forEach(msg => {
+                const time = msg.querySelector('.message-time')?.textContent || '';
+                const content = msg.querySelector('.message-content')?.textContent || '';
+                const sender = msg.classList.contains('message-user') ? 'You' : 'Xander';
+                exportText += `[${time}] ${sender}: ${content}\n\n`;
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mentalbook-chat-' + new Date().toISOString().split('T')[0] + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            addMessage('Chat exported successfully! The file has been downloaded.', 'bot');
+        }
+        
+        // Shortcuts help
+        function showShortcuts() {
+            document.getElementById('shortcutsOverlay').style.display = 'block';
+            document.getElementById('shortcutsHelp').style.display = 'block';
+        }
+        
+        function closeShortcuts() {
+            document.getElementById('shortcutsOverlay').style.display = 'none';
+            document.getElementById('shortcutsHelp').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#4682B4</color>
+    <color name="primary_dark">#3A6A8F</color>
+    <color name="primary_light">#5A9FD4</color>
+    <color name="accent">#6495ED</color>
+    <color name="background">#F5F5FA</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#999999</color>
+    <color name="user_message">#4682B4</color>
+    <color name="bot_message">#FFFFFF</color>
+    <color name="loading_overlay">#80FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="divider">#E0E0E0</color>
+</resources>
+

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.*;
 
@@ -15,6 +16,7 @@ class ChatClientGUI {
     private JButton exitButton;
     private PrintWriter out;
     private BufferedReader in;
+    private Socket socket;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -49,18 +51,28 @@ class ChatClientGUI {
         panel.add(textField, BorderLayout.CENTER);
 
         sendButton = new JButton("Send");
-        sendButton.addActionListener(e -> sendMessage());
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendMessage();
+            }
+        });
         panel.add(sendButton, BorderLayout.EAST);
 
         exitButton = new JButton("Exit");
-        exitButton.addActionListener(e -> exitChat());
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exitChat();
+            }
+        });
         panel.add(exitButton, BorderLayout.SOUTH);
 
         frame.add(panel, BorderLayout.SOUTH);
         frame.setVisible(true);
 
         // Connect to the server
-        Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+        socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -78,6 +90,22 @@ class ChatClientGUI {
 
     private void exitChat() {
         out.println("exit");  // Send the exit message to the server
+        
+        // Close the socket and streams properly
+        try {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing resources: " + e.getMessage());
+        }
+        
         System.exit(0);
     }
 

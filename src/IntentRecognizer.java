@@ -20,7 +20,7 @@ public class IntentRecognizer {
     
     private void initializeIntentPatterns() {
         // Greetings intents
-        addIntentPattern("greeting", "^(hi|hello|hey|howdy|yo|sup|good morning|good afternoon|good evening|greetings)$");
+        addIntentPattern("greeting", "^(hi|hello|hey|howdy|yo|sup|good morning|good afternoon|good evening|greetings|good night)$");
         addIntentPattern("greeting", "\\b(hi|hello|hey|howdy|yo)\\b");
         
         // Identity intents
@@ -32,6 +32,11 @@ public class IntentRecognizer {
         addIntentPattern("wellbeing_response", "i am (good|great|fine|well|okay|ok|alright)");
         addIntentPattern("wellbeing_response", "i'?m (good|great|fine|well|okay|ok|alright)");
         addIntentPattern("wellbeing_response", "(good|great|fine|well|okay|ok|alright).*hbu|how about you");
+        // "wbu" abbreviation for "what about you"
+        addIntentPattern("wellbeing_response", "\\bwbu\\b");
+        // Specific "a lot" intent - should be checked before general positive responses
+        addIntentPattern("wellbeing_a_lot", "^a lot$");
+        addIntentPattern("wellbeing_a_lot", "\\ba lot\\b");
         addIntentPattern("wellbeing_response", "a lot|very much|lots|pretty good|pretty well");
         addIntentPattern("wellbeing_response", "\\b(good|great|fine|well|okay|ok|alright|fine\\.|doing well)\\b");
         addIntentPattern("wellbeing_day", "how was your day|how was your day\\?|how did your day go|how has your day been");
@@ -41,6 +46,10 @@ public class IntentRecognizer {
         // Activities intents
         addIntentPattern("activity", "what are you doing|wyd|what'?s up|what doing|up to");
         addIntentPattern("activity_response", "(studying|just chilling|relaxing|hanging out|nothing much|bored)");
+        // Typo-tolerant patterns for "nothing much" (common misspellings)
+        addIntentPattern("activity_response", "(mothing much|nothin much|nothng much|nuth much|noting much)");
+        addIntentPattern("activity_response", "(nothing muh|nothng mch|nothin mch|nuthn much)");
+
         
         // Academic intents
         addIntentPattern("homework_help", "(help with|help on|homework|assignment|task|project).*\\?");
@@ -49,22 +58,38 @@ public class IntentRecognizer {
         
         // Mental health intents
         addIntentPattern("mental_health_support", "(stressed|anxious|depressed|sad|lonely|angry|overwhelmed|tired|not feeling good)");
+        addIntentPattern("mental_health_support", "(feeling (down|bad|low)|having a hard time|struggling|getting tough|life is tough)");
         addIntentPattern("mental_health_support", "(need to talk|feeling (down|bad|low)|having a hard time)");
         addIntentPattern("mental_health_support", "(dark thoughts|intrusive thoughts|negative thoughts)");
+        addIntentPattern("mental_health_support", "(need someone to talk|need someone|i need someone|want to talk|need to vent)");
         addIntentPattern("mental_health_positive", "(happy|excited|motivated|inspired|relaxed|calm|peaceful|grateful|confident)");
         
         // Gaming intents
-        addIntentPattern("gaming", "(fortnite|cs2|counter.?strike|cs:?go|valorant|apex|minecraft|roblox|gaming)");
+        addIntentPattern("gaming_game", "(fortnite|cs2|counter.?strike|cs:?go|valorant|apex|minecraft|roblox|gaming)");
+        addIntentPattern("gaming", "(league of legends|league|lol|overwatch|pubg|gta)");
+        addIntentPattern("gaming", "(want to play|let'?s play|i want to play|want to game|i want to game)");
+        addIntentPattern("gaming", "(play (a )?game|playing games|play video games|video gaming)");
+        addIntentPattern("gaming", "\\b(play|gaming|gamer|gamers)\\b");
         addIntentPattern("gaming_weapon", "(assault rifle|sniper|shotgun|pistol|smg|rocket launcher|ak-47|m4|awp|deagle)");
         addIntentPattern("gaming_map", "(mirage|dust ?2|inferno|nuke|ancient|overpass|vertigo|train|cache|cobblestone)");
         
+        // Gaming recommendation intents
+        addIntentPattern("gaming_recommendation", "(game recommendation|games recommendation|recommend.*game|recommend.*games|recommendation.*game|recommendation.*games)");
+        addIntentPattern("gaming_recommendation", "(any game|any games|what game|what games|which game|which games)");
+        addIntentPattern("gaming_recommendation", "(new game|new games|suggest.*game|suggest.*games)");
+        addIntentPattern("gaming_recommendation", "(looking for.*game|looking for.*games|need.*game|need.*games)");
+        addIntentPattern("gaming_recommendation", "(favorite game|favorite games|best game|best games|top game|top games)");
+        
         // Creative writing intents
         addIntentPattern("creative_writing", "(writing a (book|story|poem|article)|creative writing|story idea|write about)");
-        addIntentPattern("creative_writing_topic", "(mystery|romance|sci-fi|science fiction|fantasy|dystopian|historical|thriller)");
+        addIntentPattern("creative_writing", "(i want to|i'd like to|i need to|i will|i'm going to).*write");
+        addIntentPattern("creative_writing_topic", "(mystery|romance|sci-fi|science fiction|fantasy|dystopian|historical|thriller|poetry|poem|writing)");
         
         // Entertainment intents
-        addIntentPattern("entertainment", "(movie|tv|show|music|sport|game|hobby|interest|favorite)");
-        addIntentPattern("entertainment_type", "\\b(sports|movies|tv shows|books|art|animals|video games|music|programming)\\b");
+        addIntentPattern("entertainment_type", "(movie|tv|show|music|sport|game|hobby|interest)");
+        addIntentPattern("entertainment", "\\b((favourite|best|top)\\b.*\\b(favorite))\\b");
+        addIntentPattern("entertainment", "\\b(sports|movies|tv shows|books|art|animals|video games|music|programming)\\b");
+        addIntentPattern("entertainment", "\\b(what's on (netflix)|what's on (hulu)|what's on (disney\\+)|what's on (prime video)|what's on (amazon prime)|what's on (hbomax))\\b");
         
         // Advice intents
         addIntentPattern("advice", "(need advice|tips|suggestions|how to|advice on|guidance)");
@@ -82,6 +107,7 @@ public class IntentRecognizer {
         
         // Unknown/Conversation continuation
         addIntentPattern("continue", "(yes|yeah|no|nope|maybe|i don'?t know|idk|oh|wow|cool|awesome)");
+        addIntentPattern("continue", "(make me laugh|lol|haha|funny|joke)");
         
         // Creative/AI project intents
         addIntentPattern("creative_project", "(building (a )?(robot|ai|app|website|game)|creating|designing|developing)");
@@ -92,14 +118,23 @@ public class IntentRecognizer {
         
         // Breakup intents (higher priority)
         addIntentPattern("breakup", "(my ex|ex boyfriend|ex girlfriend|broke up|break up|breakup|heartbroken|heartbreak|dumped|separated|I'm heartbroken|I broke up)");
-        addIntentPattern("breakup", "\\b(broke up|breakup|break up|heartbroken|dumped)\\b");
+        addIntentPattern("broke up", "\\b(broke up|breakup|break up|heartbroken|dumped)\\b");
         
         // Philosophical intents
         addIntentPattern("philosophical", "(purpose|meaning of life|life|mind|consciousness|existence)");
         
         // Confusion/Clarification intent for single words like "what", "huh"
-        addIntentPattern("confusion", "^(what|huh|what\\?|why\\?|who\\?|where\\?|when\\?|how\\?|uh\\|excuse me\\?)$");
-        addIntentPattern("confusion", "\\b(what|huh)\\b");
+        addIntentPattern("confusion", "^(what|huh|what\\?|why\\?|who\\?|where\\?|when\\?|how\\?|uh|excuse me\\?|why|hmm)$");
+        addIntentPattern("confusion", "\\b(what|huh|why|hmm)\\b");
+        
+        // Hesitation intent for "um", "uh", "hm" - indicates user is thinking or hesitant
+        addIntentPattern("hesitation", "^(um|uh|hm|hmm|er|ah|uhm|uhh|umm|umms)$");
+        addIntentPattern("hesitation", "\\b(um|uh|hm|hmm|er|ah|uhm|uhh|umm|umms)\\b");
+        
+        // Milestone/Achievement intents
+        addIntentPattern("milestone_celebration", "(i got|i've got|i got promoted|i graduated|i won|i achieved|i finished|i completed)");
+        addIntentPattern("milestone_celebration", "\\b(promoted|graduated|won|achieved|finished|completed)\\b");
+        addIntentPattern("milestone_celebration", "(promotion|graduation|championship|trophy|award)");
         
         // Initialize confidence scores
         for (String intent : intentPatterns.keySet()) {

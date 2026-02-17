@@ -1,6 +1,4 @@
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * State Machine for Conversation Flow in VirtualXander
@@ -8,19 +6,15 @@ import java.util.function.Predicate;
  */
 public class ConversationStateMachine {
     
-    private Map<String, ConversationState> states;
     private ConversationState currentState;
     private Map<StateTransition, ConversationState> transitions;
     private Map<String, Object> stateData;
     private List<StateChangeListener> listeners;
-    private Random random;
     
     public ConversationStateMachine() {
-        this.states = new HashMap<>();
         this.transitions = new HashMap<>();
         this.stateData = new HashMap<>();
         this.listeners = new ArrayList<>();
-        this.random = new Random();
         initializeStates();
         initializeTransitions();
     }
@@ -64,18 +58,10 @@ public class ConversationStateMachine {
     private static class StateTransition {
         ConversationState from;
         String intent;
-        Predicate<ConversationStateMachine> condition;
         
         public StateTransition(ConversationState from, String intent) {
             this.from = from;
             this.intent = intent;
-            this.condition = sm -> true;
-        }
-        
-        public StateTransition(ConversationState from, String intent, Predicate<ConversationStateMachine> condition) {
-            this.from = from;
-            this.intent = intent;
-            this.condition = condition;
         }
         
         @Override

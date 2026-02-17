@@ -1,0 +1,798 @@
+<parameter name="content">import java.util.*;
+import java.util.regex.*;
+
+/**
+ * Knowledge Network for VirtualXander
+ * Creates connections between concepts, topics, and ideas
+ * 
+ * Features:
+ * - Related topic linking
+ * - Cross-domain associations
+ * - Interesting tangents
+ * - Knowledge depth levels
+ */
+public class KnowledgeNetwork {
+    
+    private Random random;
+    
+    // Concept graph nodes
+    private Map<String, ConceptNode> conceptNodes;
+    
+    // Domain clusters
+    private Map<String, Set<String>> domainClusters;
+    
+    // Interesting tangents
+    private List<Tangent> tangents;
+    
+    /**
+     * Knowledge depth levels for different explanations
+     */
+    public enum KnowledgeDepth {
+        SURFACE("Quick facts", 1),
+        NUANCE("Interesting nuances", 2),
+        DEEP("Deep explanations", 3),
+        EXPERT("Expert-level details", 4);
+        
+        private final String description;
+        private final int level;
+        
+        KnowledgeDepth(String description, int level) {
+            this.description = description;
+            this.level = level;
+        }
+        
+        public String getDescription() {
+            return description;
+        }
+        
+        public int getLevel() {
+            return level;
+        }
+    }
+    
+    /**
+     * Concept node with multi-level knowledge
+     */
+    private static class ConceptNode {
+        String concept;
+        Set<String> relatedConcepts;
+        Set<String> domains;
+        double relevanceScore;
+        List<String> surfaceFacts;
+        List<String> nuances;
+        List<String> deepExplanations;
+        List<String> expertDetails;
+        List<String> connections;
+        
+        ConceptNode(String concept) {
+            this.concept = concept;
+            this.relatedConcepts = new HashSet<>();
+            this.domains = new HashSet<>();
+            this.relevanceScore = 0.5;
+            this.surfaceFacts = new ArrayList<>();
+            this.nuances = new ArrayList<>();
+            this.deepExplanations = new ArrayList<>();
+            this.expertDetails = new ArrayList<>();
+            this.connections = new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Interesting tangent for conversation
+     */
+    private static class Tangent {
+        String trigger;
+        String tangent;
+        String connection;
+        double surpriseFactor;
+        KnowledgeDepth depth;
+        
+        Tangent(String trigger, String tangent, String connection, double surprise) {
+            this.trigger = trigger;
+            this.tangent = tangent;
+            this.connection = connection;
+            this.surpriseFactor = surprise;
+            this.depth = KnowledgeDepth.NUANCE;
+        }
+        
+        Tangent(String trigger, String tangent, String connection, double surprise, KnowledgeDepth depth) {
+            this.trigger = trigger;
+            this.tangent = tangent;
+            this.connection = connection;
+            this.surpriseFactor = surprise;
+            this.depth = depth;
+        }
+    }
+    
+    public KnowledgeNetwork() {
+        this.random = new Random();
+        this.conceptNodes = new HashMap<>();
+        this.domainClusters = new HashMap<>();
+        this.tangents = new ArrayList<>();
+        
+        initializeDomainClusters();
+        initializeTangents();
+        initializeConceptConnections();
+    }
+    
+    // ==================== INITIALIZATION ====================
+    
+    /**
+     * Initialize domain clusters for cross-domain associations
+     */
+    private void initializeDomainClusters() {
+        // Technology domain
+        Set<String> tech = new HashSet<>();
+        tech.add("ai");
+        tech.add("computers");
+        tech.add("internet");
+        tech.add("programming");
+        tech.add("robots");
+        tech.add("phones");
+        tech.add("software");
+        domainClusters.put("technology", tech);
+        
+        // Science domain
+        Set<String> science = new HashSet<>();
+        science.add("physics");
+        science.add("biology");
+        science.add("chemistry");
+        science.add("space");
+        science.add("universe");
+        science.add("evolution");
+        science.add("quantum");
+        domainClusters.put("science", science);
+        
+        // Philosophy domain
+        Set<String> philosophy = new HashSet<>();
+        philosophy.add("meaning");
+        philosophy.add("purpose");
+        philosophy.add("consciousness");
+        philosophy.add("identity");
+        philosophy.add("ethics");
+        philosophy.add("reality");
+        philosophy.add("existence");
+        domainClusters.put("philosophy", philosophy);
+        
+        // Psychology domain
+        Set<String> psychology = new HashSet<>();
+        psychology.add("emotions");
+        psychology.add("behavior");
+        psychology.add("memory");
+        psychology.add("learning");
+        psychology.add("motivation");
+        psychology.add("perception");
+        psychology.add("intelligence");
+        domainClusters.put("psychology", psychology);
+        
+        // Arts domain
+        Set<String> arts = new HashSet<>();
+        arts.add("music");
+        arts.add("writing");
+        arts.add("painting");
+        arts.add("film");
+        arts.add("creativity");
+        arts.add("design");
+        arts.add("literature");
+        domainClusters.put("arts", arts);
+        
+        // Life domain
+        Set<String> life = new HashSet<>();
+        life.add("relationships");
+        life.add("career");
+        life.add("health");
+        life.add("happiness");
+        life.add("success");
+        life.add("growth");
+        life.add("productivity");
+        domainClusters.put("life", life);
+    }
+    
+    /**
+     * Initialize interesting tangents
+     */
+    private void initializeTangents() {
+        tangents.add(new Tangent(
+            "time",
+            "Did you know that time moves differently depending on your perspective?",
+            "Time perception is linked to dopamine levels and novel experiences.",
+            0.7,
+            KnowledgeDepth.SURFACE
+        ));
+        
+        tangents.add(new Tangent(
+            "memory",
+            "Speaking of memory, your brain actually reconstructs memories each time you recall them.",
+            "This means memories can subtly change with each recollection - they're not fixed recordings.",
+            0.8,
+            KnowledgeDepth.NUANCE
+        ));
+        
+        tangents.add(new Tangent(
+            "language",
+            "Here's a fun fact: some languages don't have words for 'left' and 'right' - only cardinal directions.",
+            "This affects how speakers think about space and direction - they always know which way is north!",
+            0.9,
+            KnowledgeDepth.SURFACE
+        ));
+        
+        tangents.add(new Tangent(
+            "music",
+            "Music affects your brain chemistry - even sad music can trigger dopamine release.",
+            "This is why we seek out emotional music during different life phases - it helps us process feelings.",
+            0.7,
+            KnowledgeDepth.NUANCE
+        ));
+        
+        tangents.add(new Tangent(
+            "sleep",
+            "Your brain cleans itself while you sleep - it's like a nightly maintenance cycle.",
+            "The glymphatic system flushes out toxins including beta-amyloid, linked to Alzheimer's disease.",
+            0.8,
+            KnowledgeDepth.DEEP
+        ));
+        
+        tangents.add(new Tangent(
+            "learning",
+            "The most effective learning happens when you're slightly uncomfortable.",
+            "This is called the 'zone of proximal development' - just beyond your current skills.",
+            0.6,
+            KnowledgeDepth.NUANCE
+        ));
+        
+        tangents.add(new Tangent(
+            "emotions",
+            "Emotions are actually predictions your brain makes about bodily states.",
+            "The interoceptive prediction error model suggests emotions arise from brain's best guess about body sensations.",
+            0.9,
+            KnowledgeDepth.EXPERT
+        ));
+        
+        tangents.add(new Tangent(
+            "technology",
+            "The average smartphone has more computing power than the Apollo spacecraft.",
+            "We carry supercomputers in our pockets and use them to look at pictures of cats.",
+            0.7,
+            KnowledgeDepth.SURFACE
+        ));
+        
+        tangents.add(new Tangent(
+            "relationships",
+            "Research shows that close relationships are the strongest predictor of happiness.",
+            "Even more than wealth or success. Quality time matters more than quantity.",
+            0.6,
+            KnowledgeDepth.SURFACE
+        ));
+        
+        tangents.add(new Tangent(
+            "creativity",
+            "Your brain is most creative when it's slightly bored.",
+            "This is why great ideas often come during mundane activities like showering or walking - default mode activation.",
+            0.8,
+            KnowledgeDepth.DEEP
+        ));
+    }
+    
+    /**
+     * Initialize concept connections with multi-level knowledge
+     */
+    private void initializeConceptConnections() {
+        // Motivation
+        addConcept("motivation", 
+            Set.of("goals", "habits", "discipline", "purpose", "inspiration"),
+            "psychology",
+            "Motivation is the drive that initiates behavior.",
+            Arrays.asList("Motivation follows action, not the other way around."),
+            Arrays.asList("The motivation to avoid loss is twice as powerful as the motivation to gain."),
+            Arrays.asList("Self-determination theory suggests autonomy, competence, and relatedness drive motivation."),
+            Arrays.asList("Dopamine prediction errors explain why novel rewards are more motivating than familiar ones."));
+        
+        // Creativity
+        addConcept("creativity",
+            Set.of("imagination", "innovation", "art", "problem-solving", "curiosity"),
+            "arts",
+            "Creativity emerges from the intersection of different domains.",
+            Arrays.asList("Daydreaming activates the brain's default mode network."),
+            Arrays.asList("Boredom can boost creative thinking by encouraging mental exploration."),
+            Arrays.asList("The Default Mode Network and Executive Control Network work together during creative insight."),
+            Arrays.asList("Remote associate theory: creativity involves finding connections between seemingly unrelated concepts."));
+        
+        // Learning
+        addConcept("learning",
+            Set.of("memory", "practice", "feedback", "curiosity", "growth"),
+            "psychology",
+            "Learning is the process of acquiring new understanding.",
+            Arrays.asList("Spaced repetition is 40% more effective than cramming."),
+            Arrays.asList("Teaching what you learn can increase retention by up to 90%."),
+            Arrays.asList("The forgetting curve shows we lose 70% of new info within 24 hours without review."),
+            Arrays.asList("Spaced repetition exploits the spacing effect by optimizing review intervals based on retention rates."));
+        
+        // Communication
+        addConcept("communication",
+            Set.of("listening", "empathy", "clarity", "body language", "context"),
+            "psychology",
+            "Communication is more than words - it's understanding.",
+            Arrays.asList("Only 7% of communication comes from words."),
+            Arrays.asList("Deep conversations trigger the same brain regions as physical pleasure."),
+            Arrays.asList("Oxytocin release during meaningful conversations promotes trust and bonding."),
+            Arrays.asList("Mirror neuron systems explain why we literally feel what others communicate."));
+        
+        // Productivity
+        addConcept("productivity",
+            Set.of("focus", "time management", "priorities", "habits", "energy"),
+            "life",
+            "Productivity is about effectiveness, not just efficiency.",
+            Arrays.asList("The most productive people work in 90-minute focused intervals."),
+            Arrays.asList("Taking breaks can increase productivity by up to 34%."),
+            Arrays.asList("Ultradian rhythms suggest 90-120 minute work cycles match natural energy patterns."),
+            Arrays.asList("Attention residue theory explains why task-switching costs 40% more time than mono-tasking."));
+        
+        // Happiness
+        addConcept("happiness",
+            Set.of("gratitude", "purpose", "relationships", "health", "achievement"),
+            "psychology",
+            "Happiness is less about achievement and more about appreciation.",
+            Arrays.asList("Happiness is 50% genetic, 10% circumstances, and 40% daily habits."),
+            Arrays.asList("Acts of kindness release dopamine, creating a 'helper's high.'"),
+            Arrays.asList("Positive psychology interventions show lasting well-being improvements."),
+            Arrays.asList("The hedonic adaptation set-point explains why we return to baseline happiness after events."));
+        
+        // Success
+        addConcept("success",
+            Set.of("failure", "resilience", "learning", "goals", "mindset"),
+            "life",
+            "Success is a journey, not a destination.",
+            Arrays.asList("Failure is often the best teacher."),
+            Arrays.asList("Grit - passion and perseverance - predicts success more than IQ."),
+            Arrays.asList("Growth mindset research shows believing abilities can develop leads to greater achievement."),
+            Arrays.asList("Deliberate practice in the top 10% of one's field accounts for most expert performance differences."));
+        
+        // Relationships
+        addConcept("relationships",
+            Set.of("trust", "communication", "boundaries", "empathy", "respect"),
+            "life",
+            "Relationships are the mirror by which we discover ourselves.",
+            Arrays.asList("It takes about 50 hours to go from acquaintance to friend."),
+            Arrays.asList("Deep conversations trigger the same brain regions as physical pleasure."),
+            Arrays.asList("The Gottman research shows contempt is the strongest predictor of relationship dissolution."),
+            Arrays.asList("Attachment theory explains how early relational patterns influence adult relationship dynamics."));
+        
+        // Technology
+        addConcept("technology",
+            Set.of("ai", "innovation", "automation", "connection", "ethics"),
+            "technology",
+            "Technology shapes how we think, feel, and connect.",
+            Arrays.asList("Smartphones have more computing power than Apollo spacecraft."),
+            Arrays.asList("The average person touches their phone 2,617 times daily."),
+            Arrays.asList("Attention economy models explain how technology companies compete for your focus."),
+            Arrays.asList("Persuasive technology design exploits psychological vulnerabilities for engagement."));
+        
+        // Consciousness
+        addConcept("consciousness",
+            Set.of("awareness", "perception", "identity", "mind", "experience"),
+            "philosophy",
+            "Consciousness remains one of science's greatest mysteries.",
+            Arrays.asList("Consciousness is what makes us aware of our existence."),
+            Arrays.asList("The 'hard problem' of consciousness asks why we have experience at all."),
+            Arrays.asList("Integrated information theory (IIT) proposes consciousness correlates with integrated information."),
+            Arrays.asList("Global Workspace Theory suggests consciousness arises from information being broadcast across brain networks."));
+    }
+    
+    /**
+     * Add a concept node with multi-level knowledge
+     */
+    private void addConcept(String concept, Set<String> related, String domain, 
+                           String description, List<String> surface, List<String> nuances,
+                           List<String> deep, List<String> expert) {
+        ConceptNode node = new ConceptNode(concept);
+        node.relatedConcepts.addAll(related);
+        node.domains.add(domain);
+        node.connections.add(description);
+        node.surfaceFacts.addAll(surface);
+        node.nuances.addAll(nuances);
+        node.deepExplanations.addAll(deep);
+        node.expertDetails.addAll(expert);
+        
+        conceptNodes.put(concept.toLowerCase(), node);
+    }
+    
+    // ==================== KNOWLEDGE DEPTH METHODS ====================
+    
+    /**
+     * Get explanation at specified depth level
+     */
+    public String getKnowledge(String concept, KnowledgeDepth depth) {
+        String lowerConcept = concept.toLowerCase();
+        
+        if (!conceptNodes.containsKey(lowerConcept)) {
+            return null;
+        }
+        
+        ConceptNode node = conceptNodes.get(lowerConcept);
+        Random rand = new Random();
+        
+        switch (depth) {
+            case SURFACE:
+                if (!node.surfaceFacts.isEmpty()) {
+                    return node.surfaceFacts.get(rand.nextInt(node.surfaceFacts.size()));
+                }
+                return node.connections.get(0);
+                
+            case NUANCE:
+                if (!node.nuances.isEmpty()) {
+                    return node.nuances.get(rand.nextInt(node.nuances.size()));
+                }
+                // Fall back to surface
+                if (!node.surfaceFacts.isEmpty()) {
+                    return node.surfaceFacts.get(rand.nextInt(node.surfaceFacts.size()));
+                }
+                return node.connections.get(0);
+                
+            case DEEP:
+                if (!node.deepExplanations.isEmpty()) {
+                    return node.deepExplanations.get(rand.nextInt(node.deepExplanations.size()));
+                }
+                // Fall back to nuance
+                if (!node.nuances.isEmpty()) {
+                    return node.nuances.get(rand.nextInt(node.nuances.size()));
+                }
+                return node.connections.get(0);
+                
+            case EXPERT:
+                if (!node.expertDetails.isEmpty()) {
+                    return node.expertDetails.get(rand.nextInt(node.expertDetails.size()));
+                }
+                // Fall back to deep
+                if (!node.deepExplanations.isEmpty()) {
+                    return node.deepExplanations.get(rand.nextInt(node.deepExplanations.size()));
+                }
+                return node.connections.get(0);
+                
+            default:
+                return node.connections.get(0);
+        }
+    }
+    
+    /**
+     * Get progressive explanation that builds from surface to expert
+     */
+    public List<String> getProgressiveExplanation(String concept) {
+        List<String> explanation = new ArrayList<>();
+        String lowerConcept = concept.toLowerCase();
+        
+        if (!conceptNodes.containsKey(lowerConcept)) {
+            return explanation;
+        }
+        
+        ConceptNode node = conceptNodes.get(lowerConcept);
+        Random rand = new Random();
+        
+        // Surface
+        if (!node.surfaceFacts.isEmpty()) {
+            explanation.add("[SURFACE] " + node.surfaceFacts.get(rand.nextInt(node.surfaceFacts.size())));
+        }
+        
+        // Nuance
+        if (!node.nuances.isEmpty()) {
+            explanation.add("[NUANCE] " + node.nuances.get(rand.nextInt(node.nuances.size())));
+        }
+        
+        // Deep
+        if (!node.deepExplanations.isEmpty()) {
+            explanation.add("[DEEP] " + node.deepExplanations.get(rand.nextInt(node.deepExplanations.size())));
+        }
+        
+        // Expert
+        if (!node.expertDetails.isEmpty()) {
+            explanation.add("[EXPERT] " + node.expertDetails.get(rand.nextInt(node.expertDetails.size())));
+        }
+        
+        return explanation;
+    }
+    
+    /**
+     * Choose appropriate depth based on context
+     */
+    public KnowledgeDepth chooseDepth(String context) {
+        String lowerContext = context.toLowerCase();
+        Random rand = new Random();
+        
+        // Quick casual mention
+        if (lowerContext.contains("quick") || lowerContext.contains("just wondering") || 
+            lowerContext.contains("btw") || lowerContext.contains("by the way")) {
+            return KnowledgeDepth.SURFACE;
+        }
+        
+        // Deep discussion
+        if (lowerContext.contains("why") || lowerContext.contains("how does") || 
+            lowerContext.contains("explain") || lowerContext.contains("tell me more")) {
+            return KnowledgeDepth.DEEP;
+        }
+        
+        // Expert or technical context
+        if (lowerContext.contains("actually") || lowerContext.contains("really") || 
+            lowerContext.contains("in depth") || lowerContext.contains("the truth is")) {
+            return KnowledgeDepth.EXPERT;
+        }
+        
+        // Default to nuance for balanced depth
+        return KnowledgeDepth.NUANCE;
+    }
+    
+    /**
+     * Get knowledge with context-appropriate depth
+     */
+    public String getContextualKnowledge(String concept, String context) {
+        KnowledgeDepth depth = chooseDepth(context);
+        return getKnowledge(concept, depth);
+    }
+    
+    // ==================== CONCEPT CONNECTIONS ====================
+    
+    /**
+     * Find related concepts to a topic
+     */
+    public List<String> findRelatedConcepts(String topic) {
+        List<String> related = new ArrayList<>();
+        String lowerTopic = topic.toLowerCase();
+        
+        // Direct match
+        if (conceptNodes.containsKey(lowerTopic)) {
+            related.addAll(conceptNodes.get(lowerTopic).relatedConcepts);
+        }
+        
+        // Partial match
+        for (String key : conceptNodes.keySet()) {
+            if (lowerTopic.contains(key) || key.contains(lowerTopic)) {
+                related.addAll(conceptNodes.get(key).relatedConcepts);
+            }
+        }
+        
+        // Domain-based matching
+        for (String domain : domainClusters.keySet()) {
+            if (domainClusters.get(domain).contains(lowerTopic)) {
+                related.addAll(domainClusters.get(domain));
+            }
+        }
+        
+        return related;
+    }
+    
+    /**
+     * Get cross-domain associations
+     */
+    public List<String> getCrossDomainAssociations(String topic) {
+        List<String> associations = new ArrayList<>();
+        String lowerTopic = topic.toLowerCase();
+        
+        Set<String> topicDomains = new HashSet<>();
+        for (String domain : domainClusters.keySet()) {
+            if (domainClusters.get(domain).contains(lowerTopic)) {
+                topicDomains.add(domain);
+            }
+        }
+        
+        for (String domain : domainClusters.keySet()) {
+            if (!topicDomains.contains(domain)) {
+                for (String concept : domainClusters.get(domain)) {
+                    if (conceptNodes.containsKey(concept)) {
+                        ConceptNode node = conceptNodes.get(concept);
+                        for (String related : node.relatedConcepts) {
+                            if (related.toLowerCase().contains(lowerTopic) || 
+                                lowerTopic.contains(related.toLowerCase())) {
+                                associations.add("[" + domain.toUpperCase() + "] " + 
+                                    capitalize(node.concept) + ": " + node.connections.get(0));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return associations;
+    }
+    
+    /**
+     * Generate interesting tangent based on topic
+     */
+    public String generateTangent(String topic) {
+        String lowerTopic = topic.toLowerCase();
+        
+        for (Tangent tangent : tangents) {
+            if (lowerTopic.contains(tangent.trigger)) {
+                return tangent.tangent + " " + tangent.connection;
+            }
+        }
+        
+        for (String domain : domainClusters.keySet()) {
+            if (domainClusters.get(domain).contains(lowerTopic)) {
+                return generateDomainTangent(domain, topic);
+            }
+        }
+        
+        Tangent randomTangent = tangents.get(random.nextInt(tangents.size()));
+        return randomTangent.tangent + " " + randomTangent.connection;
+    }
+    
+    /**
+     * Generate tangent for a domain
+     */
+    private String generateDomainTangent(String domain, String topic) {
+        String[] domainTangents = {
+            "technology: " + "Here's something fascinating about " + topic + " - it connects to how our brains process information.",
+            "science: " + "Speaking of " + topic + ", did you know that scientific understanding of this has evolved dramatically?",
+            "philosophy: " + topic + " makes me wonder - philosophers have debated this for centuries.",
+            "psychology: " + "There's interesting research on how " + topic + " affects our mental states.",
+            "arts: " + topic + " has inspired countless artists throughout history.",
+            "life: " + "When it comes to " + topic + ", experience really is the best teacher."
+        };
+        
+        return domainTangents[new Random().nextInt(domainTangents.length)];
+    }
+    
+    /**
+     * Get concept description
+     */
+    public String getConceptDescription(String concept) {
+        String lowerConcept = concept.toLowerCase();
+        
+        if (conceptNodes.containsKey(lowerConcept)) {
+            return conceptNodes.get(lowerConcept).connections.get(0);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get fun fact about concept
+     */
+    public String getFunFact(String concept) {
+        return getKnowledge(concept, KnowledgeDepth.SURFACE);
+    }
+    
+    /**
+     * Build conversation bridge between topics
+     */
+    public String buildConversationBridge(String fromTopic, String toTopic) {
+        String lowerFrom = fromTopic.toLowerCase();
+        String lowerTo = toTopic.toLowerCase();
+        
+        String commonDomain = findCommonDomain(lowerFrom, lowerTo);
+        
+        if (commonDomain != null) {
+            return "Speaking of " + fromTopic + ", it reminds me that " + 
+                   "in the realm of " + commonDomain + ", " + toTopic + 
+                   " is actually connected in an interesting way.";
+        }
+        
+        Set<String> fromRelated = new HashSet<>(findRelatedConcepts(lowerFrom));
+        Set<String> toRelated = new HashSet<>(findRelatedConcepts(lowerTo));
+        
+        fromRelated.retainAll(toRelated);
+        
+        if (!fromRelated.isEmpty()) {
+            String bridgeConcept = fromRelated.iterator().next();
+            return "That connects to " + toTopic + " through the concept of " + 
+                   bridgeConcept + ". They're more related than they might seem.";
+        }
+        
+        return "Shifting from " + fromTopic + " to " + toTopic + ", " +
+               "there's actually an interesting connection worth exploring.";
+    }
+    
+    /**
+     * Find common domain between two topics
+     */
+    private String findCommonDomain(String topic1, String topic2) {
+        for (String domain : domainClusters.keySet()) {
+            Set<String> concepts = domainClusters.get(domain);
+            if (concepts.contains(topic1) && concepts.contains(topic2)) {
+                return domain;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Get all concepts in a domain
+     */
+    public List<String> getDomainConcepts(String domain) {
+        if (domainClusters.containsKey(domain)) {
+            return new ArrayList<>(domainClusters.get(domain));
+        }
+        return new ArrayList<>();
+    }
+    
+    /**
+     * Search for concepts matching query
+     */
+    public List<String> searchConcepts(String query) {
+        List<String> matches = new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+        
+        for (String key : conceptNodes.keySet()) {
+            if (key.contains(lowerQuery) || lowerQuery.contains(key)) {
+                matches.add(capitalize(key));
+            }
+        }
+        
+        for (String domain : domainClusters.keySet()) {
+            if (domain.contains(lowerQuery)) {
+                matches.add("Domain: " + capitalize(domain));
+            }
+        }
+        
+        return matches;
+    }
+    
+    /**
+     * Get concept network visualization
+     */
+    public String getConceptNetwork(String topic) {
+        StringBuilder network = new StringBuilder();
+        network.append("Concept Network for: ").append(capitalize(topic)).append("\n\n");
+        
+        String lowerTopic = topic.toLowerCase();
+        
+        if (conceptNodes.containsKey(lowerTopic)) {
+            ConceptNode node = conceptNodes.get(lowerTopic);
+            network.append("Related Concepts:\n");
+            for (String related : node.relatedConcepts) {
+                network.append("  - ").append(capitalize(related)).append("\n");
+            }
+            network.append("\nDomains: ").append(String.join(", ", node.domains)).append("\n");
+        } else {
+            network.append("No direct concept found. Here are related topics:\n");
+            List<String> related = findRelatedConcepts(topic);
+            for (String r : related.stream().limit(5).toArray(String[]::new)) {
+                network.append("  - ").append(capitalize(r)).append("\n");
+            }
+        }
+        
+        return network.toString();
+    }
+    
+    /**
+     * Capitalize first letter
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+    
+    // ==================== STATISTICS ====================
+    
+    /**
+     * Get network statistics
+     */
+    public Map<String, Object> getStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalConcepts", conceptNodes.size());
+        stats.put("totalDomains", domainClusters.size());
+        stats.put("totalTangents", tangents.size());
+        
+        Map<String, Integer> domainCounts = new HashMap<>();
+        for (String domain : domainClusters.keySet()) {
+            domainCounts.put(domain, domainClusters.get(domain).size());
+        }
+        stats.put("domainBreakdown", domainCounts);
+        
+        // Knowledge depth coverage
+        Map<String, Integer> depthCoverage = new HashMap<>();
+        int conceptsWithSurface = 0, conceptsWithNuance = 0, conceptsWithDeep = 0, conceptsWithExpert = 0;
+        for (ConceptNode node : conceptNodes.values()) {
+            if (!node.surfaceFacts.isEmpty()) conceptsWithSurface++;
+            if (!node.nuances.isEmpty()) conceptsWithNuance++;
+            if (!node.deepExplanations.isEmpty()) conceptsWithDeep++;
+            if (!node.expertDetails.isEmpty()) conceptsWithExpert++;
+        }
+        depthCoverage.put("surface", conceptsWithSurface);
+        depthCoverage.put("nuance", conceptsWithNuance);
+        depthCoverage.put("deep", conceptsWithDeep);
+        depthCoverage.put("expert", conceptsWithExpert);
+        stats.put("depthCoverage", depthCoverage);
+        
+        return stats;
+    }
+}
+</parameter>

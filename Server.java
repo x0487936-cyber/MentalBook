@@ -1,12 +1,10 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.*;
 
 class ChatServer {
     private static final int PORT = 12345;
     private static Set<PrintWriter> clientWriters = new HashSet<>();
-    private static ExecutorService pool = Executors.newFixedThreadPool(100);
 
     public static void main(String[] args) {
         System.out.println("Chat server started...");

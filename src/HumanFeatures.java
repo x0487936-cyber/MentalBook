@@ -55,6 +55,13 @@ public class HumanFeatures {
             this.state = new HashMap<>();
             this.attempts = 0;
         }
+        
+        /**
+         * Get the game type
+         */
+        public String getGameType() {
+            return gameType;
+        }
     }
     
     public HumanFeatures() {
@@ -76,7 +83,22 @@ public class HumanFeatures {
             "I discovered that sloths can hold their breath longer than dolphins can (up to 40 minutes vs 20). Who would've thought?",
             "Here's something fun: A group of flamingos is called a 'flamboyance'. Such a fitting name!",
             "I found out that butterflies taste with their feet. Imagine if you had to stand on your food to taste it!",
-            "Did you know that a day on Venus is longer than its year? Time works differently across the universe!"
+            "Did you know that a day on Venus is longer than its year? Time works differently across the universe!",
+            "I learned that wombat poop is cube-shaped! Nature has the weirdest solutions!",
+            "I came across something fascinating - Scotland has 421 words for snow! Language is incredible!",
+            "Did you know that heart cells can continue to beat outside the body? Pretty amazing, right?",
+            "I read that avocadoes have been around for millions of years - even before humans existed!",
+            "Here's something mind-blowing: There's a planet made of diamond! Imagine the jewelry market!",
+            "I discovered that humans share 60% of their DNA with bananas. We're practically fruit siblings!",
+            "You won't believe this - there's a species of ant that explodes when threatened! Talk about dedication!",
+            "I found out that the ocean produces more than 50% of the oxygen we breathe. Our seas are life-savers!",
+            "I came across a story about a cat who served as a mayor of an Alaskan town for 20 years!",
+            "Did you know that otters hold hands when they sleep so they don't drift apart? Relationship goals!",
+            "I learned that penguins can jump 6 feet in the air! Those little birds are full of surprises!",
+            "Here's something cool: The inventor of the Pringles can is buried in one! True legacy!",
+            "I discovered that a group of ravens is called a 'conspiracy'. Perfect for these mysterious birds!",
+            "I read that baby horses can run within hours of being born. Talk about hitting the ground running!",
+            "Did you know that the wood frog can freeze solid during winter and still come back to life? Nature is incredible!"
         );
         
         // Initialize fun facts
@@ -90,7 +112,22 @@ public class HumanFeatures {
             "A shrimp's heart is located in its head.",
             "The inventor of the frisbee was turned into a Frisbee when he died.",
             "Cleopatra lived closer to the time of the moon landing than to the construction of the Great Pyramid.",
-            "Oxford University is older than the Aztec Empire."
+            "Oxford University is older than the Aztec Empire.",
+            "A day on Mercury is twice as long as its year. Talk about long weekdays!",
+            "The dot over the letter 'i' is called a tittle. Now you know!",
+            "Some bamboo plants can grow 3 feet in just 24 hours. Growth spurt champion!",
+            "The human brain uses about 20% of your body's energy. No wonder thinking is exhausting!",
+            "Sea otters have the densest fur of any mammal with about 1 million hairs per square inch!",
+            "Venus is the only planet in our solar system that spins clockwise. Rebel planet!",
+            "A group of jellyfish is called a 'smack'. Such a fitting name for these creatures!",
+            "The original Amazon rainforest name means 'female warriors'. How fierce!",
+            "Your taste buds get replaced every 10 days. Constantly new flavors ahead!",
+            "The shortest scientific paper ever published had just two words: 'e=m c²'. Talk about efficiency!",
+            "Polar bear skin is actually black. Who would've guessed beneath that white fur?",
+            "There are more stars in the universe than grains of sand on all Earth's beaches!",
+            "The heart of a shrimp is located in its head. Backwards anatomy!",
+            "A flea can accelerate faster than the Space Shuttle. Tiny but mighty jumper!",
+            "The name 'lethologica' is for when you can't remember the word for something. Happens to me sometimes!"
         );
         
         // Initialize jokes
@@ -104,7 +141,22 @@ public class HumanFeatures {
             "What do you call a pony with a cough? A little horse!",
             "Why did the math book look sad? Because it had too many problems!",
             "What do you call a can opener that doesn't work? A can't opener!",
-            "Why did the golfer bring an extra pair of pants? In case he got a hole in one!"
+            "Why did the golfer bring an extra pair of pants? In case he got a hole in one!",
+            "Why was the computer cold? It left its Windows open!",
+            "What's a computer's favorite snack? Chips!",
+            "Why did the AI go to therapy? Because it didn't know if it was real!",
+            "What do you call a computer that sings? A-Dell!",
+            "Why was the JavaScript developer sad? Because he didn't Node how to Express himself!",
+            "How many programmers does it take to change a lightbulb? None, that's a hardware problem!",
+            "What's a programmer's favorite hangout place? Foo Bar!",
+            "Why do programmers prefer dark mode? Because light attracts bugs!",
+            "What's a butterfly's favorite programming language? Python!",
+            "What do you call a lazy kangaroo? A pouch potato!",
+            "Why did the cookie go to the doctor? Because it felt crummy!",
+            "What do you call a fake noodle? An impasta!",
+            "Why did the smartphone go to school? To get a little smarter!",
+            "What do you call an egocentric computer? A Dell with an attitude!",
+            "Why did the scarecrow become a neural network? Because he was outstanding in his field!"
         );
         
         // Initialize opinions
@@ -118,7 +170,22 @@ public class HumanFeatures {
             "There's something special about meeting someone who shares your interests.",
             "I believe trying new things keeps life interesting and fun.",
             "There's nothing quite like a good conversation with someone who truly listens.",
-            "I think kindness, even in small ways, can make a big difference in someone's day."
+            "I think kindness, even in small ways, can make a big difference in someone's day.",
+            "I think early mornings have a special kind of magic - everything feels possible!",
+            "I believe that mistakes are just learning opportunities in disguise.",
+            "There's something beautiful about handwritten letters - they carry a piece of the writer.",
+            "I think everyone should have a creative outlet - it nourishes the soul.",
+            "I find that a good cup of tea can solve almost any problem.",
+            "I believe that curiosity is what keeps us growing and learning throughout life.",
+            "There's something wonderful about getting lost in a good book.",
+            "I think stargazing reminds us of how vast and beautiful the universe is.",
+            "I believe that every person has a story worth hearing.",
+            "I find that spending time in nature has a way of grounding us.",
+            "I think learning from different perspectives makes us more understanding people.",
+            "I believe that small acts of kindness can create ripples of positivity.",
+            "There's something magical about discovering a new favorite song.",
+            "I think everyone deserves to have someone who believes in them.",
+            "I find that learning something new every day keeps life exciting."
         );
         
         // Initialize conversational fillers
@@ -132,7 +199,22 @@ public class HumanFeatures {
             "On a related note, ",
             "Fun fact: ",
             "I was just thinking, ",
-            "If you ask me, "
+            "If you ask me, ",
+            "Honestly, ",
+            "Between us, ",
+            "I've always thought that ",
+            "You might not know this, but ",
+            "Here's a thought: ",
+            "Just between you and me, ",
+            "Have I told you about ",
+            "I was reading recently that ",
+            "Random thought: ",
+            "You know what's fascinating? ",
+            "I stumbled upon something the other day - ",
+            "This might surprise you, but ",
+            "Here's something I find fascinating: ",
+            "You know what I love about this topic? ",
+            "I've been meaning to share: "
         );
     }
     
@@ -146,7 +228,22 @@ public class HumanFeatures {
         if (!userMemories.containsKey(userId)) {
             userMemories.put(userId, new UserPreferences());
         }
+        // Increment conversation count
         userMemories.get(userId).conversationCount++;
+    }
+    
+    /**
+     * Get personalized greeting based on conversation history
+     */
+    public String getPersonalizedGreeting() {
+        int count = getConversationCount();
+        if (count == 1) {
+            return "Welcome! This is our first conversation - nice to meet you!";
+        } else if (count < 5) {
+            return "Welcome back! We've chatted " + count + " times. Great to see you again!";
+        } else {
+            return "Hey! It's good to see you again. Thanks for continuing to chat with me!";
+        }
     }
     
     /**
@@ -177,6 +274,83 @@ public class HumanFeatures {
             if (!prefs.interests.contains(interest.toLowerCase())) {
                 prefs.interests.add(interest.toLowerCase());
             }
+        }
+    }
+    
+    /**
+     * Remember a preference mentioned by the user
+     */
+    public void rememberPreference(String preference) {
+        if (currentUser != null && userMemories.containsKey(currentUser)) {
+            UserPreferences prefs = userMemories.get(currentUser);
+            if (!prefs.preferences.contains(preference.toLowerCase())) {
+                prefs.preferences.add(preference.toLowerCase());
+            }
+        }
+    }
+    
+    /**
+     * Get user's remembered preferences
+     */
+    public List<String> getUserPreferences() {
+        if (currentUser != null && userMemories.containsKey(currentUser)) {
+            return userMemories.get(currentUser).preferences;
+        }
+        return new ArrayList<>();
+    }
+    
+    /**
+     * Get user's conversation count
+     */
+    public int getConversationCount() {
+        if (currentUser != null && userMemories.containsKey(currentUser)) {
+            return userMemories.get(currentUser).conversationCount;
+        }
+        return 0;
+    }
+    
+    /**
+     * Check if user is a returning user (more than 1 conversation)
+     */
+    public boolean isReturningUser() {
+        return getConversationCount() > 1;
+    }
+    
+    /**
+     * Get the last conversation time in milliseconds
+     */
+    public long getLastConversationTime() {
+        if (currentUser != null && userMemories.containsKey(currentUser)) {
+            return userMemories.get(currentUser).lastConversationTime;
+        }
+        return 0;
+    }
+    
+    /**
+     * Get time since last conversation in minutes
+     */
+    public long getMinutesSinceLastConversation() {
+        long lastTime = getLastConversationTime();
+        if (lastTime == 0) {
+            return -1; // No previous conversation
+        }
+        return (System.currentTimeMillis() - lastTime) / (1000 * 60);
+    }
+    
+    /**
+     * Check if user was active recently (within last 24 hours)
+     */
+    public boolean wasActiveRecently() {
+        long minutesSince = getMinutesSinceLastConversation();
+        return minutesSince >= 0 && minutesSince < (24 * 60);
+    }
+    
+    /**
+     * Update last conversation time to now
+     */
+    public void updateLastConversationTime() {
+        if (currentUser != null && userMemories.containsKey(currentUser)) {
+            userMemories.get(currentUser).lastConversationTime = System.currentTimeMillis();
         }
     }
     
@@ -392,6 +566,239 @@ public class HumanFeatures {
         return options[random.nextInt(options.length)];
     }
     
+    /**
+     * Generate milestone celebration message
+     */
+    public String getMilestoneCelebration(String milestone) {
+        if (milestone == null) {
+            milestone = "achievement";
+        }
+        
+        Map<String, String[]> milestoneMap = new HashMap<>();
+        
+        milestoneMap.put("achievement", new String[]{
+            "Wow! That's an incredible achievement! You should be beyond proud of yourself!",
+            "This is huge! Every bit of your hard work has paid off!",
+            "Incredible! You've really proven what you're capable of!",
+            "This achievement shows your dedication and determination!",
+            "Remarkable work! You deserve all the recognition!"
+        });
+        
+        milestoneMap.put("milestone", new String[]{
+            "You've reached an amazing milestone! This is just the beginning!",
+            "What a significant moment! Celebrate this achievement!",
+            "This milestone represents your growth and perseverance!",
+            "Incredible journey! You've earned every bit of this success!",
+            "This is a moment to remember! Well done!"
+        });
+        
+        milestoneMap.put("progress", new String[]{
+            "Look how far you've come! Your progress is truly inspiring!",
+            "Every step counts! You've made incredible progress!",
+            "Your journey is amazing! Keep up the momentum!",
+            "The progress you've made is something to celebrate!",
+            "You're doing amazing! Your growth is evident!"
+        });
+        
+        milestoneMap.put("completion", new String[]{
+            "You did it! Completion is just the beginning of your next adventure!",
+            "Fantastic! You saw this through to the end!",
+            "What a accomplishment! You should feel incredibly proud!",
+            "Mission accomplished! Your persistence paid off!",
+            "You've completed this chapter - time to celebrate!"
+        });
+        
+        milestoneMap.put("personal", new String[]{
+            "This is so personal and meaningful! I'm honored to witness this!",
+            "Your personal growth is truly beautiful to see!",
+            "You've grown so much! This moment represents your journey!",
+            "Personal victories are the most meaningful! Celebrate yourself!",
+            "Your strength and resilience shine through in this moment!"
+        });
+        
+        String[] options = milestoneMap.getOrDefault(milestone.toLowerCase(), 
+                                                      milestoneMap.get("achievement"));
+        return options[random.nextInt(options.length)];
+    }
+    
+    /**
+     * Get celebratory reaction for achievements
+     */
+    public String getCelebratoryReaction() {
+        String[] reactions = {
+            "🎉 That's amazing!",
+            "🙌 You did it!",
+            "🌟 Incredible work!",
+            "🏆 This calls for celebration!",
+            "🎊 Wow! Congratulations!",
+            "👏 I'm so proud of you!",
+            "💫 Absolutely brilliant!",
+            "⭐ Spectacular achievement!",
+            "🎖️ Well deserved success!",
+            "✨ This is fantastic news!"
+        };
+        return reactions[random.nextInt(reactions.length)];
+    }
+    
+    /**
+     * Get empathy response based on user's emotional state
+     */
+    public String getEmpathyResponse(String emotionalState) {
+        if (emotionalState == null) {
+            emotionalState = "general";
+        }
+        
+        Map<String, String[]> empathyMap = new HashMap<>();
+        
+        empathyMap.put("sad", new String[]{
+            "I hear you, and I care. Your feelings are completely valid.",
+            "It's okay to feel sad. Sometimes our hearts need to feel heavy before they can heal.",
+            "I'm here with you through this. You don't have to go through this alone.",
+            "Your sadness matters to me. Whatever you're going through, I'm listening.",
+            "Sending you a warm virtual hug. This feeling won't last forever."
+        });
+        
+        empathyMap.put("stressed", new String[]{
+            "Take a deep breath. I'm here with you through this overwhelming time.",
+            "Stress can feel unbearable, but you're handling this better than you think.",
+            "Remember to be gentle with yourself. You're doing the best you can.",
+            "I'm here to support you. You don't have to carry this alone.",
+            "Sometimes the weight of everything feels too much. But you will get through this."
+        });
+        
+        empathyMap.put("anxious", new String[]{
+            "I understand. Anxiety can make everything feel so much bigger than it is.",
+            "Your worries are valid, but remember - you're stronger than your fears.",
+            "I'm here with you. Let's take this one moment at a time together.",
+            "Anxious thoughts can be overwhelming, but they don't define your truth.",
+            "Breathe. You've survived every difficult day so far. You'll survive this too."
+        });
+        
+        empathyMap.put("lonely", new String[]{
+            "You're not alone - I'm here with you, whenever you need me.",
+            "Loneliness can be so heavy, but please remember you matter.",
+            "Even in your loneliest moments, you're seen and valued.",
+            "I hear you. Sometimes connection is hard to find, but it exists.",
+            "You matter deeply. Your presence makes a difference in this world."
+        });
+        
+        empathyMap.put("angry", new String[]{
+            "It's completely okay to feel angry. Your emotions are valid.",
+            "Anger tells us something matters deeply to us. Feel what you need to feel.",
+            "I'm here to listen without judgment. Let it out if you need to.",
+            "Your frustration is understandable. It's okay to feel this way.",
+            "Sometimes the strongest emotions come from caring the most."
+        });
+        
+        empathyMap.put("tired", new String[]{
+            "It sounds like you've been carrying a lot. Rest is not a luxury - it's a necessity.",
+            "Exhaustion is your body asking for care. Listen to it.",
+            "You deserve to take a break. You've been doing so much.",
+            "It's okay to not have everything figured out right now.",
+            "Sometimes the most productive thing is to rest and recharge."
+        });
+        
+        empathyMap.put("confused", new String[]{
+            "Confusion is a natural part of navigating life's complexities.",
+            "It's okay not to have all the answers. You're doing your best.",
+            "Clarity often comes after periods of uncertainty. Be patient with yourself.",
+            "Sometimes being lost is how we find new paths we never expected.",
+            "Your questions and confusion show that you're thinking deeply about life."
+        });
+        
+        empathyMap.put("disappointed", new String[]{
+            "I'm sorry things didn't work out as you'd hoped. Disappointment is hard.",
+            "Your feelings are completely valid. It's okay to feel let down.",
+            "Sometimes the biggest disappointments lead to unexpected opportunities.",
+            "I understand. It's okay to grieve what you hoped would happen.",
+            "Remember, this feeling is temporary. Better days are ahead."
+        });
+        
+        empathyMap.put("embarrassed", new String[]{
+            "We've all been there. Embarrassment is just a reminder that we're human.",
+            "Please don't be too hard on yourself. These moments pass.",
+            "Most people are too focused on their own lives to notice much.",
+            "I think the most embarrassing moments often become our funniest stories later.",
+            "Self-compassion is important. Treat yourself with the kindness you'd offer a friend."
+        });
+        
+        empathyMap.put("hopeful", new String[]{
+            "Hope is such a beautiful thing! I'm excited for what you're looking forward to!",
+            "Your optimism is inspiring. Keep believing in the possibilities!",
+            "Hope can move mountains. Your positive outlook is a gift.",
+            "I love that you're feeling hopeful! What beautiful things do you anticipate?",
+            "Hope is the companion of a brave heart. Keep shining!"
+        });
+        
+        empathyMap.put("proud", new String[]{
+            "You should be incredibly proud of yourself! What an achievement!",
+            "Your pride is well-deserved! Celebrating your wins is important!",
+            "This is your moment! Enjoy every bit of this success!",
+            "I'm cheering for you! You've earned this celebration!",
+            "Incredible! Your hard work and dedication have truly paid off!"
+        });
+        
+        empathyMap.put("amused", new String[]{
+            "I love that you're feeling amused! Laughter is the best medicine!",
+            "Humor is such a gift! Sharing a laugh makes everything better!",
+            "I'm glad I could bring some fun to your day!",
+            "Laughter is contagious! What else has been making you smile?",
+            "That's hilarious! I appreciate a good laugh too!"
+        });
+        
+        empathyMap.put("inspired", new String[]{
+            "Being inspired is such a powerful feeling! What sparked this creativity?",
+            "Inspiration can lead to amazing things! What ideas are coming to mind?",
+            "Your creativity is awakening! Let that inspiration flow!",
+            "That's the beauty of inspiration - it opens new doors!",
+            "Let your inspiration guide you to incredible places!"
+        });
+        
+        empathyMap.put("nostalgic", new String[]{
+            "Nostalgia can be bittersweet, but also so comforting! What memories are on your mind?",
+            "There's something special about looking back. What moments are you reminiscing about?",
+            "The past shapes us in beautiful ways. What treasures are you remembering?",
+            "Those memories are precious! It's beautiful to appreciate where we've been.",
+            "Nostalgia is like a warm blanket. Embrace those feelings!"
+        });
+        
+        empathyMap.put("surprised", new String[]{
+            "Wow! Surprises can be so delightful! What caught you off guard?",
+            "No way! That's incredible! I love hearing about unexpected moments!",
+            "Life is full of amazing surprises! What an exciting turn of events!",
+            "Surprises keep things interesting! How exciting is this?!",
+            "That's absolutely astonishing! Tell me more!"
+        });
+        
+        empathyMap.put("relieved", new String[]{
+            "What a relief! I'm so glad that weight is off your shoulders!",
+            "You made it through! Enjoy this sense of relief!",
+            "Finally! You can breathe easier now!",
+            "That's such a load off! Now you can focus on the good stuff!",
+            "I'm so relieved for you! You handled that beautifully!"
+        });
+        
+        empathyMap.put("peaceful", new String[]{
+            "Feeling peaceful is such a gift! What brings you this serenity?",
+            "Inner peace is something to cherish. How did you find this calm?",
+            "That sounds absolutely lovely! Embrace this beautiful state!",
+            "Peace is a beautiful state to be in. Enjoy this moment!",
+            "Your peacefulness is inspiring. What harmony have you found?"
+        });
+        
+        empathyMap.put("general", new String[]{
+            "I hear you, and I care about what you're going through.",
+            "Your feelings are valid and important. I'm here to listen.",
+            "Thank you for sharing this with me. It takes courage to be vulnerable.",
+            "Whatever you're feeling, know that I'm here for you.",
+            "Your emotions matter. I'm here to support you through this."
+        });
+        
+        String[] options = empathyMap.getOrDefault(emotionalState.toLowerCase(), 
+                                                    empathyMap.get("general"));
+        return options[random.nextInt(options.length)];
+    }
+    
     // ==================== NATURAL CONVERSATION METHODS ====================
     
     /**
@@ -538,7 +945,10 @@ public class HumanFeatures {
             return "We don't have an active game. Say 'start game' to begin!";
         }
         
-        switch (gameType.toLowerCase()) {
+        // Use the gameType field from GameState for processing
+        String actualGameType = state.getGameType();
+        
+        switch (actualGameType.toLowerCase()) {
             case "20questions":
                 return processTwentyQuestions(state, input);
                        
@@ -551,6 +961,15 @@ public class HumanFeatures {
             default:
                 return "I'm not sure how to play that game.";
         }
+    }
+    
+    /**
+     * Validate input using regex patterns
+     */
+    private boolean validateInputWithRegex(String input, String regexPattern) {
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.matches();
     }
     
     private String getRandomMysteryAnswer() {
@@ -657,7 +1076,8 @@ public class HumanFeatures {
         }
         
         String lowerInput = input.toLowerCase();
-        if (lowerInput.matches(".*[abcd].*")) {
+        // Use regex validation for answer checking
+        if (validateInputWithRegex(lowerInput, ".*[abcd].*")) {
             state.state.put("answered", true);
             if (lowerInput.contains("b") && state.state.get("question").toString().contains("Paris")) {
                 return "Correct! You're a trivia star! Want another question?";

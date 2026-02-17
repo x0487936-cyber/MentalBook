@@ -205,7 +205,7 @@ public class VirtualXanderServer {
             String welcome = 
                 "\n╔═══════════════════════════════════════════════════════════╗\n" +
                 "║              Welcome to VirtualXander!                  ║\n" +
-                "║         Your AI-Powered Chat Companion                  ║\n" +
+                "║         Your Personal Powered Chat Companion              ║\n" +
                 "╠═══════════════════════════════════════════════════════════╣\n" +
                 "║  Commands:                                             ║\n" +
                 "║    /help  - Show available commands                     ║\n" +

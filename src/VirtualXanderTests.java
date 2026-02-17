@@ -90,7 +90,7 @@ public class VirtualXanderTests {
     public void testConversationContextTurns() {
         ConversationContext context = new ConversationContext();
         
-        context.addTurn("hello", "greeting", "Hi there!", "greeting");
+        context.addTurn("hello", "Hi there!", "greeting");
         
         test.assertEquals("Turn count should be 1", 
             1, context.getTurnCount());
@@ -101,7 +101,7 @@ public class VirtualXanderTests {
         test.assertEquals("Current topic should be 'greeting'", 
             "greeting", context.getCurrentTopic());
         
-        context.addTurn("how are you", "wellbeing_how", "I'm good!", "general");
+        context.addTurn("how are you", "I'm good!", "general");
         
         test.assertEquals("Turn count should be 2", 
             2, context.getTurnCount());
@@ -113,8 +113,8 @@ public class VirtualXanderTests {
     public void testConversationContextReset() {
         ConversationContext context = new ConversationContext();
         
-        context.addTurn("hello", "greeting", "Hi!", "greeting");
-        context.addTurn("help", "help_request", "Sure!", "general");
+        context.addTurn("hello", "Hi!", "greeting");
+        context.addTurn("help", "Sure!", "general");
         
         test.assertEquals("Turn count should be 2", 
             2, context.getTurnCount());
@@ -383,7 +383,7 @@ public class VirtualXanderTests {
     }
     
     public void testMentalHealthHandler() {
-        MentalHealthSupportHandler handler = new MentalHealthSupportHandler();
+        MentalHealthSupportHandler handler = new MentalHealthSupportHandler(null, null);
         
         test.assertTrue("Should detect stress category", 
             handler.detectSupportCategory("I'm so stressed") == 
@@ -401,7 +401,7 @@ public class VirtualXanderTests {
     }
     
     public void testMentalHealthHandlerDarkThoughts() {
-        MentalHealthSupportHandler handler = new MentalHealthSupportHandler();
+        MentalHealthSupportHandler handler = new MentalHealthSupportHandler(null, null);
         
         // Test dark thoughts detection
         test.assertTrue("Should detect dark thoughts category", 

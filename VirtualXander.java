@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 /**
  * VirtualXander - Your Friendly Virtual Companion
- * 
+ * This VirtualXander is made by Xander Thompson, with all of its code created by him and all his responses are his own feelings and reactions.
  * This is the main entry point for the VirtualXander chatbot.
  * It uses a modular architecture with:
  * - Intent Recognition System
@@ -18,8 +18,8 @@ import java.util.Arrays;
  * - Creative Writing Assistance
  * - General Advice
  * 
- * @author VirtualXander Development Team
- * @version 2.0 (Phase 1 Complete)
+ * @author Xander Thompson (x0487936@gmail.com)
+ * @version 0.2.0.0 (Pre-Alpha Version)
  */
 public class VirtualXander {
     
@@ -50,7 +50,7 @@ public class VirtualXander {
             printHelp();
         } else if (args[0].equalsIgnoreCase("--api") || args[0].equalsIgnoreCase("-a")) {
             // API mode - process single message
-            String message = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
+            String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             if (!message.isEmpty()) {
                 String response = core.processMessage(message);
                 System.out.println("Xander: " + response);

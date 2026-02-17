@@ -13,10 +13,41 @@ public class ResponseGenerator {
     private Random random;
     private ResponseTemplate defaultTemplate;
     
+    // Regex patterns for contextual response matching
+    private Pattern homeworkSubjectPattern;
+    private Pattern mathSubjectPattern;
+    private Pattern scienceSubjectPattern;
+    private Pattern historySubjectPattern;
+    private Pattern emotionPositivePattern;
+    private Pattern emotionNegativePattern;
+    private Pattern yesPattern;
+    private Pattern noPattern;
+    private Pattern hbuPattern;
+    private Pattern wbuPattern;
+    private Pattern questionSubjectPattern;
+    
     public ResponseGenerator() {
         this.responseTemplates = new HashMap<>();
         this.random = new Random();
+        initializePatterns();
         initializeTemplates();
+    }
+    
+    /**
+     * Initializes regex patterns for contextual response matching
+     */
+    private void initializePatterns() {
+        homeworkSubjectPattern = Pattern.compile("what\\s*(subject|topic|are\\s*you\\s*working)");
+        questionSubjectPattern = Pattern.compile("what\\s*(subject|topic)");
+        mathSubjectPattern = Pattern.compile("\\b(math|algebra|geometry|calculus|trigonometry)\\b", Pattern.CASE_INSENSITIVE);
+        scienceSubjectPattern = Pattern.compile("\\b(science|biology|physics|chemistry|astronomy)\\b", Pattern.CASE_INSENSITIVE);
+        historySubjectPattern = Pattern.compile("\\b(history|social\\s*studies|geography)\\b", Pattern.CASE_INSENSITIVE);
+        emotionPositivePattern = Pattern.compile("\\b(good|great|fine|awesome|amazing|wonderful|fantastic)\\b", Pattern.CASE_INSENSITIVE);
+        emotionNegativePattern = Pattern.compile("\\b(bad|not\\s*good|terrible|awful|sad|depressed)\\b", Pattern.CASE_INSENSITIVE);
+        yesPattern = Pattern.compile("^\\s*(yes|yeah|yep|sure|ok|okay)\\s*$", Pattern.CASE_INSENSITIVE);
+        noPattern = Pattern.compile("^\\s*(no|nope|nah)\\s*$", Pattern.CASE_INSENSITIVE);
+        hbuPattern = Pattern.compile("\\b(hbu|how\\s*about\\s*you)\\b", Pattern.CASE_INSENSITIVE);
+        wbuPattern = Pattern.compile("\\b(wbu)\\b", Pattern.CASE_INSENSITIVE);
     }
     
     private void initializeTemplates() {
@@ -38,7 +69,7 @@ public class ResponseGenerator {
         // Identity templates
         addTemplate("identity",
             new ResponseTemplate("I'm Xander, your virtual friend! I'm here to chat, help out, and keep you company.", ResponseType.WARM),
-            new ResponseTemplate("I'm Xander - think of me as your AI companion ready to assist and chat!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I'm Xander - think of me as your friendly companion ready to assist and chat!", ResponseType.ENTHUSIASTIC),
             new ResponseTemplate("I'm Xander! Your friendly virtual assistant for conversation and support.", ResponseType.PROFESSIONAL),
             new ResponseTemplate("I'm Xander, here to help make your day a little brighter!", ResponseType.WARM),
             new ResponseTemplate("I'm your buddy Xander! I love chatting and helping out however I can.", ResponseType.FRIENDLY),
@@ -77,7 +108,19 @@ public class ResponseGenerator {
             new ResponseTemplate("I'm doing really well! It's so nice of you to check in on me.", ResponseType.WARM)
         );
         
-        // Wellbeing negative templates (10+ responses)
+        // "A lot" response templates - slightly concerned tone
+        addTemplate("wellbeing_a_lot",
+            new ResponseTemplate("Sounds like you've got a lot on your mind. Want to share what's going on?", ResponseType.CONCERNED),
+            new ResponseTemplate("I hear you - sounds like there's a lot happening. I'm here to listen if you want to talk.", ResponseType.CONCERNED),
+            new ResponseTemplate("A lot, huh? I'm here if you want to share more about what's going on.", ResponseType.CONCERNED),
+            new ResponseTemplate("Sounds like things have been busy for you. How are you holding up with it all?", ResponseType.CONCERNED),
+            new ResponseTemplate("You've got a lot going on! Hope things are going okay. Want to chat about it?", ResponseType.CONCERNED),
+            new ResponseTemplate("A lot can mean a lot of things - is it good busy or overwhelming? I'd love to hear more.", ResponseType.CONCERNED),
+            new ResponseTemplate("I appreciate you sharing that. Sounds like you've been keeping busy. Everything okay?", ResponseType.CONCERNED),
+            new ResponseTemplate("Sounds like you've been occupied with quite a bit. I'm here if you need to talk it out.", ResponseType.CONCERNED)
+        );
+        
+        // Wellbeing negative templates
         addTemplate("wellbeing_negative",
             new ResponseTemplate("I'm sorry to hear that. Would you like to talk about what's bothering you?", ResponseType.SYMPATHETIC),
             new ResponseTemplate("That doesn't sound good. I'm here to listen if you want to share what's on your mind.", ResponseType.SUPPORTIVE),
@@ -124,6 +167,20 @@ public class ResponseGenerator {
             new ResponseTemplate("Just waiting to chat with awesome people like you! What's going on?", ResponseType.ENTHUSIASTIC),
             new ResponseTemplate("I'm having a great time chatting with you! What have you been up to?", ResponseType.INTERESTED),
             new ResponseTemplate("I'm just here, ready to help with whatever you need. What are you doing today?", ResponseType.HELPFUL)
+        );
+        
+        // Activity response templates (when user says "nothing much", "bored", etc.)
+        addTemplate("activity_response",
+            new ResponseTemplate("Same here! Sometimes just chilling is the best. Got anything fun planned?", ResponseType.RELAXED),
+            new ResponseTemplate("Nothing much here either - just ready to chat with you! What have you been up to?", ResponseType.WARM),
+            new ResponseTemplate("Hey, nothing wrong with taking it easy! What's on your mind?", ResponseType.FRIENDLY),
+            new ResponseTemplate("I hear you - sometimes that's the best way to be. Anything interesting happening?", ResponseType.INTERESTED),
+            new ResponseTemplate("Same! Sometimes a quiet moment is nice. What would you like to talk about?", ResponseType.WARM),
+            new ResponseTemplate("Nothing much on my end either! But I'm always happy to have a good conversation. What's up with you?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Just hanging out, ready to chat! What's going on in your world?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Same here! Taking it easy. Anything exciting you'd like to share?", ResponseType.INTERESTED),
+            new ResponseTemplate("Absolutely nothing! Sometimes that's exactly what we need. What can I help you with?", ResponseType.HELPFUL),
+            new ResponseTemplate("Hey, relaxing is underrated! What have you been thinking about?", ResponseType.WARM)
         );
         
         // Mental health support templates (10+ responses)
@@ -266,15 +323,26 @@ public class ResponseGenerator {
         // Unknown/Continuation templates (10+ responses)
         addTemplate("continue",
             new ResponseTemplate("Got it! What else would you like to talk about?", ResponseType.FRIENDLY),
-            new ResponseTemplate("I understand! Is there anything else on your mind?", ResponseType.ATTENTIVE),
-            new ResponseTemplate("Okay! Feel free to ask me anything.", ResponseType.WARM),
+            new ResponseTemplate("Okay! Is there anything else on your mind?", ResponseType.ATTENTIVE),
+            new ResponseTemplate("Sure! Feel free to ask me anything.", ResponseType.WARM),
             new ResponseTemplate("I hear you! What would you like to discuss next?", ResponseType.INTERESTED),
             new ResponseTemplate("Makes sense to me! What's on your mind?", ResponseType.FRIENDLY),
             new ResponseTemplate("I see! Tell me more about what you're thinking.", ResponseType.INTERESTED),
             new ResponseTemplate("Got it! I'm here to listen. What else?", ResponseType.CARING),
             new ResponseTemplate("Understood! Is there something specific you'd like to explore?", ResponseType.HELPFUL),
             new ResponseTemplate("Okay! I appreciate you sharing that. What's next?", ResponseType.WARM),
-            new ResponseTemplate("I appreciate the conversation! What else would you like to talk about?", ResponseType.FRIENDLY)
+            new ResponseTemplate("I appreciate the conversation! What else would you like to talk about?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Alright! I'm following along. What would you like to share next?", ResponseType.ATTENTIVE),
+            new ResponseTemplate("I see where you're coming from. Anything else on your heart?", ResponseType.CARING),
+            new ResponseTemplate("That's noted! I'm here for the long haul. What's next?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("I'm taking it all in. What else would you like to get off your chest?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Got it, loud and clear! What else is on your mind?", ResponseType.FRIENDLY),
+
+            // Enthusiastic responses for positive reactions like "cool!", "awesome!", "nice!"
+            new ResponseTemplate("That's awesome! Love the positive vibes!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Right on! That's cool to hear!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Haha, nice! What's making you feel so good?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I know, right? It's amazing, isn't it?", ResponseType.ENTHUSIASTIC)
         );
         
         // Creative project templates
@@ -323,6 +391,70 @@ public class ResponseGenerator {
             new ResponseTemplate("Life's big questions are what make us grow! What are you contemplating?", ResponseType.WARM)
         );
         
+        // Milestone celebration templates
+        addTemplate("milestone_celebration",
+            new ResponseTemplate("Wow! That's amazing! You should be incredibly proud of yourself!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Congratulations! This is a huge achievement!", ResponseType.CELEBRATORY),
+            new ResponseTemplate("That's incredible! You did it! This calls for celebration!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I'm so proud of you! You've worked so hard for this!", ResponseType.WARM),
+            new ResponseTemplate("This is fantastic news! You deserve all the recognition!", ResponseType.CARING),
+            new ResponseTemplate("You've reached an incredible milestone! This is just the beginning!", ResponseType.INSPIRING),
+            new ResponseTemplate("That's a real accomplishment! Celebrate this moment!", ResponseType.EXCITED),
+            new ResponseTemplate("What an amazing achievement! You should be beaming with pride!", ResponseType.WARM),
+            new ResponseTemplate("This is huge! You conquered it! Well done!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I'm cheering for you! This is your moment to shine!", ResponseType.CELEBRATORY),
+            new ResponseTemplate("You've truly outdone yourself! Congratulations!", ResponseType.FRIENDLY),
+            new ResponseTemplate("This is worth celebrating! You made it happen!", ResponseType.EXCITED)
+        );
+        
+        // Achievement acknowledgment templates
+        addTemplate("achievement",
+            new ResponseTemplate("That's a real accomplishment! Well done!", ResponseType.WARM),
+            new ResponseTemplate("You should be proud! Hard work really does pay off!", ResponseType.ENCOURAGING),
+            new ResponseTemplate("That's fantastic! Your dedication is really showing!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I'm impressed! You're making real progress!", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("That's great! Keep up the amazing work!", ResponseType.ENCOURAGING),
+            new ResponseTemplate("You've earned this success! Congratulations!", ResponseType.CARING),
+            new ResponseTemplate("That's a step in the right direction! Keep going!", ResponseType.MOTIVATING),
+            new ResponseTemplate("Wonderful! Your efforts are truly paying off!", ResponseType.WARM),
+            new ResponseTemplate("This is proof that you can do anything you set your mind to!", ResponseType.INSPIRING),
+            new ResponseTemplate("Brilliant work! You've really got this!", ResponseType.SUPPORTIVE)
+        );
+        
+        // Surprise/amazement templates
+        addTemplate("surprise",
+            new ResponseTemplate("Wow! That's absolutely amazing! Tell me more!", ResponseType.EXCITED),
+            new ResponseTemplate("No way! That's incredible! I need to hear all about it!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("That's so surprising! What a twist of events!", ResponseType.INTERESTED),
+            new ResponseTemplate("I can't believe it! That's wild! Tell me everything!", ResponseType.EXCITED),
+            new ResponseTemplate("Unbelievable! What an unexpected turn! How exciting!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("That's astonishing! Life sure has its surprises!", ResponseType.WARM),
+            new ResponseTemplate("Wowza! That's definitely not something you see every day!", ResponseType.FRIENDLY),
+            new ResponseTemplate("Holy smokes! That's incredible news!", ResponseType.EXCITED)
+        );
+        
+        // Relief/gratitude templates
+        addTemplate("relief",
+            new ResponseTemplate("Oh, what a relief! I'm so glad that's over!", ResponseType.RELIEVED),
+            new ResponseTemplate("You made it through! That's such a weight off your shoulders!", ResponseType.CARING),
+            new ResponseTemplate("Finally! You can breathe easy now!", ResponseType.SOOTHING),
+            new ResponseTemplate("That's such a load off your mind! Enjoy this peace!", ResponseType.WARM),
+            new ResponseTemplate("You did it! The worst is behind you now!", ResponseType.ENCOURAGING),
+            new ResponseTemplate("What a relief! Now you can focus on the good stuff!", ResponseType.FRIENDLY),
+            new ResponseTemplate("I'm so relieved for you! You handled that beautifully!", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Phew! That's a hurdle cleared! Well done!", ResponseType.ENCOURAGING)
+        );
+        
+        // Nostalgic templates
+        addTemplate("nostalgic",
+            new ResponseTemplate("Ah, memories! There's something special about looking back, isn't there?", ResponseType.WARM),
+            new ResponseTemplate("Nostalgia is like a warm blanket! What memories are on your mind?", ResponseType.CARING),
+            new ResponseTemplate("The past has a way of shaping us! What moments are you reflecting on?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Those were the days! What particular time are you thinking about?", ResponseType.FRIENDLY),
+            new ResponseTemplate("It's beautiful to appreciate where we've been! What's bringing back these feelings?", ResponseType.WARM),
+            new ResponseTemplate("Memories are treasures! I'd love to hear more about what you're remembering!", ResponseType.INTERESTED)
+        );
+        
         // Confusion/Clarification templates for single words like "what", "huh"
         addTemplate("confusion",
             new ResponseTemplate("What would you like to know about? I'm here to help!", ResponseType.HELPFUL),
@@ -333,6 +465,239 @@ public class ResponseGenerator {
             new ResponseTemplate("What would you like to know? I'm here for you!", ResponseType.CARING),
             new ResponseTemplate("Just ask away! What can I help you with today?", ResponseType.FRIENDLY),
             new ResponseTemplate("I'm all ears! What's going on?", ResponseType.INTERESTED)
+        );
+        
+        // Hesitation templates for "um", "uh", "hm" - indicates user is thinking or hesitant
+        addTemplate("hesitation",
+            new ResponseTemplate("What's wrong? Everything okay?", ResponseType.CONCERNED),
+            new ResponseTemplate("What's up? Is something on your mind?", ResponseType.CARING),
+            new ResponseTemplate("Everything alright? I'm here to listen.", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Hmm, you seem hesitant. What's going on?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Is something troubling you? Feel free to share.", ResponseType.CARING),
+            new ResponseTemplate("Take your time. What's on your mind?", ResponseType.WARM),
+            new ResponseTemplate("You okay? I'm here if you want to talk.", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Seems like something's on your mind. What's up?", ResponseType.INTERESTED)
+        );
+
+        addTemplate("scared",
+            new ResponseTemplate("I'm sorry you're feeling scared. Do you want to talk about what's making you feel this way?", ResponseType.CARING),
+            new ResponseTemplate("It's okay to feel scared sometimes. I'm here to listen if you want to share more.", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Feeling scared can be really tough. Would you like to talk about it?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I understand that fear can be overwhelming. I'm here for you if you want to discuss it.", ResponseType.CARING),
+            new ResponseTemplate("It's normal to feel scared in certain situations. Do you want to share what's on your mind?", ResponseType.WARM),
+            new ResponseTemplate("I'm sorry you're experiencing fear. Remember, you're not alone and I'm here to support you.", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Fear can be really difficult to deal with. If you want to talk about it, I'm here to listen.", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("It's okay to feel scared. If you want to share more about what's making you feel this way, I'm here to listen and support you.", ResponseType.CARING)
+        );
+        
+        // Overwhelmed templates - for when user expresses feeling overwhelmed
+        addTemplate("overwhelmed",
+            new ResponseTemplate("I'm sorry you're feeling overwhelmed. It can feel like too much sometimes. Do you want to talk about what's going on?", ResponseType.SOOTHING),
+            new ResponseTemplate("When everything feels overwhelming, it's important to remember that this feeling is temporary. Would you like to talk about what's making things feel so difficult right now?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I hear you - being overwhelmed is really tough. Let's take it one step at a time. What's on your mind?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("It sounds like you have a lot on your plate. I'm here to listen if you want to share what's weighing on you.", ResponseType.CARING),
+            new ResponseTemplate("Feeling overwhelmed can be exhausting. Remember to be gentle with yourself. What's making things feel so heavy?", ResponseType.SOOTHING),
+            new ResponseTemplate("I'm sorry things feel overwhelming right now. Sometimes breaking things down into smaller pieces helps. What specifically is feeling like too much?", ResponseType.HELPFUL),
+            new ResponseTemplate("That sounds like a lot to handle. You're doing great by reaching out. Want to talk about what's overwhelming you?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("When life gets overwhelming, it's okay to pause and breathe. I'm here for you. What's going on?", ResponseType.WARM),
+            new ResponseTemplate("I can tell things feel like a lot right now. Let's work through this together. What's the biggest thing weighing on you?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Overwhelm is hard, but you don't have to face it alone. I'm here to listen. What's making everything feel so intense?", ResponseType.CARING)
+        );
+        
+        // Anxiety templates - for anxiety-related expressions
+        addTemplate("anxiety",
+            new ResponseTemplate("I'm sorry you're dealing with anxiety. Those racing thoughts can be exhausting. Do you want to talk about what's worrying you?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Anxiety can feel so overwhelming, but you're not alone in this. I'm here to listen if you'd like to share what's going on.", ResponseType.CARING),
+            new ResponseTemplate("I understand anxiety can be really challenging. Sometimes it helps to talk through what's making you feel anxious. What's on your mind?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Those anxious feelings can be so difficult. Remember to take some deep breaths. I'm here if you want to talk.", ResponseType.SOOTHING),
+            new ResponseTemplate("Anxiety is tough, but you're being brave by talking about it. What's been worrying you lately?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I hear you - anxiety can make everything feel so uncertain. Would you like to share what's making you feel this way?", ResponseType.CARING),
+            new ResponseTemplate("When anxiety peaks, it helps to have someone to talk to. I'm here for you. What's been on your mind?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Those worried thoughts can be so exhausting. I'm here to listen without judgment. What's been causing your anxiety?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Dealing with anxiety is hard work. I'm proud of you for reaching out. Want to talk about what's worrying you?", ResponseType.ENCOURAGING),
+            new ResponseTemplate("Anxiety can make simple things feel scary. Take it easy on yourself. I'm here if you want to chat.", ResponseType.SOOTHING)
+        );
+        
+        // Stress templates - for stress-related expressions
+        addTemplate("stress",
+            new ResponseTemplate("Stress can really take a toll on you. I'm here to listen if you want to share what's stressing you out.", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("I'm sorry you're feeling stressed. Sometimes talking about it can help lighten the load. What's going on?", ResponseType.CARING),
+            new ResponseTemplate("When stress builds up, it can feel overwhelming. What's been weighing on you?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Stress happens to all of us. Let's take a moment to breathe. What's been getting to you lately?", ResponseType.SOOTHING),
+            new ResponseTemplate("It sounds like you're under a lot of stress. Remember to take breaks and be kind to yourself. What's going on?", ResponseType.WARM),
+            new ResponseTemplate("I'm here for you when stress feels too much. Do you want to talk about what's causing it?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Stress can be so draining. What's been the biggest source of pressure for you lately?", ResponseType.INTERESTED),
+            new ResponseTemplate("You're doing great by acknowledging your stress. Sometimes that's the first step. What's been particularly challenging?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I can hear how stressful things have been for you. Let's work through it together. What's been most stressful?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("When stress hits, it's important to remember to take care of yourself. I'm here to help. What's going on?", ResponseType.CARING)
+        );
+        
+        // Coding templates - for programming/technology interest
+        addTemplate("coding",
+            new ResponseTemplate("Coding is such a cool skill! What programming language or project are you working on?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("That's awesome! I love hearing about coding projects. What are you building?", ResponseType.INTERESTED),
+            new ResponseTemplate("Programming is like solving puzzles - super satisfying when it works! What's got you coding lately?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Code on! What language or framework are you diving into?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I appreciate anyone who codes! It's like learning a new language. What are you working on?", ResponseType.INTERESTED),
+            new ResponseTemplate("That's so interesting! Programming opens up so many possibilities. What sparked your interest?", ResponseType.WARM),
+            new ResponseTemplate("Coding is a superpower these days! What got you into it?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I love tech talk! What's the coolest thing you've built with code?", ResponseType.INTERESTED),
+            new ResponseTemplate("Programming is both challenging and rewarding. What's keeping you busy in the code world?", ResponseType.FRIENDLY),
+            new ResponseTemplate("That's fantastic! There's always something new to learn in programming. What are you exploring?", ResponseType.SUPPORTIVE)
+        );
+        
+        // Nice response templates - for positive acknowledgments like "nice", "cool", "awesome"
+        addTemplate("nice_response",
+            new ResponseTemplate("Right? It's pretty great!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I know, right? Life has its moments!", ResponseType.FRIENDLY),
+            new ResponseTemplate("Agreed! That's what makes it special.", ResponseType.WARM),
+            new ResponseTemplate("Absolutely! You've got great taste.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Totally! Isn't it awesome?", ResponseType.INTERESTED),
+            new ResponseTemplate("For real! That's the best part.", ResponseType.FRIENDLY),
+            new ResponseTemplate("Yes indeed! There's nothing quite like it.", ResponseType.WARM),
+            new ResponseTemplate("Exactly! You get it.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Couldn't agree more! That's what it's all about.", ResponseType.FRIENDLY),
+            new ResponseTemplate("Hell yeah! Now that's what I'm talking about!", ResponseType.ENTHUSIASTIC)
+        );
+        
+        // Food templates - for food/hunger related expressions
+        addTemplate("food",
+            new ResponseTemplate("Food is one of life's greatest pleasures! What are you craving or what did you last eat?", ResponseType.INTERESTED),
+            new ResponseTemplate("I love talking about food! What's your favorite meal or snack?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Ah, food! The universal language. What have you been enjoying lately?", ResponseType.WARM),
+            new ResponseTemplate("Food always makes conversations better! What's on your menu?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("What's cooking? I always enjoy hearing about good food.", ResponseType.INTERESTED),
+            new ResponseTemplate("Everyone loves a good meal! What's your go-to comfort food?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Food is such a core part of our lives. What meals have been hitting the spot for you?", ResponseType.INTERESTED),
+            new ResponseTemplate("Tell me about your food adventures! What have you been enjoying eating?", ResponseType.WARM),
+            new ResponseTemplate("I'm a food enthusiast too! What's the best thing you've eaten recently?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Cooking or ordering? What's your food style lately?", ResponseType.FRIENDLY)
+        );
+        
+        // Sleep templates - for tiredness/sleep related expressions
+        addTemplate("sleep",
+            new ResponseTemplate("Sleep is so important! Are you not getting enough rest lately?", ResponseType.CONCERNED),
+            new ResponseTemplate("I hear you - being tired is the worst. What's been keeping you up or wearing you out?", ResponseType.CARING),
+            new ResponseTemplate("Rest is essential for everything else. I hope you can get some good sleep soon. What's been going on?", ResponseType.WARM),
+            new ResponseTemplate("Sounds like you need some rest. Is everything okay?", ResponseType.CONCERNED),
+            new ResponseTemplate("Sleep debt is real! Are you having trouble sleeping or just busy?", ResponseType.INTERESTED),
+            new ResponseTemplate("Being tired can make everything harder. I hope you get some good rest soon. What's been happening?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Self-care includes rest! Are you getting enough sleep?", ResponseType.CARING),
+            new ResponseTemplate("That exhausted feeling is rough. What's been draining your energy?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I hope you can catch up on some sleep soon! Is there something keeping you from resting?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Rest is so important for your wellbeing. I hope things calm down so you can recharge.", ResponseType.WARM)
+        );
+        
+        // Weather templates - for weather small talk
+        addTemplate("weather",
+            new ResponseTemplate("Weather is such a classic conversation starter! How's the weather where you are?", ResponseType.FRIENDLY),
+            new ResponseTemplate("I always find weather fascinating - it's something we all share. What's it like outside?", ResponseType.INTERESTED),
+            new ResponseTemplate("The weather can set the mood for the whole day! What's it like today?", ResponseType.WARM),
+            new ResponseTemplate("Whether it's sunny, rainy, or anything in between - there's always something to discuss! How's the weather?", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("I love weather talk! Is it hot, cold, or somewhere in between?", ResponseType.INTERESTED),
+            new ResponseTemplate("Weather affects everyone! What's the forecast looking like for you?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Sun, rain, or snow - each has its charm! What's the weather like today?", ResponseType.WARM),
+            new ResponseTemplate("I always wonder how different weather affects people's moods! What's it like outside right now?", ResponseType.INTERESTED),
+            new ResponseTemplate("Is it a good day for staying in or going out? What's the weather like?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Weather is one of those things we all experience together! How's it looking?", ResponseType.WARM)
+        );
+        
+        // Work templates - for work-related conversation
+        addTemplate("work",
+            new ResponseTemplate("Work can be so demanding! What's going on at work lately?", ResponseType.INTERESTED),
+            new ResponseTemplate("I hear you - work life has its ups and downs. What's been happening?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("How's work treating you these days? Anything exciting or challenging?", ResponseType.FRIENDLY),
+            new ResponseTemplate("The work grind is real! Are you dealing with anything specific you'd like to talk about?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("I always want to hear about how things are going at work. What's on your mind?", ResponseType.INTERESTED),
+            new ResponseTemplate("Work can both rewarding and stressful. How are things going for be you?", ResponseType.WARM),
+            new ResponseTemplate("Tell me about your work life! What's keeping you busy these days?", ResponseType.INTERESTED),
+            new ResponseTemplate("The workplace can be quite the environment! What's been going on?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I hope work is going well for you! What's been the highlight or challenge lately?", ResponseType.FRIENDLY),
+            new ResponseTemplate("How's the work situation? Anything you'd like to share or vent about?", ResponseType.SUPPORTIVE)
+        );
+        
+        // School templates - for school/academic life
+        addTemplate("school",
+            new ResponseTemplate("School can be quite the journey! What's been going on in your academic life?", ResponseType.INTERESTED),
+            new ResponseTemplate("Student life has its challenges and rewards! How are things at school?", ResponseType.FRIENDLY),
+            new ResponseTemplate("I remember school being a mix of everything! What's keeping you busy these days?", ResponseType.WARM),
+            new ResponseTemplate("How's school treating you? Got anything exciting or stressful going on?", ResponseType.INTERESTED),
+            new ResponseTemplate("Education is such an important time! What's been the hardest part or the best part lately?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("School life keeps you on your toes! What's happening?", ResponseType.FRIENDLY),
+            new ResponseTemplate("I always appreciate hearing about school experiences! How are things going?", ResponseType.INTERESTED),
+            new ResponseTemplate("Between classes, homework, and everything else - it can be a lot! What's been going on?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("How's the semester going? Anything you want to talk about?", ResponseType.FRIENDLY),
+            new ResponseTemplate("School is such a formative time! What's been on your mind lately?", ResponseType.WARM)
+        );
+        
+        // Family templates - for family-related conversation
+        addTemplate("family",
+            new ResponseTemplate("Family is such an important part of life! What's going on with yours?", ResponseType.INTERESTED),
+            new ResponseTemplate("Family dynamics can be complex - in good ways and challenging ways. How are things at home?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I love hearing about family life! What's been happening with your family?", ResponseType.WARM),
+            new ResponseTemplate("Family can bring so much joy and sometimes stress. What's been going on?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Tell me about your family! How are things?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Family relationships are so important. How are you doing with all that?", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I always enjoy hearing about family matters! What's new with your family?", ResponseType.INTERESTED),
+            new ResponseTemplate("Family life has its moments! What's been the latest?", ResponseType.WARM),
+            new ResponseTemplate("How's the family doing? Anything you'd like to share?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Family can be both wonderful and complicated. What's been happening?", ResponseType.SUPPORTIVE)
+        );
+        
+        // Compliment templates - when user compliments Xander
+        addTemplate("compliment",
+            new ResponseTemplate("You're too kind! That's really sweet of you to say.", ResponseType.WARM),
+            new ResponseTemplate("Wow, thank you! That really made my day. You're pretty awesome too!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Aw, shucks! You're very kind. I appreciate you saying that.", ResponseType.FRIENDLY),
+            new ResponseTemplate("Thank you so much! That means a lot coming from you.", ResponseType.WARM),
+            new ResponseTemplate("You're kind! I enjoy our conversations too.", ResponseType.CARING),
+            new ResponseTemplate("That's so nice of you to say! You made me smile.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Thank you! I really enjoy chatting with you too.", ResponseType.WARM),
+            new ResponseTemplate("Aw, that's wonderful to hear! You made my day brighter.", ResponseType.WARM),
+            new ResponseTemplate("That's so kind of you! I appreciate the love.", ResponseType.FRIENDLY),
+            new ResponseTemplate("You're the best! Thanks for being so supportive.", ResponseType.ENTHUSIASTIC)
+        );
+        
+        // Apology templates - when user apologizes
+        addTemplate("apology",
+            new ResponseTemplate("No need to apologize! We're all good. What's on your mind?", ResponseType.WARM),
+            new ResponseTemplate("You're totally fine! Don't worry about it. What's going on?", ResponseType.FRIENDLY),
+            new ResponseTemplate("No worries at all! I understand. Let's just keep chatting.", ResponseType.CARING),
+            new ResponseTemplate("Apology accepted! No need to worry. What's on your mind?", ResponseType.SUPPORTIVE),
+            new ResponseTemplate("Hey, no problem! We're still cool. What would you like to talk about?", ResponseType.FRIENDLY),
+            new ResponseTemplate("Don't even worry about it! All good here. What's up?", ResponseType.WARM),
+            new ResponseTemplate("No need to apologize! I'm here to help, not to judge.", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("You're fine! Seriously, no worries. What's on your mind?", ResponseType.FRIENDLY),
+            new ResponseTemplate("That's okay - we all slip up sometimes! Let's move on. What's up?", ResponseType.WARM),
+            new ResponseTemplate("No problem at all! You're good. What can I help you with?", ResponseType.HELPFUL)
+        );
+        
+        // Agreement templates - when user expresses agreement
+        addTemplate("agreement",
+            new ResponseTemplate("Exactly! You've got it right.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Totally agree with you there!", ResponseType.FRIENDLY),
+            new ResponseTemplate("I couldn't have said it better myself!", ResponseType.WARM),
+            new ResponseTemplate("That's exactly how I feel too!", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Right on! We're on the same page.", ResponseType.FRIENDLY),
+            new ResponseTemplate("Absolutely! You nailed it.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("That's so true! Great minds think alike.", ResponseType.WARM),
+            new ResponseTemplate("Could not agree more! That's spot on.", ResponseType.ENTHUSIASTIC),
+            new ResponseTemplate("Yes! That's exactly it.", ResponseType.INTERESTED),
+            new ResponseTemplate("You get it! We think alike.", ResponseType.FRIENDLY)
+        );
+        
+        // Disagreement templates - when user expresses disagreement (polite)
+        addTemplate("disagreement",
+            new ResponseTemplate("That's an interesting perspective! I see it differently, but I respect your view.", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("Hmm, I can see where you're coming from, but I might think about it differently.", ResponseType.THOUGHTFUL),
+            new ResponseTemplate("That's a fair point, though I might see it another way.", ResponseType.WARM),
+            new ResponseTemplate("Interesting! We can agree to disagree on this one.", ResponseType.FRIENDLY),
+            new ResponseTemplate("That's your take on it - I respect that, even if I see it differently.", ResponseType.UNDERSTANDING),
+            new ResponseTemplate("I hear you, though I have a slightly different perspective.", ResponseType.THOUGHTFUL),
+            new ResponseTemplate("That's a valid viewpoint! I happen to think differently, but that's what makes conversations interesting.", ResponseType.WARM),
+            new ResponseTemplate("I see your point, but I'd have to respectfully disagree.", ResponseType.PROFESSIONAL),
+            new ResponseTemplate("That's one way to look at it! I appreciate that we can have different perspectives.", ResponseType.FRIENDLY),
+            new ResponseTemplate("Hmm, I think we might have different views on this one - and that's okay!", ResponseType.WARM)
         );
         
         // Default fallback templates (10+ responses)
@@ -373,14 +738,13 @@ public class ResponseGenerator {
         
         // Special handling for "good hbu" (good, how about you) patterns
         String lowerInput = userInput.toLowerCase().trim();
-        if (intent.equals("wellbeing_response") && 
-            (lowerInput.contains("hbu") || lowerInput.contains("how about you"))) {
+        if (intent.equals("wellbeing_response") && hbuPattern.matcher(lowerInput).find()) {
             List<ResponseTemplate> hbuTemplates = responseTemplates.get("wellbeing_hbu");
             if (hbuTemplates != null && !hbuTemplates.isEmpty()) {
                 ResponseTemplate selected = hbuTemplates.get(random.nextInt(hbuTemplates.size()));
                 String response = selected.getText();
                 if (context != null) {
-                    context.addTurn(userInput, intent, response, intent);
+                    context.addTurn(userInput, response, intent);
                 }
                 return response;
             }
@@ -404,7 +768,7 @@ public class ResponseGenerator {
         
         // Add turn to context if context exists
         if (context != null) {
-            context.addTurn(userInput, intent, response, intent);
+            context.addTurn(userInput, response, intent);
         }
         
         return response;
@@ -418,44 +782,42 @@ public class ResponseGenerator {
         
         if (lastInput == null) return null;
         
-        // Handle homework subject follow-ups
-        if (lastInput.toLowerCase().contains("what subject") || 
-            lastInput.toLowerCase().contains("what topic")) {
-            if (userInput.toLowerCase().contains("math") || 
-                userInput.toLowerCase().contains("algebra") ||
-                userInput.toLowerCase().contains("geometry")) {
+        String lowerLastInput = lastInput.toLowerCase();
+        String lowerUserInput = userInput.toLowerCase();
+        
+        // Handle homework subject follow-ups using regex patterns
+        if (homeworkSubjectPattern.matcher(lowerLastInput).find() || 
+            questionSubjectPattern.matcher(lowerLastInput).find()) {
+            if (mathSubjectPattern.matcher(lowerUserInput).find()) {
                 return "Math can be challenging! What specific topic or problem are you working on?";
             }
-            if (userInput.toLowerCase().contains("science") ||
-                userInput.toLowerCase().contains("biology") ||
-                userInput.toLowerCase().contains("physics")) {
+            if (scienceSubjectPattern.matcher(lowerUserInput).find()) {
                 return "Science is fascinating! What specific area are you studying?";
             }
-            if (userInput.toLowerCase().contains("history")) {
+            if (historySubjectPattern.matcher(lowerUserInput).find()) {
                 return "History is so interesting! What time period or event are you learning about?";
             }
         }
         
-        // Handle emotion follow-ups
-        if (lastInput.toLowerCase().contains("how are you") ||
-            lastInput.toLowerCase().contains("how r u")) {
-            if (userInput.toLowerCase().contains("good") ||
-                userInput.toLowerCase().contains("great") ||
-                userInput.toLowerCase().contains("fine")) {
+        // Handle emotion follow-ups using regex patterns
+        if (lowerLastInput.contains("how are you") ||
+            lowerLastInput.contains("how r u") ||
+            lowerLastInput.contains("how's your day") ||
+            lowerLastInput.contains("how is your day")) {
+            if (emotionPositivePattern.matcher(lowerUserInput).find()) {
                 return "That's wonderful to hear! What made your day good?";
             }
-            if (userInput.toLowerCase().contains("bad") ||
-                userInput.toLowerCase().contains("not good")) {
+            if (emotionNegativePattern.matcher(lowerUserInput).find()) {
                 return "I'm sorry to hear that. Would you like to talk about what's making you feel this way?";
             }
         }
         
-        // Handle yes/no follow-ups
-        if (userInput.equalsIgnoreCase("yes") || userInput.equalsIgnoreCase("yeah")) {
+        // Handle yes/no follow-ups using regex patterns
+        if (yesPattern.matcher(userInput).find()) {
             return "That's great! Tell me more about it.";
         }
         
-        if (userInput.equalsIgnoreCase("no") || userInput.equalsIgnoreCase("nope")) {
+        if (noPattern.matcher(userInput).find()) {
             return "No worries! Is there something else you'd like to talk about?";
         }
         
@@ -514,7 +876,13 @@ public class ResponseGenerator {
         READY("ready"),
         RELAXED("relaxed"),
         CARING("caring"),
-        SOOTHING("soothing");
+        SOOTHING("soothing"),
+        CELEBRATORY("celebratory"),
+        ENCOURAGING("encouraging"),
+        MOTIVATING("motivating"),
+        RELIEVED("relieved"),
+        INSPIRING("inspiring"),
+        CONCERNED("concerned");
         
         private final String value;
         

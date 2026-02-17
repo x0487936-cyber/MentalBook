@@ -1,0 +1,22 @@
+## THE KNOWN PROBLEMS:
+1. 'what's up' Expected: activity_response, Got: activity_response
+3. 'any game recommendations' Expected: gaming_recommendation, Got: entertainment
+4. 'i want to write' Expected: creative_writing, Got: unknown
+5. 'i need a story idea' Expected: creative_writing_topic, Got: creative_writing
+6. Weird response to "just overwhelming". VirtualXander responds with, "That's interesting! Tell me more. Is there anything else you'd like to talk about? Is there anything else you'd like to talk about?
+7. Weird response to "wdym". VirtualXander responds with, "I'd love to hear more about that! What's on your mind?
+8. Weird response: "You: I'm overwhelmed" "Xander: I'm sorry you're feeling like life it getting tough. When everything feels overwhelming, it's important to remember that this feeling is temporary. Whould you like to talk about what's making things feel so difficult right now?" "You: just life" "Xander: Philosophy is fascinating! What aspect interests you most?"
+
+## UNIMPLIMENTED RESPONSES:
+1. "just overwhelming"
+2. "so, I like games"
+3. "overwhelmed"
+4. "overwhelming"
+5. "nice"
+6. "coding"
+7. "please help"
+
+## FIXED PROBLEMS:
+2. Fixed in Version - 0.2.0.0
+
+## FIXED RESPONSES:

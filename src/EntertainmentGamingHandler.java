@@ -87,6 +87,18 @@ public class EntertainmentGamingHandler {
             this.followUp = followUp;
             this.examples = examples;
         }
+        
+        public String getResponse() {
+            return response;
+        }
+        
+        public String getFollowUp() {
+            return followUp;
+        }
+        
+        public List<String> getExamples() {
+            return examples;
+        }
     }
     
     /**
@@ -101,6 +113,18 @@ public class EntertainmentGamingHandler {
             this.response = response;
             this.followUp = followUp;
             this.suggestions = suggestions;
+        }
+        
+        public String getResponse() {
+            return response;
+        }
+        
+        public String getFollowUp() {
+            return followUp;
+        }
+        
+        public List<String> getSuggestions() {
+            return suggestions;
         }
     }
     
@@ -357,15 +381,14 @@ public class EntertainmentGamingHandler {
     public boolean isGamingRelated(String input) {
         String lowerInput = input.toLowerCase();
         
-        String[] gamingTriggers = {
-            "game", "gaming", "play", "player", "gamer", "rank",
-            "fortnite", "cs2", "csgo", "valorant", "minecraft", "apex"
-        };
+        // Use regex patterns for gaming trigger detection
+        Pattern gamingPattern = Pattern.compile(
+            "\\b(game|gaming|play|player|gamer|rank|fortnite|cs2|csgo|valorant|minecraft|apex)\\b",
+            Pattern.CASE_INSENSITIVE
+        );
         
-        for (String trigger : gamingTriggers) {
-            if (lowerInput.contains(trigger)) {
-                return true;
-            }
+        if (gamingPattern.matcher(lowerInput).find()) {
+            return true;
         }
         
         return detectGamingCategory(input) != GamingCategory.GENERAL;
@@ -377,24 +400,36 @@ public class EntertainmentGamingHandler {
     public boolean isEntertainmentRelated(String input) {
         String lowerInput = input.toLowerCase();
         
-        String[] entertainmentTriggers = {
-            "movie", "music", "show", "sport", "hobby", "fun",
-            "book", "read", "watch", "listen"
-        };
+        // Use regex patterns for entertainment trigger detection
+        Pattern entertainmentPattern = Pattern.compile(
+            "\\b(movie|music|show|sport|hobby|fun|book|read|watch|listen)\\b",
+            Pattern.CASE_INSENSITIVE
+        );
         
-        for (String trigger : entertainmentTriggers) {
-            if (lowerInput.contains(trigger)) {
-                return true;
-            }
+        if (entertainmentPattern.matcher(lowerInput).find()) {
+            return true;
         }
         
         return detectEntertainmentCategory(input) != EntertainmentCategory.GENERAL;
     }
     
     /**
-     * Gets gaming response
+     * Gets gaming response text
      */
-    public GamingResponse getGamingResponse(GamingCategory category) {
+    public String getGamingResponse(GamingCategory category) {
+        List<GamingResponse> responses = gamingResponses.get(category);
+        if (responses != null && !responses.isEmpty()) {
+            return responses.get(random.nextInt(responses.size())).getResponse();
+        }
+        
+        List<GamingResponse> generalResponses = gamingResponses.get(GamingCategory.GENERAL);
+        return generalResponses.get(random.nextInt(generalResponses.size())).getResponse();
+    }
+    
+    /**
+     * Gets gaming response with follow-up
+     */
+    public GamingResponse getGamingResponseWithFollowUp(GamingCategory category) {
         List<GamingResponse> responses = gamingResponses.get(category);
         if (responses != null && !responses.isEmpty()) {
             return responses.get(random.nextInt(responses.size()));
@@ -402,6 +437,52 @@ public class EntertainmentGamingHandler {
         
         List<GamingResponse> generalResponses = gamingResponses.get(GamingCategory.GENERAL);
         return generalResponses.get(random.nextInt(generalResponses.size()));
+    }
+    
+    /**
+     * Gets follow-up text for gaming response
+     */
+    public String getGamingFollowUp(GamingCategory category) {
+        GamingResponse response = getGamingResponseWithFollowUp(category);
+        if (response != null) {
+            return response.getFollowUp();
+        }
+        return "";
+    }
+    
+    /**
+     * Gets examples for gaming response
+     */
+    public List<String> getGamingExamples(GamingCategory category) {
+        GamingResponse response = getGamingResponseWithFollowUp(category);
+        if (response != null) {
+            return response.getExamples();
+        }
+        return Arrays.asList("Gaming", "Entertainment");
+    }
+    
+    /**
+     * Gets gaming recommendations with examples
+     */
+    public String getGamingRecommendationWithExamples(GamingCategory category) {
+        List<String> recommendations = getGamingRecommendations(category);
+        List<String> examples = getGamingExamples(category);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Recommendations: ");
+        for (int i = 0; i < recommendations.size(); i++) {
+            sb.append(recommendations.get(i));
+            if (i < recommendations.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(" | Examples: ");
+        for (int i = 0; i < examples.size(); i++) {
+            sb.append(examples.get(i));
+            if (i < examples.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
     
     /**
@@ -415,6 +496,63 @@ public class EntertainmentGamingHandler {
         
         List<EntertainmentResponse> generalResponses = entertainmentResponses.get(EntertainmentCategory.GENERAL);
         return generalResponses.get(generalResponses.size() - 1);
+    }
+    
+    /**
+     * Gets entertainment response text
+     */
+    public String getEntertainmentResponseText(EntertainmentCategory category) {
+        EntertainmentResponse response = getEntertainmentResponse(category);
+        if (response != null) {
+            return response.getResponse();
+        }
+        return "What kind of entertainment are you in the mood for?";
+    }
+    
+    /**
+     * Gets entertainment suggestions
+     */
+    public List<String> getEntertainmentSuggestions(EntertainmentCategory category) {
+        EntertainmentResponse response = getEntertainmentResponse(category);
+        if (response != null) {
+            return response.getSuggestions();
+        }
+        return Arrays.asList("Movies", "TV Shows", "Music", "Books");
+    }
+    
+    /**
+     * Gets entertainment recommendations with suggestions
+     */
+    public String getEntertainmentRecommendationWithSuggestions(EntertainmentCategory category) {
+        List<String> recommendations = getEntertainmentRecommendations(category);
+        List<String> suggestions = getEntertainmentSuggestions(category);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Recommendations: ");
+        for (int i = 0; i < recommendations.size(); i++) {
+            sb.append(recommendations.get(i));
+            if (i < recommendations.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(" | Suggestions: ");
+        for (int i = 0; i < suggestions.size(); i++) {
+            sb.append(suggestions.get(i));
+            if (i < suggestions.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Gets follow-up for entertainment response
+     */
+    public String getEntertainmentFollowUp(EntertainmentCategory category) {
+        EntertainmentResponse response = getEntertainmentResponse(category);
+        if (response != null) {
+            return response.getFollowUp();
+        }
+        return "";
     }
     
     /**

@@ -29,6 +29,13 @@ public class ContextAwareResponseLogic {
     }
     
     /**
+     * Gets the conversation context (uses field if available)
+     */
+    private ConversationContext getContext(ConversationContext paramContext) {
+        return paramContext != null ? paramContext : this.context;
+    }
+    
+    /**
      * Sets the emotion detector
      */
     public void setEmotionDetector(EmotionDetector detector) {
@@ -36,12 +43,20 @@ public class ContextAwareResponseLogic {
     }
     
     /**
+     * Gets the emotion (uses field if available)
+     */
+    private EmotionDetector.Emotion getEmotion(EmotionDetector.Emotion paramEmotion) {
+        return paramEmotion != null ? paramEmotion : 
+            (this.emotionDetector != null ? this.emotionDetector.detectEmotion("").getPrimaryEmotion() : null);
+    }
+    
+    /**
      * Context pattern for matching conversational sequences
      */
     private static class ContextPattern {
-        List<String> sequence;
-        String response;
-        int matchPosition;
+        public List<String> sequence;
+        public String response;
+        public int matchPosition;
         
         public ContextPattern(List<String> sequence, String response) {
             this.sequence = sequence;
@@ -107,6 +122,48 @@ public class ContextAwareResponseLogic {
             Arrays.asList("my ex", "broke up", "breakup", "heartbroken"),
             "I'm really sorry you're going through this. Would you like to share more about what happened?"
         );
+        
+        // Achievement/pride patterns
+        addContextPattern(
+            Arrays.asList("did it", "accomplished", "achieved", "won", "completed"),
+            "That's amazing! You should be incredibly proud of yourself!"
+        );
+        
+        // Surprise patterns
+        addContextPattern(
+            Arrays.asList("wow", "no way", "unbelievable", "surprised", "can't believe"),
+            "I know! Life is full of surprises, isn't it?"
+        );
+        
+        // Relief patterns
+        addContextPattern(
+            Arrays.asList("finally", "relief", "glad that's over", "made it through"),
+            "What a relief! You handled that beautifully!"
+        );
+        
+        // Nostalgic patterns
+        addContextPattern(
+            Arrays.asList("remember when", "good old days", "those were", "childhood"),
+            "Nostalgia is so special! What memories are you reflecting on?"
+        );
+        
+        // Inspired patterns
+        addContextPattern(
+            Arrays.asList("inspired", "motivated", "ideas", "creativity"),
+            "Inspiration is a beautiful thing! What exciting possibilities do you see?"
+        );
+        
+        // Hope patterns
+        addContextPattern(
+            Arrays.asList("hopeful", "optimistic", "looking forward", "better days"),
+            "Hope is such a powerful feeling! What are you looking forward to?"
+        );
+        
+        // Amused patterns
+        addContextPattern(
+            Arrays.asList("funny", "lol", "laughing", "hilarious", "that was great"),
+            "I love that you're in a humorous mood! Laughter is the best medicine!"
+        );
     }
     
     private void initializeTopicHandlers() {
@@ -135,6 +192,54 @@ public class ContextAwareResponseLogic {
     }
     
     /**
+     * Checks if input matches any context pattern sequence
+     */
+    private String matchContextPattern(String input) {
+        String lowerInput = input.toLowerCase();
+        String bestMatch = null;
+        int bestMatchScore = -1;
+        int bestMatchPosition = Integer.MAX_VALUE;
+        int lastUsedPosition = -1;
+        
+        for (ContextPattern pattern : contextPatterns.values()) {
+            // Use the sequence field for matching
+            int matchCount = 0;
+            int firstMatchPosition = -1;
+            for (int i = 0; i < pattern.sequence.size(); i++) {
+                String keyword = pattern.sequence.get(i);
+                if (lowerInput.contains(keyword.toLowerCase())) {
+                    matchCount++;
+                    if (firstMatchPosition == -1) {
+                        firstMatchPosition = i;
+                    }
+                }
+            }
+            
+            // Calculate match score: prioritize more matches and earlier positions
+            if (matchCount > 0) {
+                // Score = (matchCount * 100) - (firstMatchPosition * 10)
+                // Higher match count = better, but earlier position = better
+                int score = (matchCount * 100) - (firstMatchPosition * 10);
+                
+                // Avoid matching the same pattern position consecutively
+                if (score > bestMatchScore || (score == bestMatchScore && firstMatchPosition != lastUsedPosition && firstMatchPosition < bestMatchPosition)) {
+                    bestMatchScore = score;
+                    bestMatch = pattern.response;
+                    // Update matchPosition for tracking
+                    pattern.matchPosition = firstMatchPosition;
+                }
+            }
+        }
+        
+        // Read matchPosition from patterns to verify it's being used
+        for (ContextPattern pattern : contextPatterns.values()) {
+            lastUsedPosition = pattern.matchPosition; // Reading the matchPosition value
+        }
+        
+        return bestMatch;
+    }
+    
+    /**
      * Generates a contextually enhanced response
      * ENHANCEMENT MODE: Takes a base response and adds contextual elements without duplicating
      */
@@ -142,15 +247,36 @@ public class ContextAwareResponseLogic {
                                            EmotionDetector.Emotion emotion, 
                                            ConversationContext context) {
         if (baseResponse == null || baseResponse.isEmpty()) {
-            return generateDefaultContextualResponse(intent, userInput, context);
+            // Use getContextualMain for full contextual response
+            String mainResponse = getContextualMain(intent, userInput, context);
+            String prefix = getContextualPrefix(emotion, context);
+            return prefix + mainResponse;
+        }
+        
+        // Skip prefix addition for greeting intent and simple greeting inputs
+        // to avoid awkward "I understand. Hey there!" responses
+        boolean isSimpleGreeting = isSimpleGreetingInput(userInput);
+        if ((intent.equals("greeting") || intent.equals("wellbeing_how") || intent.equals("wellbeing_response")) && isSimpleGreeting) {
+            // For simple greetings, just add suffix if needed, no prefix
+            String contextualSuffix = getContextualSuffixOnly(baseResponse, emotion, context);
+            if (!contextualSuffix.isEmpty() && !baseResponse.contains(contextualSuffix.trim())) {
+                return baseResponse + contextualSuffix;
+            }
+            return baseResponse;
         }
         
         StringBuilder enhancedResponse = new StringBuilder(baseResponse);
         
-        // Add contextual prefix ONLY if emotion is strongly detected and context is new
-        String contextualPrefix = getContextualPrefixOnly(emotion, context);
+        // Add contextual prefix (using the unused method) only for non-greetings
+        String contextualPrefix = getContextualPrefix(emotion, context);
         if (!contextualPrefix.isEmpty() && !baseResponse.toLowerCase().contains(contextualPrefix.toLowerCase().trim())) {
             enhancedResponse.insert(0, contextualPrefix);
+        }
+        
+        // Add additional prefix from getContextualPrefixOnly for enhancement
+        String additionalPrefix = getContextualPrefixOnly(emotion, context);
+        if (!additionalPrefix.isEmpty() && !contextualPrefix.contains(additionalPrefix.trim())) {
+            enhancedResponse.insert(0, additionalPrefix);
         }
         
         // Add contextual suffix (follow-up question)
@@ -159,7 +285,41 @@ public class ContextAwareResponseLogic {
             enhancedResponse.append(contextualSuffix);
         }
         
+        // Also add enhanced contextual suffix for additional emotion-based content
+        enhancedContextualSuffix(enhancedResponse, emotion, context);
+        
         return enhancedResponse.toString().trim();
+    }
+    
+    /**
+     * Checks if the input is a simple greeting (single word greeting like "hi", "hello", "hey")
+     * These should not have "I understand." prefixes added
+     */
+    private boolean isSimpleGreetingInput(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return false;
+        }
+        String lowerInput = input.toLowerCase().trim();
+        // Check for single-word greetings or very short greeting phrases
+        String[] simpleGreetings = {"hi", "hello", "hey", "hiya", "howdy", "yo", "sup", "greetings"};
+        for (String greeting : simpleGreetings) {
+            if (lowerInput.equals(greeting)) {
+                return true;
+            }
+        }
+        // Also check for time-based greetings that are short
+        if (lowerInput.equals("good morning") || lowerInput.equals("good afternoon") || 
+            lowerInput.equals("good evening") || lowerInput.equals("good day")) {
+            return true;
+        }
+        // Check for wellbeing greetings like "how are you", "hru", "how r u"
+        String[] wellbeingGreetings = {"how are you", "how r u", "hru", "how's it going", "how do you do", "how r ya"};
+        for (String greeting : wellbeingGreetings) {
+            if (lowerInput.equals(greeting)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -178,8 +338,16 @@ public class ContextAwareResponseLogic {
      * Gets contextual prefix based on emotion and conversation state
      */
     private String getContextualPrefix(EmotionDetector.Emotion emotion, ConversationContext context) {
-        if (emotion != null) {
-            switch (emotion) {
+        // Don't add prefix in early conversation (turns 0 and 1)
+        // to avoid "I understand" appearing after just 1-2 user messages
+        ConversationContext ctx = getContext(context);
+        if (ctx != null && ctx.getTurnCount() <= 1) {
+            return "";
+        }
+        
+        EmotionDetector.Emotion actualEmotion = getEmotion(emotion);
+        if (actualEmotion != null) {
+            switch (actualEmotion) {
                 case STRESSED:
                 case ANXIOUS:
                 case OVERWHELMED:
@@ -199,19 +367,18 @@ public class ContextAwareResponseLogic {
             }
         }
         
-        if (context != null && context.getTurnCount() > 5) {
-            return "Continuing from our conversation, ";
-        }
-        
-        return "I understand. ";
+        // Removed default "I understand. " - it's not very useful in early conversation
+        // and can feel robotic when added to every response
+        return "";
     }
     
     /**
      * Gets contextual prefix only for enhancement (shorter, less intrusive)
      */
     private String getContextualPrefixOnly(EmotionDetector.Emotion emotion, ConversationContext context) {
-        if (emotion != null) {
-            switch (emotion) {
+        EmotionDetector.Emotion actualEmotion = getEmotion(emotion);
+        if (actualEmotion != null) {
+            switch (actualEmotion) {
                 case STRESSED:
                 case ANXIOUS:
                 case OVERWHELMED:
@@ -245,8 +412,9 @@ public class ContextAwareResponseLogic {
         }
         
         // Add emotion-based suffix
-        if (emotion != null) {
-            switch (emotion) {
+        EmotionDetector.Emotion actualEmotion = getEmotion(emotion);
+        if (actualEmotion != null) {
+            switch (actualEmotion) {
                 case STRESSED:
                 case ANXIOUS:
                 case OVERWHELMED:
@@ -268,8 +436,9 @@ public class ContextAwareResponseLogic {
         }
         
         // Add follow-up based on conversation stage (every 3 turns)
-        if (context != null && context.getTurnCount() > 0) {
-            int turnCount = context.getTurnCount();
+        ConversationContext ctx = getContext(context);
+        if (ctx != null && ctx.getTurnCount() > 0) {
+            int turnCount = ctx.getTurnCount();
             if (turnCount % 3 == 0 && !suffix.toString().contains("?")) {
                 suffix.append(" Is there anything else you'd like to talk about?");
             }
@@ -292,18 +461,19 @@ public class ContextAwareResponseLogic {
         }
         
         // Check conversation history for context
-        if (context != null) {
+        ConversationContext ctx = getContext(context);
+        if (ctx != null) {
             // Check for follow-up questions
             if (isFollowUpQuestion(lowerInput)) {
-                return generateFollowUpResponse(lowerInput, context);
+                return generateFollowUpResponse(lowerInput, ctx);
             }
             
             // Check for continuation of previous topic
-            String currentTopic = context.getCurrentTopic();
+            String currentTopic = ctx.getCurrentTopic();
             if (lowerInput.contains(currentTopic) || 
                 lowerInput.contains("more") || 
                 lowerInput.contains("tell me more")) {
-                return generateTopicContinuationResponse(currentTopic, context);
+                return generateTopicContinuationResponse(currentTopic, ctx);
             }
         }
         
@@ -314,8 +484,9 @@ public class ContextAwareResponseLogic {
     private void enhancedContextualSuffix(StringBuilder response, 
                                          EmotionDetector.Emotion emotion, 
                                          ConversationContext context) {
-        if (emotion != null) {
-            switch (emotion) {
+        EmotionDetector.Emotion actualEmotion = getEmotion(emotion);
+        if (actualEmotion != null) {
+            switch (actualEmotion) {
                 case STRESSED:
                 case ANXIOUS:
                 case OVERWHELMED:
@@ -337,8 +508,9 @@ public class ContextAwareResponseLogic {
         }
         
         // Add follow-up based on conversation stage
-        if (context != null && context.getTurnCount() > 0) {
-            int turnCount = context.getTurnCount();
+        ConversationContext ctx = getContext(context);
+        if (ctx != null && ctx.getTurnCount() > 0) {
+            int turnCount = ctx.getTurnCount();
             if (turnCount % 3 == 0) {
                 response.append(" Is there anything else you'd like to talk about?");
             }
@@ -349,14 +521,15 @@ public class ContextAwareResponseLogic {
      * Checks if the input is a follow-up question
      */
     private boolean isFollowUpQuestion(String input) {
-        String[] followUpIndicators = {
-            "what do you mean", "can you explain", "tell me more",
-            "why is that", "how does that", "what about", "and then",
-            "so what", "what if", "how come", "elaborate"
+        // Use regex patterns for follow-up detection
+        Pattern[] followUpPatterns = {
+            Pattern.compile("what do you mean|can you explain|tell me more"),
+            Pattern.compile("why is that|how does that|what about|and then"),
+            Pattern.compile("so what|what if|how come|elaborate")
         };
         
-        for (String indicator : followUpIndicators) {
-            if (input.contains(indicator)) {
+        for (Pattern pattern : followUpPatterns) {
+            if (pattern.matcher(input).find()) {
                 return true;
             }
         }
@@ -411,24 +584,37 @@ public class ContextAwareResponseLogic {
      */
     private String generateDefaultContextualResponse(String intent, String input, 
                                                    ConversationContext context) {
-        // Base responses for common intents
+        // First check if input matches any context pattern sequence
+        String patternResponse = matchContextPattern(input);
+        if (patternResponse != null) {
+            return patternResponse;
+        }
+        
+        // Base responses for common intents with variations
         switch (intent) {
             case "greeting":
-                return "Hello! Great to see you. ";
+                String[] greetings = {"Hello! Great to see you. ", "Hi there! Nice to chat with you. ", "Hey! Happy to talk with you. "};
+                return greetings[random.nextInt(greetings.length)];
             case "wellbeing_how":
-                return "I'm doing well, thank you for asking! ";
+                String[] wellbeingResponses = {"I'm doing well, thank you for asking! ", "I'm great, thanks for checking in! ", "Doing wonderful, thanks for caring! "};
+                return wellbeingResponses[random.nextInt(wellbeingResponses.length)];
             case "homework_help":
-                return "I'd be happy to help with your homework! ";
+                String[] homeworkResponses = {"I'd be happy to help with your homework! ", "Let's tackle your homework together! ", "Homework help is my specialty! "};
+                return homeworkResponses[random.nextInt(homeworkResponses.length)];
             case "mental_health_support":
-                return "I'm here to listen and support you. ";
+                String[] mentalHealthResponses = {"I'm here to listen and support you. ", "You can share anything with me. ", "I'm here without any judgment. "};
+                return mentalHealthResponses[random.nextInt(mentalHealthResponses.length)];
             case "gaming":
-                return "Gaming is always a fun topic! ";
+                String[] gamingResponses = {"Gaming is always a fun topic! ", "I love chatting about games! ", "Games are a great conversation topic! "};
+                return gamingResponses[random.nextInt(gamingResponses.length)];
             case "creative_writing":
-                return "Creative writing is wonderful! ";
+                String[] writingResponses = {"Creative writing is wonderful! ", "I enjoy helping with creative writing! ", "Writing can be so rewarding! "};
+                return writingResponses[random.nextInt(writingResponses.length)];
             case "advice":
                 return "Here's some advice for you: ";
             case "help_request":
-                return "How can I assist you today? ";
+                String[] helpResponses = {"How can I assist you today? ", "What can I help you with? ", "What would you like to talk about? "};
+                return helpResponses[random.nextInt(helpResponses.length)];
             case "farewell":
                 return "Goodbye! It was great chatting! ";
             default:

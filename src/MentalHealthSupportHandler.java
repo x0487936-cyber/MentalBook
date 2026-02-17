@@ -8,12 +8,16 @@ import java.util.regex.*;
  * Part of Phase 3: Response Categories
  */
 public class MentalHealthSupportHandler {
-    
+    private final ComfortEngine comfortEngine;
     private Map<SupportCategory, List<SupportResponse>> supportResponses;
     private Map<String, SupportCategory> keywordMapping;
     private Random random;
     
-    public MentalHealthSupportHandler() {
+    public MentalHealthSupportHandler(
+        EmotionDetector emotionDetector,
+        ComfortEngine comfortEngine
+    ) {
+        this.comfortEngine = new ComfortEngine();
         this.supportResponses = new HashMap<>();
         this.keywordMapping = new HashMap<>();
         this.random = new Random();
@@ -123,6 +127,16 @@ public class MentalHealthSupportHandler {
                 3
             ),
             new SupportResponse(
+                "It takes a lot of courage to share how you're feeling. I'm here for you.",
+                "Would you like to talk about what's making you feel down?",
+                3
+            ),
+            new SupportResponse(
+                "I'm really sorry you're feeling blue. I've been there too",
+                "Is there anything I can do to help?",
+                3
+            ),
+            new SupportResponse(
                 "I hear you. Sometimes when we're down, even small things feel heavy.",
                 "Would you like to talk about what's making you feel sad?",
                 3
@@ -188,19 +202,29 @@ public class MentalHealthSupportHandler {
         // Overwhelm support
         List<SupportResponse> overwhelmResponses = Arrays.asList(
             new SupportResponse(
+                "I'm sorry you're feeling like life is getting tough. When everything feels overwhelming, it's important to remember that this feeling is temporary.",
+                "Would you like to talk about what's making things feel so difficult right now?",
+                3
+            ),
+            new SupportResponse(
                 "I'm sorry you're feeling overwhelmed. Sometimes everything piles up.",
                 "Let's take this one step at a time. What's the biggest thing on your mind?",
                 3
             ),
             new SupportResponse(
-                "When everything feels too much, it helps to break things down.",
+                "When things feel tough, it can help to remember that you're stronger than you think. You've gotten through hard times before.",
                 "What's the one thing that feels most overwhelming right now?",
                 3
             ),
             new SupportResponse(
-                "I understand. Feeling overwhelmed can be exhausting.",
+                "I understand. Feeling like life is getting tough is really hard. Please know that you're not alone in this.",
                 "Would it help to talk through what's making you feel this way?",
                 2
+            ),
+            new SupportResponse(
+                "I'm here for you. When everything feels like too much, it helps to break things down.",
+                "What's the main thing weighing on you right now?",
+                3
             )
         );
         supportResponses.put(SupportCategory.OVERWHELM, overwhelmResponses);
@@ -383,6 +407,11 @@ public class MentalHealthSupportHandler {
         keywordMapping.put("swamped", SupportCategory.OVERWHELM);
         keywordMapping.put("drowning", SupportCategory.OVERWHELM);
         keywordMapping.put("too much", SupportCategory.OVERWHELM);
+        keywordMapping.put("tough", SupportCategory.OVERWHELM);
+        keywordMapping.put("getting tough", SupportCategory.OVERWHELM);
+        keywordMapping.put("life is tough", SupportCategory.OVERWHELM);
+        keywordMapping.put("hard time", SupportCategory.OVERWHELM);
+        keywordMapping.put("struggling", SupportCategory.OVERWHELM);
         
         // Self-esteem keywords
         keywordMapping.put("worthless", SupportCategory.SELF_ESTEEM);
@@ -461,14 +490,15 @@ public class MentalHealthSupportHandler {
     public boolean isMentalHealthSupportNeeded(String input) {
         String lowerInput = input.toLowerCase();
         
-        // High-priority keywords
-        String[] priorityKeywords = {
-            "want to die", "hurt myself", "end it all", "kill myself",
-            "no reason to live", "better off dead", "self harm", "dark thoughts"
+        // High-priority keywords using regex patterns
+        Pattern[] priorityPatterns = {
+            Pattern.compile("want to die|end it all|kill myself"),
+            Pattern.compile("hurt myself|better off dead"),
+            Pattern.compile("self.?harm|dark thoughts")
         };
         
-        for (String keyword : priorityKeywords) {
-            if (lowerInput.contains(keyword)) {
+        for (Pattern pattern : priorityPatterns) {
+            if (pattern.matcher(lowerInput).find()) {
                 return true;
             }
         }
@@ -489,14 +519,15 @@ public class MentalHealthSupportHandler {
     public boolean isCrisisLevel(String input) {
         String lowerInput = input.toLowerCase();
         
-        String[] crisisKeywords = {
-            "want to die", "hurt myself", "end it all", "kill myself",
-            "no reason to live", "better off dead", "self harm",
-            "suicidal", "suicide"
+        Pattern[] crisisPatterns = {
+            Pattern.compile("want to die|end it all|kill myself"),
+            Pattern.compile("hurt myself|better off dead"),
+            Pattern.compile("self.?harm"),
+            Pattern.compile("suicidal|suicide")
         };
         
-        for (String keyword : crisisKeywords) {
-            if (lowerInput.contains(keyword)) {
+        for (Pattern pattern : crisisPatterns) {
+            if (pattern.matcher(lowerInput).find()) {
                 return true;
             }
         }
@@ -613,6 +644,21 @@ public class MentalHealthSupportHandler {
         }
 
         return suggestions;
+    }
+    private String buildFinalResponse(
+        String comfort,
+        List<String> suggestions
+    ) {
+
+        StringBuilder response = new StringBuilder(comfort);
+        if (!suggestions.isEmpty()) {
+            response.append("\n\nHere are a few small things that might help:\n");
+
+            for (String suggestion : suggestions) {
+                response.append("- ").append(suggestion).append("\n");
+            }
+        }
+        return response.toString();
     }
 }
 

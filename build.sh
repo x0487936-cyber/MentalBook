@@ -26,8 +26,8 @@ echo "  Source directory: $SRC_DIR"
 echo "  Output directory: $BIN_DIR"
 echo ""
 
-# Compile main class from root and other classes from src
-javac -d "$BIN_DIR" -sourcepath "$SRC_DIR" "$SRC_DIR"/*.java VirtualXander.java
+# Compile main class from root, GUI app, and other classes from src
+javac -d "$BIN_DIR" -sourcepath "$SRC_DIR" "$SRC_DIR"/*.java VirtualXander.java MentalBookApp.java
 
 echo "✓ Compilation successful!"
 echo ""

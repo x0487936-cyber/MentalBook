@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Book Shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,28 L78,28 L78,80 L30,80 Z" />
+    
+    <!-- Book Spine -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M30,28 L38,28 L38,80 L30,80 Z" />
+    
+    <!-- Heart in Center -->
+    <path
+        android:fillColor="#4682B4"
+        android:pathData="M54,48 C50,44 44,46 44,52 C44,58 54,64 54,64 C54,64 64,58 64,52 C64,46 58,44 54,48 Z" />
+    
+    <!-- Text Lines -->
+    <path
+        android:fillColor="#4682B4"
+        android:pathData="M42,34 L66,34"
+        android:strokeWidth="2.5"
+        android:strokeColor="#4682B4" />
+    <path
+        android:fillColor="#4682B4"
+        android:pathData="M42,72 L60,72"
+        android:strokeWidth="2.5"
+        android:strokeColor="#4682B4" />
+</vector>

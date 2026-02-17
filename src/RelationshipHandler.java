@@ -86,7 +86,7 @@ public class RelationshipHandler {
             ),
             new RelationshipResponse(
                 "Dating is full of ups and downs! How has your dating life been lately?",
-                "Any exciting news or challenges you're facing?",
+                "Any exciting news or challenges you're facing with your relationship? Not to be nosy, just curious",
                 3, EmotionDetector.Emotion.SOOTHING
             )
         );
@@ -96,12 +96,12 @@ public class RelationshipHandler {
         List<RelationshipResponse> breakupResponses = Arrays.asList(
             new RelationshipResponse(
                 "I'm really sorry you're going through a breakup. Those can be so painful.",
-                "Would you like to talk about what happened? Sometimes it helps to share.",
+                "Would you like to talk about what happened? Sometimes it helps to share your feelings.",
                 2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
                 "Breakups are never easy. It's okay to feel hurt and sad right now.",
-                "Take all the time you need to heal. What's on your mind?",
+                "Take all the time you need to heal. What can I do to help?",
                 2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
@@ -121,7 +121,7 @@ public class RelationshipHandler {
             ),
             new RelationshipResponse(
                 "When someone leaves, it can feel like your world is falling apart. But you will heal.",
-                "Remember, their choice to leave says more about them than about you.",
+                "Remember, their choice to leave says more about them than about you. It's not your fault.",
                 2, EmotionDetector.Emotion.SOOTHING
             ),
             new RelationshipResponse(
@@ -387,15 +387,14 @@ public class RelationshipHandler {
     public boolean isRelationshipRelated(String input) {
         String lowerInput = input.toLowerCase();
         
-        String[] relationshipTriggers = {
-            "relationship", "dating", "boyfriend", "girlfriend", "wife", "husband",
-            "married", "marriage", "breakup", "family", "friends", "friend"
-        };
+        // Use regex pattern for relationship trigger detection
+        Pattern relationshipPattern = Pattern.compile(
+            "\\b(relationship|dating|boyfriend|girlfriend|wife|husband|married|marriage|breakup|family|friends|friend)\\b",
+            Pattern.CASE_INSENSITIVE
+        );
         
-        for (String trigger : relationshipTriggers) {
-            if (lowerInput.contains(trigger)) {
-                return true;
-            }
+        if (relationshipPattern.matcher(lowerInput).find()) {
+            return true;
         }
         
         return detectRelationshipCategory(input) != RelationshipCategory.GENERAL;

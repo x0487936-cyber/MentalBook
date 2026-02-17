@@ -3,7 +3,10 @@ import java.net.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * VirtualXanderClient - Integrated Client for VirtualXander Chatbot
@@ -184,11 +187,24 @@ class VirtualXanderGUI {
         JMenuItem disconnectItem = new JMenuItem("Disconnect");
         JMenuItem exitItem = new JMenuItem("Exit");
         
-        connectItem.addActionListener(e -> connectToServer());
-        disconnectItem.addActionListener(e -> disconnectFromServer());
-        exitItem.addActionListener(e -> {
-            disconnectFromServer();
-            System.exit(0);
+        connectItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                connectToServer();
+            }
+        });
+        disconnectItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                disconnectFromServer();
+            }
+        });
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                disconnectFromServer();
+                System.exit(0);
+            }
         });
         
         fileMenu.add(connectItem);
@@ -213,17 +229,25 @@ class VirtualXanderGUI {
         disconnectButton = new JButton("Disconnect");
         disconnectButton.setEnabled(false);
         
-        connectButton.addActionListener(e -> {
-            try {
-                this.host = hostField.getText();
-                this.port = Integer.parseInt(portField.getText());
-                connectToServer();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Invalid port number", "Error", JOptionPane.ERROR_MESSAGE);
+        connectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    VirtualXanderGUI.this.host = hostField.getText();
+                    VirtualXanderGUI.this.port = Integer.parseInt(portField.getText());
+                    connectToServer();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid port number", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         
-        disconnectButton.addActionListener(e -> disconnectFromServer());
+        disconnectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                disconnectFromServer();
+            }
+        });
         
         connectionPanel.add(hostLabel);
         connectionPanel.add(hostField);
@@ -251,9 +275,19 @@ class VirtualXanderGUI {
         
         sendButton = new JButton("Send");
         sendButton.setEnabled(false);
-        sendButton.addActionListener(e -> sendMessage());
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendMessage();
+            }
+        });
         
-        inputField.addActionListener(e -> sendMessage());
+        inputField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendMessage();
+            }
+        });
         
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
@@ -276,18 +310,21 @@ class VirtualXanderGUI {
             }
         });
         
-        aboutItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame,
-                "VirtualXander Chat Client v" + VirtualXanderClient.VERSION + "\n\n" +
-                "An AI-powered chat companion with support for:\n" +
-                "• Greetings and casual chat\n" +
-                "• Homework and academic questions\n" +
-                "• Mental health support\n" +
-                "• Gaming discussions\n" +
-                "• Creative writing assistance\n\n" +
-                "Connect to VirtualXanderServer to start chatting!",
-                "About VirtualXander",
-                JOptionPane.INFORMATION_MESSAGE);
+        aboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(frame,
+                    "VirtualXander Chat Client v" + VirtualXanderClient.VERSION + "\n\n" +
+                    "A personally created powered chat companion made by Xander Thompson, with support for:\n" +
+                    "• Greetings and casual chat\n" +
+                    "• Homework and academic questions\n" +
+                    "• Mental health support\n" +
+                    "• Gaming discussions\n" +
+                    "• Creative writing assistance\n\n" +
+                    "Connect to VirtualXanderServer to start chatting!",
+                    "About VirtualXander",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
         });
     }
     
@@ -429,4 +466,3 @@ class VirtualXanderGUI {
         });
     }
 }
-

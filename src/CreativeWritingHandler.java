@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.regex.*;
 
 /**
  * CreativeWritingHandler - Handles creative writing assistance
@@ -7,7 +6,7 @@ import java.util.regex.*;
  */
 public class CreativeWritingHandler {
     
-    private Map<WritingGenre, List<WritingResponse>> genreResponses;
+    private Map<WritingGenre, List<CreativeWritingHandlerResponse>> genreResponses;
     private Map<String, WritingGenre> genreKeywords;
     private Random random;
     
@@ -55,22 +54,30 @@ public class CreativeWritingHandler {
     /**
      * Writing response class
      */
-    private static class WritingResponse {
+    private static class CreativeWritingHandlerResponse {
         String response;
         String prompt;
         List<String> tips;
         
-        public WritingResponse(String response, String prompt, List<String> tips) {
+        public CreativeWritingHandlerResponse(String response, String prompt, List<String> tips) {
             this.response = response;
             this.prompt = prompt;
             this.tips = tips;
+        }
+        
+        public String getResponse() {
+            return response;
+        }
+        
+        public String getPrompt() {
+            return prompt;
         }
     }
     
     private void initializeGenreResponses() {
         // Fiction responses
-        List<WritingResponse> fictionResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> fictionResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Fiction is a wonderful way to explore imaginary worlds! What kind of story are you working on?",
                 "Try starting with: 'The door creaked open, revealing...'",
                 Arrays.asList("Develop compelling characters", "Create a clear plot structure", "Show, don't tell")
@@ -79,8 +86,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.FICTION, fictionResponses);
         
         // Science Fiction responses
-        List<WritingResponse> scifiResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> scifiResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Science fiction lets us explore 'what if' scenarios! What aspect are you writing about?",
                 "Try starting with: 'In the year 2450, humanity had finally cracked the code of...'",
                 Arrays.asList("Ground sci-fi in real science", "Consider future implications", "Create believable technology")
@@ -89,8 +96,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.SCIFI, scifiResponses);
         
         // Fantasy responses
-        List<WritingResponse> fantasyResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> fantasyResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Fantasy is all about magic and imagination! What world are you creating?",
                 "Try starting with: 'The ancient spell had been dormant for centuries, until...'",
                 Arrays.asList("Build consistent magic systems", "Create detailed world-building", "Develop unique cultures")
@@ -99,8 +106,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.FANTASY, fantasyResponses);
         
         // Mystery responses
-        List<WritingResponse> mysteryResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> mysteryResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Mystery writing keeps readers on the edge! What's the central puzzle in your story?",
                 "Try starting with: 'The detective examined the room, noting three things that didn't add up...'",
                 Arrays.asList("Plant clues carefully", "Create red herrings", "Build to a satisfying reveal")
@@ -109,8 +116,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.MYSTERY, mysteryResponses);
         
         // Romance responses
-        List<WritingResponse> romanceResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> romanceResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Romance captures the heart! What kind of love story are you telling?",
                 "Try starting with: 'When their eyes met across the crowded room, neither expected...'",
                 Arrays.asList("Build emotional tension", "Create believable obstacles", "Develop chemistry between characters")
@@ -119,8 +126,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.ROMANCE, romanceResponses);
         
         // Poetry responses
-        List<WritingResponse> poetryResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> poetryResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Poetry is the art of expression! What style do you prefer?",
                 "Try starting with: A haiku about nature, or free verse about an emotion...",
                 Arrays.asList("Play with rhythm and sound", "Use vivid imagery", "Find the perfect word")
@@ -129,8 +136,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.POETRY, poetryResponses);
         
         // Horror responses
-        List<WritingResponse> horrorResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> horrorResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Horror taps into our deepest fears! What scares you most?",
                 "Try starting with: 'The shadows in the corner weren't quite right. They moved when...'",
                 Arrays.asList("Build dread slowly", "Use sensory details", "Leave something to imagination")
@@ -139,8 +146,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.HORROR, horrorResponses);
         
         // Adventure responses
-        List<WritingResponse> adventureResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> adventureResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Adventure stories are thrilling! Where does your hero's journey take them?",
                 "Try starting with: 'The map showed a route no one had taken in a hundred years...'",
                 Arrays.asList("Create exciting obstacles", "Build stakes high", "Keep pacing fast")
@@ -149,8 +156,8 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.ADVENTURE, adventureResponses);
         
         // Blog responses
-        List<WritingResponse> blogResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> blogResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Blog writing is a great way to share ideas! What's your topic?",
                 "Try starting with: A compelling question, a personal story, or a surprising fact...",
                 Arrays.asList("Know your audience", "Use engaging headlines", "Include visuals")
@@ -159,13 +166,13 @@ public class CreativeWritingHandler {
         genreResponses.put(WritingGenre.BLOG, blogResponses);
         
         // General writing responses
-        List<WritingResponse> generalResponses = Arrays.asList(
-            new WritingResponse(
+        List<CreativeWritingHandlerResponse> generalResponses = Arrays.asList(
+            new CreativeWritingHandlerResponse(
                 "Creative writing is a powerful form of expression! What are you working on?",
                 "Just start writing - the words will come!",
                 Arrays.asList("Write regularly", "Read widely", "Don't be afraid to edit")
             ),
-            new WritingResponse(
+            new CreativeWritingHandlerResponse(
                 "I'd love to hear about your creative project! What are you creating?",
                 "Every story starts with a single word...",
                 Arrays.asList("Trust your creative voice", "Embrace the revision process", "Find your writing routine")
@@ -297,14 +304,36 @@ public class CreativeWritingHandler {
     /**
      * Gets writing response for genre
      */
-    public WritingResponse getResponse(WritingGenre genre) {
-        List<WritingResponse> responses = genreResponses.get(genre);
+    public CreativeWritingHandlerResponse getResponse(WritingGenre genre) {
+        List<CreativeWritingHandlerResponse> responses = genreResponses.get(genre);
         if (responses != null && !responses.isEmpty()) {
             return responses.get(random.nextInt(responses.size()));
         }
         
-        List<WritingResponse> generalResponses = genreResponses.get(WritingGenre.GENERAL);
+        List<CreativeWritingHandlerResponse> generalResponses = genreResponses.get(WritingGenre.GENERAL);
         return generalResponses.get(random.nextInt(generalResponses.size()));
+    }
+    
+    /**
+     * Gets writing response text
+     */
+    public String getWritingResponseText(WritingGenre genre) {
+        CreativeWritingHandlerResponse response = getResponse(genre);
+        if (response != null) {
+            return response.getResponse();
+        }
+        return "Creative writing is a powerful form of expression! What are you working on?";
+    }
+    
+    /**
+     * Gets writing prompt for genre
+     */
+    public String getWritingPrompt(WritingGenre genre) {
+        CreativeWritingHandlerResponse response = getResponse(genre);
+        if (response != null) {
+            return response.getPrompt();
+        }
+        return "Start with a character who wants something";
     }
     
     /**
@@ -383,7 +412,7 @@ public class CreativeWritingHandler {
      * Gets writing tips
      */
     public List<String> getWritingTips(WritingGenre genre) {
-        WritingResponse response = getResponse(genre);
+        CreativeWritingHandlerResponse response = getResponse(genre);
         return response.tips;
     }
     
