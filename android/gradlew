@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# Gradle Wrapper Script
+
+# Determine the script directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Use the local bundled Gradle
+GRADLE_HOME="$SCRIPT_DIR/gradle-7.5"
+GRADLE_BIN="$GRADLE_HOME/bin/gradle"
+
+# Check if local Gradle exists
+if [ ! -f "$GRADLE_BIN" ]; then
+    echo "Error: Local Gradle not found at $GRADLE_BIN"
+    exit 1
+fi
+
+# Export JAVA_HOME if not set
+if [ -z "$JAVA_HOME" ]; then
+    JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+    export JAVA_HOME
+fi
+
+# Execute Gradle with all passed arguments
+exec "$GRADLE_BIN" "$@"
+

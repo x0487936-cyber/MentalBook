@@ -1,4 +1,4 @@
-package android.app.src.main.java.com.mentalbook.app;
+package com.mentalbook.app;
 
 import android.view.LayoutInflater;
 import android.view.View;
